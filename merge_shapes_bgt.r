@@ -21,12 +21,17 @@ waterdeel@data = data.frame('category'  = waterdeel$class)
 shape = rbind(waterdeel, pand)
 shape = rbind(shape, wegdeel)
 
+#####wat doet dit????
+shape <- gBuffer(shape, byid=TRUE, width=0)
+#########
+
 
 for(file in files){
   print(paste('bizzy with', file))
   r = raster(paste0('db/hoogte bestand/', file))
   extent = extent(r)
   
+
   shape_part = crop(shape, extent)
 
 saveRDS(shape_part, paste0( subdir, '/', file , '/bgt__', i, '.rds'))
