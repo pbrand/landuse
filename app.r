@@ -1,4 +1,3 @@
-
 #download subregions of actueel hoogte bestand
 #download a subregion of the BGT covering the subregion of the hoogtebestand
 
@@ -30,14 +29,17 @@ for(file in files){
 #crop the CBS shape and place in dir
 print('starting to crop and copy CBS files')
 
-  source('CBS_crop.r')
+source('CBS_crop.r')
 CBS_crop(files = files, subdir = subdir)
-  
+
 #Merge the bgt shapes, crop and place in subdir
 print('bizzy with mergin, croping and copying shapes bgt')
-  source('merge_shapes_bgt.r')
+source('merge_shapes_bgt.r')
 merge_shapes_bgt(files = files, subdir = subdir, projection = projection)
-  
+
+#Find the extents of the ecw files
+source('ecw_extent.r')
+
 #Next up selecting and croping all images that fall into the subregion
 
 #Next up rasterizing the CBS shapes over the images
