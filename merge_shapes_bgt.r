@@ -1,9 +1,11 @@
 #crop and save individual shapes
 
+merge_shapes_bgt = function(files, subdir, projection){
+
 dirs = list.dirs('db/bgt', recursive = FALSE)
 
 for(i  in 1:length(dirs)){
-print(paste('bizzy with bgt part', i))
+print(paste('Starting with bgt part', i))
 dir =dirs[i]
 wegdeel = readOGR( paste0( dir, '/wegdeel'))
 waterdeel = readOGR( paste0(dir, '/waterdeel'))
@@ -34,19 +36,25 @@ for(file in files){
 
   shape_part = crop(shape, extent)
 
-saveRDS(shape_part, paste0( subdir, '/', file , '/bgt__', i, '.rds'))
+saveRDS(shape_part, paste0( subdir, '/', file , '/bgt_', i, '.rds'))
 }
 }
 
+
+for(file in files){
+  print(file)
 #merge all the shapes that have been written
 file_names = list.files(paste0(subdir, '/', file), pattern = 'bgt_', full.names = TRUE)
 shapes = list()
 for(i in 1:length(file_names)){
+
   shapes[[i]] = readRDS(file_names[i])
   file.remove(file_names[i])
 }
 
+shapes = compact(shapes)
 shape = do.call(rbind, shapes)
 saveRDS(shape, paste0(subdir, '/', file, '/bgt.rds'))
 
-
+}
+}

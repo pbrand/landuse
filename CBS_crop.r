@@ -1,5 +1,6 @@
 #get extent
 
+CBS_crop = function(files, subdir){
 
 for(file in files){
   print(paste('bizzy with', file))
@@ -20,4 +21,8 @@ for(shape in shapes){
 
 saveRDS(CBS,paste0(subdir, '/', file , '/CBS.rds'))
 
+}
+  
+  
+  
 }

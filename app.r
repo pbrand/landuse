@@ -31,12 +31,12 @@ for(file in files){
 print('starting to crop and copy CBS files')
 
   source('CBS_crop.r')
-
+CBS_crop(files = files, subdir = subdir)
   
 #Merge the bgt shapes, crop and place in subdir
 print('bizzy with mergin, croping and copying shapes bgt')
   source('merge_shapes_bgt.r')
-
+merge_shapes_bgt(files = files, subdir = subdir, projection = projection)
   
 #Next up selecting and croping all images that fall into the subregion
 
