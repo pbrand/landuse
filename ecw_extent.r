@@ -27,4 +27,4 @@ ecw_files = list.files(ecw_path)
   ecws <- data.frame(file.path(ecw_path, ecw_filenames), lower_left_x, lower_left_y, upper_right_x, upper_right_y)
   
   
-  saveRDS(ecws, paste0(ecw_path,'/ecw_extent.rds')
+  saveRDS(ecws, paste0(ecw_path,'/ecw_extent.rds'))
