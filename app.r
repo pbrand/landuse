@@ -11,7 +11,8 @@
 #load required packages
 source('packages.r')
 
-
+subdir = '/media/daniel/Elements/output'
+files = list.files('db/hoogte bestand')
 projection = readRDS('db/projection.rds')
 
 #make subdirs and place hoogte bestand in the directory
@@ -32,11 +33,15 @@ CBS_crop(files = files, subdir = subdir)
 
 #Merge the bgt shapes, crop and place in subdir
 print('bizzy with mergin, croping and copying shapes bgt')
-source('merge_shapes_bgt.r')
-merge_shapes_bgt(files = files, subdir = subdir, projection = projection)
+#source('merge_shapes_bgt.r')
+#merge_shapes_bgt(files = files, subdir = subdir, projection = projection)
 
 #Find the extents of the ecw files
+path_harddrive = '/media/daniel/Elements'
+
 source('ecw_extent.r')
+
+
 
 #Next up selecting and croping all images that fall into the subregion
 
