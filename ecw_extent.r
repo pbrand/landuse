@@ -1,11 +1,10 @@
+ecw_path = 'E:ECW'
 
 
-ecw_path = '/media/daniel/Elements/ECW'
-
-ecw_files = list.files(ecw_path)
+ecw_files = list.files(ecw_path, pattern = '.ecw')
 
 
-  gdal_setInstallation(ignore.full_scan = FALSE)
+gdal_setInstallation(ignore.full_scan = FALSE)
   
   
   
@@ -24,7 +23,42 @@ ecw_files = list.files(ecw_path)
     upper_right_y[i] = info$bbox[[2,2]]
   }
   
-  ecws <- data.frame(file.path(ecw_path, ecw_filenames), lower_left_x, lower_left_y, upper_right_x, upper_right_y)
+  ecws <- data.frame(file.path(ecw_path, ecw_files), lower_left_x, lower_left_y, upper_right_x, upper_right_y)
   
   
   saveRDS(ecws, paste0(ecw_path,'/ecw_extent.rds'))
+  
+  
+  
+  #get all hoogtebestanden en cut out from ecw and place in subdir
+  tif_files = list.files('E:output')
+  
+  
+  for(file in tif_files){
+    r = raster( paste0('E:output/', file, '/', file))
+      for(j in 1:nrow(ecws)){
+        
+        v =  as.vector(extent(r))[c(1,4,2,3)]
+        
+        
+        suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], paste0('E:output/', file ,'/luchtfoto_', j, '.gtiff'), projwin = v ) )
+
+      
+      }
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  #v = c(131829, 458709, 132424,458151)
+  
+  for(i in 1:27){
+    print(i)
+  r = raster(paste0('plaatjes/test_', i, '.gtiff'))
+ print( unique(values(r)))
+  }

@@ -12,8 +12,9 @@
 source('packages.r')
 
 # global variables
-subdir = 'output'
-files = list.files('db/hoogte bestand')
+#subdir = 'output'
+subdir = 'D:Ortho/Blokken_Ecw'
+#files = list.files('db/hoogte bestand')
 projection = readRDS('db/projection.rds')
 
 #make subdirs and place hoogte bestand in the directory
