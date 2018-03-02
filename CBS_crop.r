@@ -14,7 +14,7 @@ CBS = crop(CBS, extent)
 shapes = shapes[-1]
 
 for(shape in shapes){
-  CBS_extra = readRDS(paste0( 'db/CBS/', shape)  )
+    CBS_extra = readRDS(paste0( 'db/CBS/', shape)  )
   CBS_extra = crop(CBS_extra, extent)
   CBS = rbind(CBS, CBS_extra)
 }

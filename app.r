@@ -12,7 +12,7 @@
 source('packages.r')
 
 # global variables
-subdir = 'output'
+subdir = '/media/daniel/Elements/output'
 files = list.files('db/hoogte bestand')
 projection = readRDS('db/projection.rds')
 
