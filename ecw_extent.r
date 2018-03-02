@@ -1,6 +1,4 @@
 
-
-
 ecw_files = list.files( paste0(path_harddrive, '/ECW'), pattern = '.ecw')
 
 
@@ -37,14 +35,14 @@ gdal_setInstallation(ignore.full_scan = FALSE)
     r = raster( paste0(path_harddrive, '/output/', file, '/', file))
       for(j in 1:nrow(ecws)){
         
+        #make an extent object from the row
         #check if the altitude file falls within the range of the ECW file
-        
-        
+        if(!is.null(try(intersect( extent(r),  c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] ) )) )){
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
         
         suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], paste0('E:output/', file ,'/luchtfoto_', j, '.gtiff'), projwin = v ) )
-
+        }
       
       }
     
@@ -53,28 +51,6 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   
   
-  
-  ##### read all rasters and remove the empty ones
-  
-  #loop over all subdirs in the output
- dirs =  list.files(tif_path)
-  
-  for( dir in dirs){
-    print(dir)
-    
-    fotos = list.files(paste0(subdir, '/', dir), pattern = 'luchtfoto', full.names = TRUE)
-    
-    #loop over each of the 7 cropped arial images
-    for(foto in fotos){
-      r = raster(foto)
-      
-      if(!length(unique(values(r))) > 1 ){
-      file.remove(foto)
-    }
-    
-    }
-  }
- 
  
  #merge the remaining rasters
  

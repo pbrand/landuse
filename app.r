@@ -11,9 +11,13 @@
 #load required packages
 source('packages.r')
 
-subdir = '/media/daniel/Elements/output'
-files = list.files('db/hoogte bestand')
-projection = readRDS('db/projection.rds')
+subdir = '/media/daniel/Elements/output' #where to create the ouptu?
+files = list.files('db/hoogte bestand')  # where are the altitude file located?
+projection = readRDS('db/projection.rds') #load projection information
+path_harddrive = '/media/daniel/Elements' #path to hardrive
+
+
+
 
 #make subdirs and place hoogte bestand in the directory
 dir.create(subdir)
@@ -31,14 +35,15 @@ print('starting to crop and copy CBS files')
 source('CBS_crop.r')
 CBS_crop(files = files, subdir = subdir)
 
+
+###########this part is only if we use the kadaster information as well
 #Merge the bgt shapes, crop and place in subdir
-print('bizzy with mergin, croping and copying shapes bgt')
+#print('bizzy with mergin, croping and copying shapes bgt')
 #source('merge_shapes_bgt.r')
 #merge_shapes_bgt(files = files, subdir = subdir, projection = projection)
+############
 
-#Find the extents of the ecw files
-path_harddrive = '/media/daniel/Elements'
-
+#cut out the required arial images
 source('ecw_extent.r')
 
 
@@ -52,3 +57,9 @@ source('ecw_extent.r')
 
 
 #Next up adding the altitude as layer in the image
+
+
+
+
+
+
