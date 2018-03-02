@@ -11,9 +11,7 @@
 #load required packages
 source('packages.r')
 
-# global variables
-subdir = '/media/daniel/Elements/output'
-files = list.files('db/hoogte bestand')
+
 projection = readRDS('db/projection.rds')
 
 #make subdirs and place hoogte bestand in the directory
