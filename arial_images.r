@@ -30,7 +30,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   #get all hoogtebestanden en cut out from ecw and place in subdir
   
-  tif_files = list.files( paste0(path_harddrive, '/output'))
+  tif_files = list.files( paste0(path_harddrive, '/db/hoogtebestand'))
   for(file in tif_files){
     r = raster( paste0(path_harddrive, '/output/', file, '/', file))
       for(j in 1:nrow(ecws)){
