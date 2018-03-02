@@ -1,4 +1,4 @@
-arial_images = function(ecw_path){
+arial_images = function(path_harddrive){
 ecw_files = list.files( paste0(path_harddrive, '/ECW'), pattern = '.ecw')
 
 
@@ -14,7 +14,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   for(i in 1:length(ecw_files)){
     
-    info <- gdalinfo( file.path(ecw_path, ecw_files[i]), raw_output = FALSE)   
+    info <- gdalinfo( file.path(path_harddrive, ecw_files[i]), raw_output = FALSE)   
     lower_left_x[i] = info$bbox[[1,1]]
     lower_left_y[i] = info$bbox[[2,1]]
     upper_right_x[i] = info$bbox[[1,2]]
@@ -32,9 +32,10 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   tif_files = list.files( paste0(path_harddrive, '/db/hoogtebestand'))
   for(file in tif_files){
+    print(file)
     r = raster( paste0(path_harddrive, '/output/', file, '/', file))
       for(j in 1:nrow(ecws)){
-        
+print(j)        
         #make an extent object from the row
         #check if the altitude file falls within the range of the ECW file
         if(!is.null(try(intersect( extent(r),  c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] ) )) )){

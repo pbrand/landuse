@@ -10,12 +10,17 @@
 
 #load required packages
 source('packages.r')
+# 
+# subdir = '/media/daniel/Elements/output' #where to create the ouptu?
+# files = list.files('db/hoogte bestand')  # where are the altitude file located?
+# projection = readRDS('db/projection.rds') #load projection information
+# path_harddrive = '/media/daniel/Elements' #path to hardrive
+
 
 subdir = '/media/daniel/Elements/output' #where to create the ouptu?
 files = list.files('db/hoogte bestand')  # where are the altitude file located?
 projection = readRDS('db/projection.rds') #load projection information
-path_harddrive = '/media/daniel/Elements' #path to hardrive
-
+path_harddrive = 'E:' #path to hardrive
 
 
 
