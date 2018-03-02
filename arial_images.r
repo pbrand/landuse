@@ -41,7 +41,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
         
-        suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], paste0('E:output/', file ,'/luchtfoto_', j, '.gtiff'), projwin = v ) )
+        suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], paste0(path_harddrive, '/output/', file ,'/luchtfoto_', j, '.gtiff'), projwin = v ) )
         }
       
       }
