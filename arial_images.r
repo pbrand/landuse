@@ -1,4 +1,4 @@
-
+arial_images = function(ecw_path){
 ecw_files = list.files( paste0(path_harddrive, '/ECW'), pattern = '.ecw')
 
 
@@ -54,11 +54,13 @@ gdal_setInstallation(ignore.full_scan = FALSE)
  
  #merge the remaining rasters
  
- dirs =  list.files(tif_path)
+ #dirs =  list.files(tif_path)
  
- for( dir in dirs){
-   print(dir)
+ #for( dir in dirs){
+  # print(dir)
    
-   fotos = list.files(paste0(subdir, '/', dir), pattern = 'luchtfoto', full.names = TRUE)
+  # fotos = list.files(paste0(subdir, '/', dir), pattern = 'luchtfoto', full.names = TRUE)
    
- }
+ #}
+ 
+}

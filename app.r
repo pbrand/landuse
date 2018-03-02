@@ -44,8 +44,8 @@ CBS_crop(files = files, subdir = subdir)
 ############
 
 #cut out the required arial images
-source('ecw_extent.r')
-
+source('arial_images.r')
+arial_images(path_harddrive)
 
 
 #Next up selecting and croping all images that fall into the subregion
