@@ -1,15 +1,17 @@
 #crop and save individual shapes
 
-merge_shapes_bgt = function(files, subdir, projection){
+merge_shapes_bgt = function(path_harddrive){
 
-dirs = list.dirs('db/bgt', recursive = FALSE)
+dirs = list.dirs( file.path(path_harddrive, 'db', 'bgt'), recursive = FALSE)
 
 for(i  in 1:length(dirs)){
 print(paste('Starting with bgt part', i))
 dir =dirs[i]
-wegdeel = readOGR( paste0( dir, '/wegdeel'))
-waterdeel = readOGR( paste0(dir, '/waterdeel'))
-pand = readOGR( paste0( dir, '/pand'))
+wegdeel = readOGR( file.path( dir, 'wegdeel'))
+waterdeel = readOGR( file.path(dir, 'waterdeel'))
+pand = readOGR( file.path( dir, 'pand'))
+
+projection = readRDS( file.path(path_harddrive, 'db', 'projection.rds'))
 
 pand@proj4string = projection
 wegdeel@proj4string = projection
@@ -27,34 +29,44 @@ shape = rbind(shape, wegdeel)
 shape <- gBuffer(shape, byid=TRUE, width=0)
 #########
 
+#select files that do not hava bgt.rds in them
+dirs_output = list.files(file.path(path_harddrive, 'output'))
+select = c()
+for(dir_output in dirs_output){
+select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt.rds') ) ==0)
+}
+dirs_output = dirs_output[select]
 
-for(file in files){
-  print(paste('bizzy with', file))
-  r = raster(paste0('db/hoogte bestand/', file))
+for(dir_output in dirs_output){
+  print(paste('bizzy with', dir_output))
+  r = raster( file.path(path_harddrive, 'output', dir_output, dir_output))
   extent = extent(r)
   
 
   shape_part = crop(shape, extent)
 
-saveRDS(shape_part, paste0( subdir, '/', file , '/bgt_', i, '.rds'))
+saveRDS(shape_part, file.path( path_harddrive, 'output', dir_output, paste0('bgt_', i, '.rds') ))
 }
 }
 
+###############
 
-for(file in files){
-  print(file)
+
+for(dir_output in dirs_output){
+  print(dir_output)
 #merge all the shapes that have been written
-file_names = list.files(paste0(subdir, '/', file), pattern = 'bgt_', full.names = TRUE)
+file_names = list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt_', full.names = TRUE)
 shapes = list()
 for(i in 1:length(file_names)){
-
   shapes[[i]] = readRDS(file_names[i])
   file.remove(file_names[i])
 }
 
 shapes = compact(shapes)
 shape = do.call(rbind, shapes)
-saveRDS(shape, paste0(subdir, '/', file, '/bgt.rds'))
+saveRDS(shape,  file.path( file.path(path_harddrive, 'output', dir_output) , 'bgt.rds'))
 
 }
+
+
 }
