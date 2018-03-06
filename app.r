@@ -13,7 +13,7 @@ source('packages.r')
 # files = list.files('db/hoogte bestand')  # where are the altitude file located?
 # projection = readRDS('db/projection.rds') #load projection information
 # path_harddrive = '/media/daniel/Elements' #path to hardrive
-
+path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 
 
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
@@ -66,7 +66,7 @@ merge_arial(path_harddrive = path_harddrive)
 
 #devide arial images into parts
 source('splitRaster')
-spilt_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
+split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
 
 #############################################################################
 
