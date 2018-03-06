@@ -24,7 +24,7 @@ r = raster(im)
 rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, paste0(kind, 's')))
 
 for(i in 1:length(rasters) ){
-  writeRaster( rasters[[i]] ,file.path(dir, kind, paste0(i, '.tif')), overwrite = TRUE)
+  writeRaster( rasters[[i]] ,file.path(dir, paste0(kind, 's'), paste0(i, '.tif')), overwrite = TRUE)
 }
 }
 # 
@@ -39,8 +39,8 @@ for(i in 1:length(rasters) ){
 # 
 # 
 # #verwijder de overgebleven .grd en .gri files
- grd_files =  list.files( file.path( dir, kind) , pattern = '.grd', full.names = TRUE)
- gri_files =   list.files( file.path(dir, kind) , pattern = '.gri', full.names = TRUE)
+ grd_files =  list.files( file.path( dir, paste0(kind, 's')) , pattern = '.grd', full.names = TRUE)
+ gri_files =   list.files( file.path(dir, paste0(kind, 's')) , pattern = '.gri', full.names = TRUE)
  
  for(i in 1:length(grd_files)){
    file.remove(grd_files[i])
