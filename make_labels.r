@@ -13,18 +13,18 @@ dirs = dirs[select]
 for(dir in dirs){
   print(paste('bizzy with', dir))
   #read shape of kind 'kind'
- shape = readRDS( file.path(dir, kind, '.rds'))  
+ shape = readRDS( file.path(dir,  paste0(kind, '.rds') ))  
 
  #make dir
  dir.create( file.path(dir, paste(kind, 'labels')))
  
  #loop over alle sub_images heen  
-  ims = list.files( file.path(dir, paste(kind, 'labels')))
+  ims = list.files( file.path(dir, 'arial_image'))
   
   for(im in ims){
     r = raster( file.path(dir, 'arial_image' ,im))
-    label = rasterize(im, shape, field = shape$category)
-    writeRaster(label, file.path(dir, paste(kind, 'label', im) ))
+    label = raster::rasterize( shape , r, field = shape$wordt2012)
+    writeRaster(label, file.path(dir, paste(kind, 'labels'), im ))
     
   }
   
