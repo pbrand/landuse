@@ -12,6 +12,7 @@ dirs = dirs[select]
 
 
 for( dir in dirs ){
+  print(dir)
 
 #lees de volledige luchtfoto in 
 ims = list.files(dir, pattern = paste0(kind,'_') , full.names = TRUE)
