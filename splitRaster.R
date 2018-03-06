@@ -6,7 +6,7 @@ split_arial_images = function(path_harddrive, n, m, kind){
 dirs = list.files( file.path(path_harddrive, 'output'), full.names =  TRUE)
 select = c()
 for(dir in dirs){
-select = c( select, length(  list.files(dir, pattern = 'arial_images')) == 0)
+select = c( select, length(  list.files(dir, pattern = paste0(kind, 's'))) == 0)
 }
 dirs = dirs[select]
 
@@ -21,7 +21,7 @@ for( im in ims){
 
 r = raster(im)
 #split de luchtfoto en sla het op in luchtfoto_dir
-rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, kind))
+rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, paste0(kind, 's')))
 
 for(i in 1:length(rasters) ){
   writeRaster( rasters[[i]] ,file.path(dir, kind, paste0(i, '.tif')), overwrite = TRUE)
