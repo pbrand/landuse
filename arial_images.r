@@ -57,7 +57,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
           print(j)
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
-        suppressWarnings( gdal_translate(ecws$ecw_files.[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, '/output/', dir ,'arial_image_', j, '.tiff'), projwin = v ) )
+        suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
         }
       
       }
