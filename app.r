@@ -57,21 +57,26 @@ merge_shapes_bgt(path_harddrive = path_harddrive)
 source('arial_images.r')
 arial_images(path_harddrive)
 
+
+#######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
 ###################################MERGE ARIAL IMAGES INTO ONE############################################
-source('merge_arial')
-merge_arial(path_harddrive = path_harddrive)
+#source('merge_arial')
+#merge_arial(path_harddrive = path_harddrive)
 
 ##################################SPLIT UP ARIAL IMAGE INTO MULTIPLE IMAGES######################################
 
 
 #devide arial images into parts
 source('splitRaster')
-spilt_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
+split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
 
 #############################################################################
 
+####REMOVE BLANK OR PARTIALLY BLANK IMAGES
 
+####GENERATE THE LABELS for BGT
 
+#####GENERATE THE LABEL FOR CBS
 
 
 
