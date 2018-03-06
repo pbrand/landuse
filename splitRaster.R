@@ -6,7 +6,7 @@ split_arial_images = function(path_harddrive, n, m, kind){
 dirs = list.files( file.path(path_harddrive, 'output'), full.names =  TRUE)
 select = c()
 for(dir in dirs){
-select = c( select, length(  list.files(dir, pattern = 'arial_images_')) == 0)
+select = c( select, length(  list.files(dir, pattern = 'arial_images')) == 0)
 }
 dirs = dirs[select]
 

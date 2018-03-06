@@ -19,10 +19,10 @@ for(dir in dirs){
  dir.create( file.path(dir, paste(kind, 'labels')))
  
  #loop over alle sub_images heen  
-  ims = list.files( file.path(dir, 'arial_image'))
+  ims = list.files( file.path(dir, 'arial_images'))
   
   for(im in ims){
-    r = raster( file.path(dir, 'arial_image' ,im))
+    r = raster( file.path(dir, 'arial_images' ,im))
     label = raster::rasterize( shape , r, field = shape$wordt2012)
     writeRaster(label, file.path(dir, paste(kind, 'labels'), im ))
     
