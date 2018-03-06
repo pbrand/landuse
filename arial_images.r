@@ -4,6 +4,8 @@ ecw_files = list.files( file.path(path_harddrive, 'ECW'), pattern = '.ecw', full
 
 
 gdal_setInstallation(ignore.full_scan = FALSE)
+
+print("Check 1...")
   
   
   
@@ -30,7 +32,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   saveRDS(ecws, file.path(path_harddrive, 'ECW','ecw_extent.rds'))
   
-  
+  print("Check 2...")
   
   #select all folders that do not yet have an arial image folder
   dirs = list.files( file.path(path_harddrive, 'output'))  
@@ -57,14 +59,14 @@ gdal_setInstallation(ignore.full_scan = FALSE)
           print(j)
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
-        suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
+        suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[2:1], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
         }
       
       }
     
   }
   
-  
+  print("Check 3...")
   
   
  
