@@ -23,7 +23,12 @@ for(dir in dirs){
   
   for(im in ims){
     r = raster( file.path(dir, 'arial_images' ,im))
+    
+    if(kind = 'CBS'){
     label = raster::rasterize( shape , r, field = shape$wordt2012)
+    }else{
+      label = raster::rasterize( shape , r, field =   as.numeric(shape$category))  
+    }
     writeRaster(label, file.path(dir, paste(kind, 'labels'), im ))
     
   }
