@@ -37,11 +37,11 @@ print("Check 1...")
   #select all folders that do not yet have an arial image folder
   dirs = list.files( file.path(path_harddrive, 'output'))  
   
-  select = c()
-  for(dir in dirs){
-  select = c(select,  length( list.files(  file.path( path_harddrive, 'output',  dir) , pattern = 'arial_image')) == 0 )
-  }
-  dirs = dirs[select]
+  #select = c()
+  #for(dir in dirs){
+  #select = c(select,  length( list.files(  file.path( path_harddrive, 'output',  dir) , pattern = 'arial_image')) == 0 )
+  #}
+  #dirs = dirs[select]
   
   
   print('start cutting out images')
@@ -60,6 +60,10 @@ print("Check 1...")
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
         suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[2:1], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
+        
+        #r = raster(file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff')) )
+        #r = crop(r, c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] )  )
+        
         }
       
       }
