@@ -14,7 +14,10 @@ dirs = dirs[select]
 for( dir in dirs ){
 
 #lees de volledige luchtfoto in 
-im = list.files(dir, pattern = kind , full.names = TRUE)[1]
+ims = list.files(dir, pattern = kind , full.names = TRUE)
+
+for( im in ims){
+
 r = raster(im)
 #split de luchtfoto en sla het op in luchtfoto_dir
 rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, kind))
@@ -22,7 +25,7 @@ rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, kind))
 for(i in 1:length(rasters) ){
   writeRaster( rasters[[i]] ,file.path(dir, kind, paste0(i, '.tif')), overwrite = TRUE)
 }
-
+}
 # 
 # #transleer alles van .grd .gri naar .tiff
 # files = list.files( file.path( dir, kind) , pattern = '.grd', full.names = TRUE)
