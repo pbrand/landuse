@@ -18,7 +18,7 @@ source('packages.r')
 
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
 #path_harddrive = '/home/daniel/R/landuse'
-path_harddrive = 'E:'
+path_harddrive = 'D:'
 
 
 
