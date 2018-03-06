@@ -67,7 +67,7 @@ arial_images(path_harddrive)
 
 
 #devide arial images into parts
-source('splitRaster')
+source('splitRaster.R')
 split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
 
 #############################################################################

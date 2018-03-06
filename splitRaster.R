@@ -7,7 +7,6 @@ dirs = list.files( file.path(path_harddrive, 'output'), full.names =  TRUE)
 select = c()
 for(dir in dirs){
 select = c( select, length(  list.files(dir, pattern = 'arial_images')) == 0)
-select = select & length(  list.files(dir, pattern = kind)) > 1
 }
 dirs = dirs[select]
 
