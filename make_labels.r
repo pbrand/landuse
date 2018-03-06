@@ -22,9 +22,10 @@ for(dir in dirs){
   ims = list.files( file.path(dir, 'arial_images'))
   
   for(im in ims){
+    print(paste('bizzy with', im))
     r = raster( file.path(dir, 'arial_images' ,im))
     
-    if(kind = 'CBS'){
+    if(kind == 'CBS'){
     label = raster::rasterize( shape , r, field = shape$wordt2012)
     }else{
       label = raster::rasterize( shape , r, field =   as.numeric(shape$category))  
