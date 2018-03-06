@@ -4,6 +4,8 @@ ecw_files = list.files( file.path(path_harddrive, 'ECW'), pattern = '.ecw', full
 
 
 gdal_setInstallation(ignore.full_scan = FALSE)
+
+print("Check 1...")
   
   
   
@@ -16,7 +18,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   for(i in 1:length(ecw_files)){
     
 
-    info <- gdalinfo( file.path(path_harddrive, ecw_files[i]), raw_output = FALSE)   
+    info <- gdalinfo(  ecw_files[i], raw_output = FALSE)   
 
     
     lower_left_x[i] = info$bbox[[1,1]]
@@ -30,20 +32,23 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   
   saveRDS(ecws, file.path(path_harddrive, 'ECW','ecw_extent.rds'))
   
-  
+  print("Check 2...")
   
   #select all folders that do not yet have an arial image folder
   dirs = list.files( file.path(path_harddrive, 'output'))  
   
-  select = c()
-  for(dir in dirs){
-  select = c(select,  length( list.files(  file.path( path_harddrive, 'output',  dir) , pattern = 'arial_image')) == 0 )
-  }
-  dirs = dirs[select]
+  #select = c()
+  #for(dir in dirs){
+  #select = c(select,  length( list.files(  file.path( path_harddrive, 'output',  dir) , pattern = 'arial_image')) == 0 )
+  #}
+  #dirs = dirs[select]
   
+  
+  print('start cutting out images')
   
   #loop over all directories and read in the hoogte bestand
   for(dir in dirs){
+    print(paste('bezig met', dir))
     r = raster( file.path(path_harddrive, 'output', dir, dir))
     #loop over all ecw files
       for(j in 1:nrow(ecws)){
@@ -51,16 +56,21 @@ gdal_setInstallation(ignore.full_scan = FALSE)
         #make an extent object from the row
         #check if the altitude file falls within the range of the ECW file
         if(!is.null(try(intersect( extent(r),  c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] ) )) )){
+          print(j)
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
-        suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, '/output/', dir ,'arial_image_', j, '.gtiff'), projwin = v ) )
+        suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[2:1], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
+        
+        #r = raster(file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff')) )
+        #r = crop(r, c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] )  )
+        
         }
       
       }
     
   }
   
-  
+  print("Check 3...")
   
   
  

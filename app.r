@@ -17,7 +17,8 @@ source('packages.r')
 
 
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
-path_harddrive = '/home/daniel/R/landuse'
+#path_harddrive = '/home/daniel/R/landuse'
+path_harddrive = 'D:'
 
 
 
@@ -56,12 +57,16 @@ merge_shapes_bgt(path_harddrive = path_harddrive)
 source('arial_images.r')
 arial_images(path_harddrive)
 
+###################################MERGE ARIAL IMAGES INTO ONE############################################
+source('merge_arial')
+merge_arial(path_harddrive = path_harddrive)
+
 ##################################SPLIT UP ARIAL IMAGE INTO MULTIPLE IMAGES######################################
 
 
 #devide arial images into parts
 source('splitRaster')
-spilt_arial_images(path_harddrive = path_harddrive, n = 20 , m = 20, kind = 'arial_image')
+spilt_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
 
 #############################################################################
 
