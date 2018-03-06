@@ -76,12 +76,12 @@ split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'ari
 
 ####GENERATE THE LABELS for BGT
 print('start generating labels for BGT')
-source('make_labels')
+source('make_labels.r')
 make_labels(path_harddrive = path_harddrive, kind = 'bgt')
 
 #####GENERATE THE LABEL FOR CBS
 print('start generating labels for CBS')
-source('make_labels')
+source('make_labels.r')
 make_labels(path_harddrive = path_harddrive, kind = 'CBS')
 
 

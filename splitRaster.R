@@ -17,14 +17,14 @@ for( dir in dirs ){
 #lees de volledige luchtfoto in 
 ims = list.files(dir, pattern = paste0(kind,'_') , full.names = TRUE)
 
-for( im in ims){
+for( k  in 1:length(ims)){
 
-r = raster(im)
+r = raster(ims[k])
 #split de luchtfoto en sla het op in luchtfoto_dir
 rasters = splitRaster(r , nx = n, ny = m, path =  file.path(dir, paste0(kind, 's')))
 
 for(i in 1:length(rasters) ){
-  writeRaster( rasters[[i]] ,file.path(dir, paste0(kind, 's'), paste0(i, '.tif')), overwrite = TRUE)
+  writeRaster( rasters[[i]] ,file.path(dir, paste0(kind, 's'), paste0(k , '_', i, '.tif')), overwrite = TRUE)
 }
 }
 # 
