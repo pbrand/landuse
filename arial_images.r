@@ -16,7 +16,7 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   for(i in 1:length(ecw_files)){
     
 
-    info <- gdalinfo( file.path(path_harddrive, ecw_files[i]), raw_output = FALSE)   
+    info <- gdalinfo(  ecw_files[i], raw_output = FALSE)   
 
     
     lower_left_x[i] = info$bbox[[1,1]]
@@ -42,8 +42,11 @@ gdal_setInstallation(ignore.full_scan = FALSE)
   dirs = dirs[select]
   
   
+  print('start cutting out images')
+  
   #loop over all directories and read in the hoogte bestand
   for(dir in dirs){
+    print(paste('bezig met', dir))
     r = raster( file.path(path_harddrive, 'output', dir, dir))
     #loop over all ecw files
       for(j in 1:nrow(ecws)){
