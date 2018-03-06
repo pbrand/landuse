@@ -2,11 +2,12 @@ split_arial_images = function(path_harddrive, n, m, kind){
 
 
 
-#loop over all subdirs that do allready have a directory arial_images
+#loop over all subdirs that do allready have a directory arial_images and have a luchtfoto tif file
 dirs = list.files( file.path(path_harddrive, 'output'), full.names =  TRUE)
 select = c()
 for(dir in dirs){
 select = c( select, length(  list.files(dir, pattern = 'arial_images')) == 0)
+select = select & length(  list.files(dir, pattern = kind)) > 1
 }
 dirs = dirs[select]
 
