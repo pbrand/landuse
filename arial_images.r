@@ -54,9 +54,10 @@ gdal_setInstallation(ignore.full_scan = FALSE)
         #make an extent object from the row
         #check if the altitude file falls within the range of the ECW file
         if(!is.null(try(intersect( extent(r),  c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] ) )) )){
+          print(j)
         v =  as.vector(extent(r))[c(1,4,2,3)]
         
-        suppressWarnings( gdal_translate(ecws$file.path.ecw_path..ecw_files.[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, '/output/', dir ,'arial_image_', j, '.gtiff'), projwin = v ) )
+        suppressWarnings( gdal_translate(ecws$ecw_files.[j] , outsize =  dim(r)[1:2], file.path(path_harddrive, '/output/', dir ,'arial_image_', j, '.tiff'), projwin = v ) )
         }
       
       }
