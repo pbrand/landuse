@@ -63,17 +63,6 @@ arial_images(path_harddrive)
 #source('merge_arial')
 #merge_arial(path_harddrive = path_harddrive)
 
-##################################SPLIT UP ARIAL IMAGE INTO MULTIPLE IMAGES######################################
-
-
-#devide arial images into parts
-source('splitRaster.R')
-split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
-
-#############################################################################
-
-####REMOVE BLANK OR PARTIALLY BLANK IMAGES
-
 ####GENERATE THE LABELS for BGT
 print('start generating labels for BGT')
 source('make_labels.r')
@@ -81,8 +70,26 @@ make_labels(path_harddrive = path_harddrive, kind = 'bgt')
 
 #####GENERATE THE LABEL FOR CBS
 print('start generating labels for CBS')
-source('make_labels.r')
+source('make_labels_new.r')
 make_labels(path_harddrive = path_harddrive, kind = 'CBS')
+
+
+
+##################################SPLIT UP ARIAL IMAGE INTO MULTIPLE IMAGES######################################
+
+#devide arial images into parts
+source('splitRaster.R')
+split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
+
+#devide CBS label into parts
+split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'CBS_label')
+
+#devide bgt label into parts
+split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'bgt_label')
+#############################################################################
+
+####REMOVE BLANK OR PARTIALLY BLANK IMAGES
+
 
 
 
