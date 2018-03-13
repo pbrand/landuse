@@ -8,14 +8,10 @@
 
 #load required packages
 source('packages.r')
-# 
-# subdir = '/media/daniel/Elements/output' #where to create the ouptu?
-# files = list.files('db/hoogte bestand')  # where are the altitude file located?
-# projection = readRDS('db/projection.rds') #load projection information
+
+
 # path_harddrive = '/media/daniel/Elements' #path to hardrive
-path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
-
-
+#path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
 #path_harddrive = '/home/daniel/R/landuse'
 path_harddrive = 'D:'
@@ -89,7 +85,3 @@ make_labels(path_harddrive = path_harddrive, kind = 'CBS')
 #############################################################################
 
 ####REMOVE BLANK OR PARTIALLY BLANK IMAGES
-
-
-
-
