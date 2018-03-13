@@ -1,7 +1,7 @@
 make_labels = function(path_harddrive, kind){
   
   #select files that do not hava bgt.rds in them
-  dirs = find_dirs(pattern = paste0(kind , ' _labels'), full = FALSE)
+  dirs = find_dirs(pattern = paste(kind , '_labels'), full = FALSE)
   
   
   for(dir in dirs){
