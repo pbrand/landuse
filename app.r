@@ -8,6 +8,7 @@
 
 #load required packages
 source('packages.r')
+source('find_dirs.r')
 # 
 # subdir = '/media/daniel/Elements/output' #where to create the ouptu?
 # files = list.files('db/hoogte bestand')  # where are the altitude file located?
@@ -65,13 +66,13 @@ arial_images(path_harddrive)
 
 ####GENERATE THE LABELS for BGT
 print('start generating labels for BGT')
-source('make_labels.r')
-make_labels(path_harddrive = path_harddrive, kind = 'bgt')
+source('make_labels_new.r')
+make_labels(path_harddrive = path_harddrive, kind = 'bgt ')
 
 #####GENERATE THE LABEL FOR CBS
 print('start generating labels for CBS')
 source('make_labels_new.r')
-make_labels(path_harddrive = path_harddrive, kind = 'CBS')
+make_labels(path_harddrive = path_harddrive, kind = 'CBS ')
 
 
 

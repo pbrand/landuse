@@ -4,7 +4,7 @@ make_labels = function(path_harddrive, kind){
   dirs = list.files(file.path(path_harddrive, 'output'))
   select = c()
   for(dir in dirs){
-    select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir) , pattern = paste(kind , '_labels') ) ) ==0)
+    select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir) , pattern = paste0(kind , '_labels') ) ) ==0)
   }
   dirs = dirs[select]
   
