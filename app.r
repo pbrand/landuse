@@ -72,7 +72,7 @@ make_labels(path_harddrive = path_harddrive, kind = 'bgt ')
 #####GENERATE THE LABEL FOR CBS
 print('start generating labels for CBS')
 source('make_labels_new.r')
-make_labels(path_harddrive = path_harddrive, kind = 'CBS ')
+make_labels(path_harddrive = path_harddrive, kind = 'CBS')
 
 
 
