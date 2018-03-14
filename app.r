@@ -61,6 +61,8 @@ merge_shapes_bgt(path_harddrive = path_harddrive)
 source('arial_images.r')
 arial_images(path_harddrive)
 
+#fuse all founde images into one
+source('aerial_images.r')
 
 #######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
 ###################################MERGE ARIAL IMAGES INTO ONE############################################
