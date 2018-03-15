@@ -1,8 +1,8 @@
 make_labels = function(path_harddrive, kind){
   
   #select files that do not hava bgt.rds in them
-  dirs = find_dirs(pattern = paste(kind , '_labels'), full = FALSE)
-  
+  dirs = find_dirs(pattern = paste0(kind , '_labels'), full = FALSE)
+
   
   for(dir in dirs){
     print(paste('bizzy with', dir))
@@ -17,7 +17,7 @@ make_labels = function(path_harddrive, kind){
       }else{
         label = raster::rasterize( shape , r, field =   as.numeric(shape$category))  
       }
-      writeRaster(label, file.path(path_harddrive, 'output', dir, paste(kind, '_labels.tif')) )
+      writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) )
       
     
     

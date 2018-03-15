@@ -34,14 +34,7 @@ print("Check 1...")
   
   print("Check 2...")
   
-  #select all folders that do not yet have an arial image folder
-  dirs = list.files( file.path(path_harddrive, 'output'))  
-  
-  #select = c()
-  #for(dir in dirs){
-  #select = c(select,  length( list.files(  file.path( path_harddrive, 'output',  dir) , pattern = 'arial_image')) == 0 )
-  #}
-  #dirs = dirs[select]
+  dirs = find_dirs(pattern = 'arial_image', full = FALSE)
   
   
   print('start cutting out images')
