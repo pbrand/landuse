@@ -16,7 +16,10 @@ source('find_dirs.r')
 # path_harddrive = '/media/daniel/Elements' #path to hardrive
 path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 
+path_harddrive = '/media/daniel/Elements'
 
+# path_harddrive = '/media/daniel/Elements' #path to hardrive
+#path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
 #path_harddrive = '/home/daniel/R/landuse'
 path_harddrive = 'D:'
@@ -58,6 +61,8 @@ merge_shapes_bgt(path_harddrive = path_harddrive)
 source('arial_images.r')
 arial_images(path_harddrive)
 
+#fuse all founde images into one
+source('aerial_images.r')
 
 #######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
 ###################################MERGE ARIAL IMAGES INTO ONE############################################
@@ -73,24 +78,4 @@ make_labels(path_harddrive = path_harddrive, kind = 'bgt')
 print('start generating labels for CBS')
 source('make_labels_new.r')
 make_labels(path_harddrive = path_harddrive, kind = 'CBS ')
-
-
-
-##################################SPLIT UP ARIAL IMAGE INTO MULTIPLE IMAGES######################################
-
-#devide arial images into parts
-# source('splitRaster.R')
-# split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'arial_image')
-# 
-# #devide CBS label into parts
-# split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'CBS_label')
-# 
-# #devide bgt label into parts
-# split_arial_images(path_harddrive = path_harddrive, n = 19 , m = 24, kind = 'bgt_label')
-#############################################################################
-
-####REMOVE BLANK OR PARTIALLY BLANK IMAGES
-
-
-
 
