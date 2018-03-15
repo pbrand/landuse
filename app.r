@@ -62,7 +62,7 @@ source('arial_images.r')
 arial_images(path_harddrive)
 
 #fuse all founde images into one
-source('aerial_images.r')
+source('merge_aerial.r')
 
 #######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
 ###################################MERGE ARIAL IMAGES INTO ONE############################################

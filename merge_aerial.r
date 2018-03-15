@@ -16,7 +16,7 @@ for(dir in dirs){
     
   }  
   writeRaster(main_file, file.path(dir, 'aerial_image_full.tif') )
-  #file.remove(files)
+  file.remove(files)
 
 }
 
