@@ -12,7 +12,7 @@ for(dir in dirs){
   for(file in files[-1]){
     new_file = raster(file)
     
-    values(main_file)[ values(main_file) == 0 ] = new_file[ values(main_file) == 0   ]
+    values(main_file)[ values(main_file) == 0 ] = values(new_file)[ values(main_file) == 0   ]
     
   }  
   writeRaster(main_file, file.path(dir, 'aerial_image_full.tif') )
