@@ -8,15 +8,18 @@ for(dir in dirs){
   
   
   
-  main_file = raster(main_file)
+  main_file = stack(main_file)
+  
   for(file in files[-1]){
     new_file = raster(file)
     
-    values(main_file)[ values(main_file) == 0 | values(main_file) > 250] = values(new_file)[ values(main_file) == 0 | values(main_file) > 250  ]
     
+    for(i in 1:3){
+    values(main_file[[i]])[ values(main_file[[4]]) == 0] =   values(new_file[[i]])[ values(main_file[[4]]) == 0]
+    }
   }  
-  writeRaster(main_file, file.path(dir, 'aerial_image_full.tif') )
-  #file.remove(files)
+writeRaster(main_file, file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
+  file.remove(files)
 
 }
 
