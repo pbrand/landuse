@@ -21,15 +21,18 @@ for(dir in dirs){
   if(length(files)>1){
   r = stack(main_file)
   
+  #split the image in multiple bands
   for(i in 1:3){
-    print(i)
+    print(paste('bizzy with splitting band', i))
     writeRaster(r[[i]], file.path(dir, paste0('aerial_full_',i, '.tif')), overwrite = TRUE)
   }
   rm(r)
   
   
+  #loop over all bands
   for(i in 1:3){
-    print(i)
+    print(paste('bizzy with updating band', i))
+    #loop over all files
     for(file in files[-1]){
       r = raster(file.path(dir, paste0('aerial_full_',i, '.tif')))
       new_r = raster(file, band = i)
@@ -55,9 +58,8 @@ for(dir in dirs){
   writeRaster(  stack(r1,r2,r3)  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
  file.remove(files)
   }else{
-    print(main_file)
-    r = stack(main_file)
-    writeRaster(  r  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
+    print('renamed')
+    file.rename(main_file, file.path(dir, 'aerial_image_full.tif'))
   }
 }
 

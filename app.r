@@ -22,7 +22,7 @@ path_harddrive = '/media/daniel/Elements'
 #path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
 #path_harddrive = '/home/daniel/R/landuse'
-path_harddrive = 'D:'
+path_harddrive = 'E:'
 
 
 
