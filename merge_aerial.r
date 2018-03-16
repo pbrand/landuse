@@ -13,12 +13,12 @@ for(dir in dirs){
     }
   }
   
-  #merge the information in the other rasters
+ 
   files = list.files(dir, pattern = 'arial', full.names = TRUE)
-  
-  
   main_file = files[1]
   
+  #in case there is more than 1 file we must merge
+  if(length(files)>1){
   r = stack(main_file)
   
   for(i in 1:3){
@@ -51,9 +51,13 @@ for(dir in dirs){
   r1 = raster(files[1]) 
   r2 = raster(files[2]) 
   r3 = raster(files[3]) 
-  r4 = raster(files[4]) 
   
-  writeRaster(  stack(r1,r2,r3,r4)  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
+  writeRaster(  stack(r1,r2,r3)  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
  file.remove(files)
+  }else{
+    print(main_file)
+    r = stack(main_file)
+    writeRaster(  r  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
+  }
 }
 
