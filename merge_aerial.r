@@ -56,7 +56,7 @@ for(dir in dirs){
   r3 = raster(files[3]) 
   
   writeRaster(  stack(r1,r2,r3)  , file.path(dir, 'aerial_image_full.tif'), options= 'INTERLEAVE=BAND' )
- file.remove(files)
+ #file.remove(files)
   }else{
     print('renamed')
     file.rename(main_file, file.path(dir, 'aerial_image_full.tif'))
