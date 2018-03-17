@@ -11,7 +11,7 @@ for(shape_name in shape_names){
 print(shape_name)
 
 for(i  in 1:length(bgt_parts)){
-print(paste('Starting with bgt part', dirs[i]))
+print(paste('Starting with bgt part', bgt_parts[i]))
 bgt_part =bgt_parts[i]
 shape = readOGR( file.path( bgt_part, shape_name))
 

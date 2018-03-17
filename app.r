@@ -54,7 +54,10 @@ CBS_crop(path_harddrive = path_harddrive)
 print('bizzy with mergin, croping and copying shapes bgt')
 source('merge_shapes_bgt.r')
 merge_shapes_bgt(path_harddrive = path_harddrive)
-############
+############Label all bgt file with numbers as well########
+source('label_bgt.r')
+
+
 
 ################################UNZIP AND MOVE ARIAL IMAGES TO OUTPUT##########################################
 #cut out the required arial images
@@ -64,7 +67,7 @@ arial_images(path_harddrive)
 #fuse all founde images into one
 source('merge_aerial.r')
 
-#######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
+
 ###################################MERGE ARIAL IMAGES INTO ONE############################################
 #source('merge_arial')
 #merge_arial(path_harddrive = path_harddrive)
