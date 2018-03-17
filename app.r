@@ -54,8 +54,7 @@ CBS_crop(path_harddrive = path_harddrive)
 print('bizzy with mergin, croping and copying shapes bgt')
 source('merge_shapes_bgt.r')
 merge_shapes_bgt(path_harddrive = path_harddrive)
-############Label all bgt file with numbers as well########
-source('label_bgt.r')
+
 
 
 

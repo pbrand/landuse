@@ -31,12 +31,7 @@ shape <- gBuffer(shape, byid=TRUE, width=0)
 #########
 
 #select files that do not hava bgt.rds in them
-dirs_output = list.files(file.path(path_harddrive, 'output'))
-select = c()
-for(dir_output in dirs_output){
-select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt.rds') ) ==0)
-}
-dirs_output = dirs_output[select]
+dirs_output = find_dirs(pattern = 'BGT',full = FALSE)
 
 #loop over alle dirs heen en plaats subshape erin
 for(dir_output in dirs_output){
@@ -79,5 +74,6 @@ saveRDS(shape,  file.path( file.path(path_harddrive, 'output', dir_output) , 'bg
 
 }
 
-
+############Label all bgt file with numbers as well########
+source('label_bgt.r')
 }
