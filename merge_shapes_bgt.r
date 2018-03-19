@@ -81,7 +81,7 @@ for(dir in dirs){
   bgt$number =  legend$number[ match(bgt$category, legend$names)]
   
   saveRDS( bgt, file.path(dir, 'BGT.rds') )
-  file.remove(file.path(dir, 'bgt.rds'))
+  #file.remove(file.path(dir, 'bgt.rds'))
 }
 
 }
