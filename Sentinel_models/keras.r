@@ -1,25 +1,23 @@
 #a linear stack of layers
-source('packages.r')
+source('Sentinel_models/packages.r')
 
 
-######Parameters
 
-#read in file with labels and file names
-data = readRDS( file.path(path,'data.rds' )) 
+#data loading
+data = readRDS( file.path(path,'data_allbands.rds' )) 
 data = data[data$label %in% c(1,2,8),]
 data$label = as.numeric(as.factor(data$label))
-
-#split in train and test
 split = sample(x =  c(1:nrow(data)), size = round(0.8*nrow(data)) )
 train = data[split,]
 test = data[-split,]
 
-
+######Parameters
 clas = as.integer(length(unique(data$label)))#number of classes
 h = as.integer(64) #heigth image
 w = as.integer(64) #width image
-
-max_pred = readRDS('db/models/max_pred.rds')
+channels = 13L
+max_pred = readRDS(file.path(path, '/modelsmax_pred.rds'))
+format = 'tif'
 #####
 
 model<-keras_model_sequential()
@@ -27,7 +25,7 @@ model<-keras_model_sequential()
 #configuring the Model
 
 model %>%  
-  layer_conv_2d(filter=32, kernel_size=c(4,4),padding="same",    input_shape=c(64,64,3) ) %>%  
+  layer_conv_2d(filter=32, kernel_size=c(4,4),padding="same",    input_shape=c(64,64,channels) ) %>%  
   layer_activation("relu") %>%  
   layer_conv_2d(filter=32 ,kernel_size=c(4,4))  %>%  layer_activation("relu") %>%
   layer_max_pooling_2d(pool_size=c(2,2)) %>%  
@@ -55,7 +53,7 @@ model %>%
 for (i in 1:20000) {
   
   #lees 50 random plaatjes in
-  data_class = select_files(data = train, num = 2)
+  data_class = select_files(data = train, num = 5)
   batch_labels = onehot(data_class[[2]], clas = clas)
   batch_files= data_class[[1]]
 
@@ -73,8 +71,8 @@ for (i in 1:20000) {
   
   if(pred[[2]]> max_pred){
   #save model
-  model$save( 'db/models/model1' )
-    saveRDS(max_pred,'db/models/max_pred.rds')
+  model$save( filepath(path,'models/model1' ))
+    saveRDS(max_pred,file.path(path, 'models/max_pred.rds'))
   max_pred = pred[[2]]
     }
   

@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 
 user = "kloetq"
-pswd = getpass.getpass("Password of "+user+": ")
+pswd = getpass.getpass("Password of "+user+": ") #Datalab1
 
 Folder = '/home/datalab/Documenten/Datalab/output/'
 

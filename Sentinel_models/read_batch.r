@@ -1,11 +1,16 @@
-read_batch = function(files){
+read_batch = function(files, format, channels){
   
   
-  batch = array(0, dim = c(length(files), w, h, 3))
+  batch = array(0, dim = c(length(files), w, h, channels))
   for(i  in 1:length(files)){
     file = files[i]
+    if(format == 'jpg'){
     im = readJPEG(file.path(path, file) )
-    batch[i,,,] = im[,,1:3]
+    }
+    if(format == 'tif'){
+      im = readTIFF(file.path(path, file) )
+    }
+    batch[i,,,] = im[,,1:channels]
   }
   return(batch)
 }

@@ -12,7 +12,7 @@ select_files = function(num, data){
   
   
   batch_labels = as.vector(batch$label)
-  batch_files= read_batch(files = as.character(batch$file))
+  batch_files= read_batch(files = as.character(batch$file), format = format, channels = channels)
   
   return(list(batch_files, batch_labels))
   

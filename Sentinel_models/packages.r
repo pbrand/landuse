@@ -7,6 +7,7 @@ library(tensorflow)
 library(data.table)
 library(magrittr)
 library(keras)
+library(tiff)
 
 source('Sentinel_models/one_hot.r')
 source('Sentinel_models/read_batch.r')
