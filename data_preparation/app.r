@@ -7,8 +7,8 @@
 
 
 #load required packages
-source('packages.r')
-source('find_dirs.r')
+source('data_preparation/packages.r')
+source('data_preparation/find_dirs.r')
 
 path_harddrive = getwd()
 # 
