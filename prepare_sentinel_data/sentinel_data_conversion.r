@@ -1,11 +1,7 @@
-library(rgdal)
-library(gdalUtils)
-library(raster)
-library(stringi)
-
-path = '/home/daniel/R/landuse/prepare_sentinel_data/db'
-
 #################SENTINEL 2################
+
+source('prepare_sentinel_data/source.r')
+
 max_dim =  10980
 dir_in = file.path(path, 'sentinel_2_data')
 dir_out = file.path(path, 'sentinel2')
@@ -25,31 +21,4 @@ for(i in 1:length(files) ){
 }
 
 
-#stack all files
-dirs = list.files('/home/daniel/sentinel2', full.names = TRUE)
 
-
-for(i in 1:length(dirs)){
-  dir = dirs[i]
-
-  
-  files = list.files(dir, full.names = TRUE, recursive = TRUE, pattern = 'tif')
-  total = raster(files[1])
-  
-  
-  
-  for(j in 2:length(files) ){
-    
-    new = raster(files[j])
-    total = stack ( total, new )
-    writeRaster(total,file.path('sentinel_2', paste0(i, 'tif') )  )
-    }
-  
-  
-}
-
-
-
-new = raster( values(new), nrows = max_dim, ncols = max_dim, extent = extent(new))
-
-#####################SENTINEL1##################################
