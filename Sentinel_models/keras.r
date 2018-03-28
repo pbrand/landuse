@@ -30,7 +30,8 @@ model %>%
   layer_conv_2d(filter=32 ,kernel_size=c(4,4))  %>%  layer_activation("relu") %>%
   layer_max_pooling_2d(pool_size=c(2,2)) %>%  
   layer_dropout(0.25) %>%
-  layer_conv_2d(filter=32 , kernel_size=c(4,4),padding="same") %>% layer_activation("relu") %>%  layer_conv_2d(filter=32,kernel_size=c(3,3) ) %>%  layer_activation("relu") %>%  
+  layer_conv_2d(filter=32 , kernel_size=c(4,4),padding="same") %>% layer_activation("relu") %>%  layer_conv_2d(filter=32,kernel_size=c(3,3) ) %>%
+  layer_activation("relu") %>%  
   layer_max_pooling_2d(pool_size=c(2,2)) %>%  
   layer_dropout(0.25) %>%
   layer_flatten() %>%  
