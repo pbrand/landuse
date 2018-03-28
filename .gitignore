@@ -12,3 +12,9 @@ plaatjes
 data_preparation/db
 data_preparation/output
 Sentinel_models/db
+
+
+obj/
+bin/
+Sentinel_API/api_service/packages
+*.userprefs

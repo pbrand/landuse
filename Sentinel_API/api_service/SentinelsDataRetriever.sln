@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentinelsDataRetriever", "sentinels_data_retriever\SentinelsDataRetriever.csproj", "{818FA0AF-3F6B-4CBB-A55F-6A2938A19385}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentinelsDataRetriever.Data", "SentinelsDataRetriever.Data\SentinelsDataRetriever.Data.csproj", "{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentinelsDataRetriever.Sandbox", "SentinelsDataRetriever.Sandbox\SentinelsDataRetriever.Sandbox.csproj", "{0F18E26E-0F3E-46C6-9B6B-846E9C9E3047}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F18E26E-0F3E-46C6-9B6B-846E9C9E3047}.Debug|x86.ActiveCfg = Debug|x86
+		{0F18E26E-0F3E-46C6-9B6B-846E9C9E3047}.Debug|x86.Build.0 = Debug|x86
+		{0F18E26E-0F3E-46C6-9B6B-846E9C9E3047}.Release|x86.ActiveCfg = Release|x86
+		{0F18E26E-0F3E-46C6-9B6B-846E9C9E3047}.Release|x86.Build.0 = Release|x86
+		{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}.Debug|x86.Build.0 = Debug|Any CPU
+		{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}.Release|x86.ActiveCfg = Release|Any CPU
+		{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}.Release|x86.Build.0 = Release|Any CPU
+		{818FA0AF-3F6B-4CBB-A55F-6A2938A19385}.Debug|x86.ActiveCfg = Debug|x86
+		{818FA0AF-3F6B-4CBB-A55F-6A2938A19385}.Debug|x86.Build.0 = Debug|x86
+		{818FA0AF-3F6B-4CBB-A55F-6A2938A19385}.Release|x86.ActiveCfg = Release|x86
+		{818FA0AF-3F6B-4CBB-A55F-6A2938A19385}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+EndGlobal
