@@ -9,8 +9,8 @@ plaatjes
 
 .ipynb_checkpoints/
 
-data_preparation/db
-data_preparation/output
+data_preparation_CBS_aerial_images/db
+data_preparation_CBS_aerial_images/output
 Sentinel_models/db
 
 
