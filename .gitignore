@@ -6,3 +6,5 @@ db
 CBS
 output
 plaatjes
+data_preparation/db
+data_preparation/output
