@@ -1,5 +1,5 @@
 
-packages = c( 'SpaDES', 'rgdal', 'gdalUtils' , 'EBImage' , 'leaflet', 'ggplot2', 'tiff', 'ggmap', 'SpaDES', 'raster', 'rgeos', 'osmar', 'multiplex', 'plyr')
+packages = c( 'SpaDES', 'rgdal', 'gdalUtils' ,  'leaflet', 'ggplot2', 'tiff', 'ggmap', 'SpaDES', 'raster', 'rgeos', 'osmar', 'multiplex', 'plyr')
 packages = packages[ ! packages %in% installed.packages()  ]
 for(package in packages){ install.packages(package)}
 

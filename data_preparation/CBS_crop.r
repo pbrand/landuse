@@ -1,13 +1,7 @@
 CBS_crop = function(path_harddrive){
 
   #find all folders in output which do not have a CBS shape in them
-  dirs = list.files( file.path(path_harddrive, 'output'), recursive =  FALSE )
-  
-  select = c()
-  for(dir in dirs){
-   select = c( select,  length(list.files( file.path(path_harddrive, 'output', dir), pattern = 'CBS', include.dirs = TRUE) ) == 0)
-  }
-  dirs = dirs[select]
+  dirs = find_dirs(pattern = 'CBS', full = FALSE)
   ###
   
   

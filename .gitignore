@@ -6,4 +6,9 @@ db
 CBS
 output
 plaatjes
+
 .ipynb_checkpoints/
+
+data_preparation/db
+data_preparation/output
+

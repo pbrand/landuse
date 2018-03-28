@@ -11,7 +11,7 @@ for(shape_name in shape_names){
 print(shape_name)
 
 for(i  in 1:length(bgt_parts)){
-print(paste('Starting with bgt part', dirs[i]))
+print(paste('Starting with bgt part', bgt_parts[i]))
 bgt_part =bgt_parts[i]
 shape = readOGR( file.path( bgt_part, shape_name))
 
@@ -31,12 +31,7 @@ shape <- gBuffer(shape, byid=TRUE, width=0)
 #########
 
 #select files that do not hava bgt.rds in them
-dirs_output = list.files(file.path(path_harddrive, 'output'))
-select = c()
-for(dir_output in dirs_output){
-select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt.rds') ) ==0)
-}
-dirs_output = dirs_output[select]
+dirs_output = find_dirs(pattern = 'BGT',full = FALSE)
 
 #loop over alle dirs heen en plaats subshape erin
 for(dir_output in dirs_output){
@@ -54,18 +49,12 @@ saveRDS(shape_part, file.path( path_harddrive, 'output', dir_output, paste0('bgt
 
 ###############
 
+print('start merging')
+dirs_output = dirs_output = find_dirs(pattern = 'BGT',full = FALSE)
 
-dirs_output = list.files(file.path(path_harddrive, 'output'))
-select = c()
-for(dir_output in dirs_output){
-  select = c(select, length(  list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt.rds') ) ==0)
-}
-dirs_output = dirs_output[select]
-
-
+#merge all the shapes that have been written
 for(dir_output in dirs_output){
   print(dir_output)
-#merge all the shapes that have been written
 file_names = list.files( file.path(path_harddrive, 'output', dir_output), pattern = 'bgt_', full.names = TRUE)
 shapes = list()
 for(i in 1:length(file_names)){
@@ -79,5 +68,20 @@ saveRDS(shape,  file.path( file.path(path_harddrive, 'output', dir_output) , 'bg
 
 }
 
+############Label all bgt file with numbers as well########
+print('add numbers from legend')
+dirs = find_dirs( pattern = 'BGT.rds', full = TRUE)
+
+legend = read.csv( file.path(path_harddrive, 'db/bgt_legend.csv'))
+
+for(dir in dirs){
+  print(dir)
+  bgt = readRDS( file.path(dir, 'bgt.rds'))
+  
+  bgt$number =  legend$number[ match(bgt$category, legend$names)]
+  
+  saveRDS( bgt, file.path(dir, 'BGT.rds') )
+  #file.remove(file.path(dir, 'bgt.rds'))
+}
 
 }

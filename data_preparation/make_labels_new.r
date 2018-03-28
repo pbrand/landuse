@@ -13,11 +13,12 @@ make_labels = function(path_harddrive, kind){
     
     
       if(kind == 'CBS'){
-        label = raster::rasterize( shape , r, field = shape$wordt2012)
+        label = raster::rasterize( shape , r, field =  as.numeric( shape$wordt2012 ) )
       }else{
-        label = raster::rasterize( shape , r, field =   as.numeric(shape$category))  
+        shape = shape[shape$number != 3,]
+        label = raster::rasterize( shape , r, field =   as.numeric( shape$number))  
       }
-      writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) )
+      writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) , overwrite= TRUE)
       
     
     

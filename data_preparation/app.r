@@ -9,10 +9,12 @@
 #load required packages
 source('packages.r')
 source('find_dirs.r')
+
+path_harddrive = getwd()
 # 
 # subdir = '/media/daniel/Elements/output' #where to create the ouptu?
 # files = list.files('db/hoogte bestand')  # where are the altitude file located?
-# projection = readRDS('db/projection.rds') #load projection information
+# projection = readRDS('db/projection.rds') #load projection information 
 # path_harddrive = '/media/daniel/Elements' #path to hardrive
 path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 
@@ -22,7 +24,7 @@ path_harddrive = '/media/daniel/Elements'
 #path_harddrive = '/media/daniel/82A8DA92A8DA8457' #path to hardrive
 #path_harddrive = '/media/daniel/Elements' #path to hardrive
 #path_harddrive = '/home/daniel/R/landuse'
-path_harddrive = 'D:'
+path_harddrive = 'E:'
 
 
 
@@ -54,7 +56,9 @@ CBS_crop(path_harddrive = path_harddrive)
 print('bizzy with mergin, croping and copying shapes bgt')
 source('merge_shapes_bgt.r')
 merge_shapes_bgt(path_harddrive = path_harddrive)
-############
+
+
+
 
 ################################UNZIP AND MOVE ARIAL IMAGES TO OUTPUT##########################################
 #cut out the required arial images
@@ -64,18 +68,15 @@ arial_images(path_harddrive)
 #fuse all founde images into one
 source('merge_aerial.r')
 
-#######################OMIT THIS STEP JUST REMOVE EMPTY IMAGES LATER ON!!!!############################################
-###################################MERGE ARIAL IMAGES INTO ONE############################################
-#source('merge_arial')
-#merge_arial(path_harddrive = path_harddrive)
 
+###################################MERGE ARIAL IMAGES INTO ONE############################################
 ####GENERATE THE LABELS for BGT
 print('start generating labels for BGT')
 source('make_labels_new.r')
-make_labels(path_harddrive = path_harddrive, kind = 'bgt')
+make_labels(path_harddrive = path_harddrive, kind = 'BGT')
 
 #####GENERATE THE LABEL FOR CBS
 print('start generating labels for CBS')
 source('make_labels_new.r')
-make_labels(path_harddrive = path_harddrive, kind = 'CBS ')
+make_labels(path_harddrive = path_harddrive, kind = 'CBS')
 
