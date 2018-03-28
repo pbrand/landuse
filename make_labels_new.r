@@ -18,7 +18,7 @@ make_labels = function(path_harddrive, kind){
         shape = shape[shape$number != 3,]
         label = raster::rasterize( shape , r, field =   as.numeric( shape$number))  
       }
-      writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) )
+      writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) , overwrite= TRUE)
       
     
     
