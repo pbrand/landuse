@@ -52,22 +52,13 @@ namespace SentinelsDataRetriever.Data
 
 		public void SelectSentinel3Data()
 		{
+			
 			string baseUrl = "https://scihub.copernicus.eu/dhus/odata/v1/Products/";
+			string requestUrl = baseUrl + "?$filter=startswith(Name,'S3')";
 
-			string requeslUrl = baseUrl + "?$filter=startswith(Name,'S3')";
+			WebResponse response = makeRequest (requestUrl);
+			IList<XElement> entries = getEntries (response);
 
-			WebRequest webRequest = WebRequest.Create (requeslUrl);
-			webRequest.Credentials = new NetworkCredential ("mjiang", "xe7s%r&Riq");
-
-			WebResponse response = webRequest.GetResponse ();
-
-			XmlReader r = XmlReader.Create(response.GetResponseStream ());
-
-			XDocument f = XDocument.Load(r);
-
-			List<XElement> entries = f.Descendants()
-				.Where(x => x.Name.LocalName == "entry")
-				.ToList();
 
 			List<Product> products = new List<Product> ();
 
@@ -77,26 +68,89 @@ namespace SentinelsDataRetriever.Data
 			
 			}
 
-//			Console.WriteLine (responseText);
-			Console.WriteLine(products.Count);		
+			foreach (Product p in products) {
+				Console.WriteLine (p.Name);	
+				Console.WriteLine (p.Id);
+			}
+		}
+
+		private WebResponse makeRequest(string url)
+		{			
+
+			WebRequest webRequest = WebRequest.Create (url);
+			webRequest.Credentials = new NetworkCredential ("mjiang", "xe7s%r&Riq");
+
+			WebResponse response = webRequest.GetResponse ();
+
+			return response;
+		}
+
+		private IList<XElement> getEntries(WebResponse xmlResponse)
+		{
+			XmlReader r = XmlReader.Create(xmlResponse.GetResponseStream ());
+
+			XDocument f = XDocument.Load(r);
+
+			List<XElement> entries = f.Descendants()
+				.Where(x => x.Name.LocalName == "entry")
+				.ToList();
+
+			return entries;
 		}
 
 		private Product convertToProduct(XElement entryElement)
 		{
+			XElement propertiesElement = entryElement.Elements()
+				.Where(x => x.Name.LocalName == "properties")
+				.FirstOrDefault();
 
-			string title = entryElement.Elements()
-				.Where(x => x.Name.LocalName == "title")
+			string title = propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "Name")
 				.Select(x => x.Value)
 				.FirstOrDefault();
 
-			string id = entryElement.Elements()
-				.Where(x => x.Name.LocalName == "id")
+			string id = propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "Id")
+				.Select(x => x.Value)
+				.FirstOrDefault();
+
+			ulong contentLength = Convert.ToUInt64 (propertiesElement.Elements ()
+				.Where (x => x.Name.LocalName == "ContentLength")
+				.Select (x => x.Value)
+				.FirstOrDefault ());
+
+			DateTime ingestionDate = Convert.ToDateTime(propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "IngestionDate")
+				.Select(x => x.Value)
+				.FirstOrDefault());
+
+			XElement contentDateElement = propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "ContentDate")
+				.FirstOrDefault();
+
+			DateTime contentStartDate = Convert.ToDateTime(contentDateElement.Elements()
+				.Where(x => x.Name.LocalName == "Start")
+				.Select(x => x.Value)
+				.FirstOrDefault());
+
+			DateTime contentEndDate = Convert.ToDateTime(contentDateElement.Elements()
+				.Where(x => x.Name.LocalName == "End")
+				.Select(x => x.Value)
+				.FirstOrDefault());
+
+			string contentGeometry = propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "ContentGeometry")
 				.Select(x => x.Value)
 				.FirstOrDefault();
 
 			Product product = new Product () {
-				Title = title,
-				Id = id
+				Name = title,
+				Id = id,
+				ContentLength = contentLength,
+				IngestionDate = ingestionDate,
+				ContentStartDate = contentStartDate,
+				ContentEndDate = contentEndDate,
+				ContentGeometry = contentGeometry
 			};
 
 			return product;						
