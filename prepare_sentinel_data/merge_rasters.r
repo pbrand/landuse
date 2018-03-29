@@ -1,4 +1,4 @@
-merge_rasters = function(dir_in){
+merge_rasters = function(dir_in, dir_out){
 
 dirs = list.files(dir_in, full.names= TRUE)
 
@@ -15,7 +15,7 @@ for(band in bands){
     total = mosaic(total, new, fun = max)
   }
   print('writing raster')
-  writeRaster(total, file.path(path, dir_in, band ))
+  writeRaster(total, file.path(dir_out, band ))
 }
 
 

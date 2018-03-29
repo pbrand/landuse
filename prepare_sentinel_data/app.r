@@ -12,5 +12,9 @@ translate(dir_in = file.path(path,'sentinel2_input', name) , dir_out =   file.pa
 
 
 dir_in = file.path(path, 'sentinel2' , name)
+dir_out = file.path(path, 'sentinel2' , name)
 
-merge_rasters(dir_in = dir_in)
+
+merge_rasters(dir_in = dir_in, dir_out)
+
+
