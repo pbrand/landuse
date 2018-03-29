@@ -13,8 +13,10 @@ for(n in 1:length(dirs)){
   dir = dirs[n]
   dir.create(file.path(dir_out, n))
 files = setdiff(list.files( file.path(dir,'IMG_DATA'), full.names = TRUE,  pattern = 'jp2') , list.files( file.path(dir,'IMG_DATA'), full.names = TRUE,  pattern = 'xml') )
+names =  unlist( lapply(strsplit(files, '[_.]'), function(x){ x[27]}))
+                        
 for(i in 1:length(files) ){
-  gdal_translate(files[i], file.path(dir_out, n, paste0( i, '.tif')), outsize = c(max_dim, max_dim) )   
+  gdal_translate(files[i], file.path(dir_out, n, paste0( names[i], '.tif')), outsize = c(max_dim, max_dim) )   
     }
     
   

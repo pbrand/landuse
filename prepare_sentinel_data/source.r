@@ -1,7 +1,7 @@
 library(rgdal)
 library(gdalUtils)
 library(raster)
-library(stringi)
+library(SpaDES)
 
 path = '/home/daniel/R/landuse/prepare_sentinel_data/db'
 

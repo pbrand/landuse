@@ -5,7 +5,7 @@ source('Sentinel_models/packages.r')
 
 #data loading
 data = readRDS( file.path(path,'data_allbands.rds' )) 
-data = data[data$label %in% c(1,2,8),]
+#data = data[data$label %in% c(1,2,8),]
 data$label = as.numeric(as.factor(data$label))
 split = sample(x =  c(1:nrow(data)), size = round(0.8*nrow(data)) )
 train = data[split,]
@@ -16,7 +16,7 @@ clas = as.integer(length(unique(data$label)))#number of classes
 h = as.integer(64) #heigth image
 w = as.integer(64) #width image
 channels = 13L
-max_pred = readRDS(file.path(path, '/modelsmax_pred.rds'))
+max_pred = 0.8
 format = 'tif'
 #####
 
@@ -35,8 +35,10 @@ model %>%
   layer_max_pooling_2d(pool_size=c(2,2)) %>%  
   layer_dropout(0.25) %>%
   layer_flatten() %>%  
-  layer_dense(512) %>%  
-  layer_activation("relu") %>%  
+  layer_dense(1024) %>%  
+  layer_activation("relu") %>%
+  layer_dense(1024) %>%  
+  layer_activation("relu") %>%
   layer_dropout(0.5) %>%  
   layer_dense(clas) %>%  
   layer_activation("softmax") 
@@ -51,10 +53,10 @@ model %>%
 
 
 #Train the network
-for (i in 1:20000) {
+for (i in 1:2000000000) {
   
   #lees 50 random plaatjes in
-  data_class = select_files(data = train, num = 5)
+  data_class = select_files(data = train, num = 2)
   batch_labels = onehot(data_class[[2]], clas = clas)
   batch_files= data_class[[1]]
 
@@ -63,7 +65,7 @@ for (i in 1:20000) {
 
   
   if(i %% 100 == 0){
-    data_class = select_files(data = test, num = 100)
+    data_class = select_files(data = test, num = 80)
     batch_labels = onehot(data_class[[2]], clas = clas)
     batch_files= data_class[[1]]
     
@@ -72,7 +74,7 @@ for (i in 1:20000) {
   
   if(pred[[2]]> max_pred){
   #save model
-  model$save( file.path(path,'models/model1' ))
+  model$save( file.path(path,'models/model_all' ))
     saveRDS(max_pred,file.path(path, 'models/max_pred.rds'))
   max_pred = pred[[2]]
     }
