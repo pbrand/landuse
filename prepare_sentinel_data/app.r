@@ -1,7 +1,14 @@
 source('prepare_sentinel_data/source.r')
 
 name  = 'romania'
+
+name  = 'sentinel_2_data'
 max_dim = 10980
+
+
+
+
+
 
 
 dir.create(file.path(path, 'sentinel2', name))
