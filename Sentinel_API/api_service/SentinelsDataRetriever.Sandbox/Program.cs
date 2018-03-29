@@ -8,7 +8,7 @@ namespace SentinelsDataRetriever.Sandbox
 		public static void Main (string[] args)
 		{
 			OpenAccessHubRepository repos = new OpenAccessHubRepository ();
-			repos.GetData ();
+			repos.SelectSentinel3Data ();
 		}
 	}
 }
