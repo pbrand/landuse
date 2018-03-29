@@ -1,6 +1,6 @@
 merge_rasters = function(dir_in){
 
-dirs = list.files(file.path(path, dir_in), full.names= TRUE)
+dirs = list.files(dir_in, full.names= TRUE)
 
 bands = setdiff( list.files(dirs[1]) , list.files(dirs[1], pattern = 'TCI.tif') )
 

@@ -11,6 +11,6 @@ dir.create(file.path(path, 'sentinel2', name))
 translate(dir_in = file.path(path,'sentinel2_input', name) , dir_out =   file.path(path, 'sentinel2', name), max_dim = max_dim )
 
 
-dir_in = file.path(path, name)
+dir_in = file.path(path, 'sentinel2' , name)
 
 merge_rasters(dir_in = dir_in)
