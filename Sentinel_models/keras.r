@@ -25,18 +25,20 @@ model<-keras_model_sequential()
 #configuring the Model
 
 model %>%  
-  layer_conv_2d(filter=32, kernel_size=c(4,4),padding="same",    input_shape=c(64,64,channels) ) %>%  
+  layer_conv_2d(filter=32, kernel_size=c(5,5),padding="same",    input_shape=c(64,64,channels) ) %>%  
   layer_activation("relu") %>%  
-  layer_conv_2d(filter=32 ,kernel_size=c(4,4))  %>%  layer_activation("relu") %>%
+  layer_max_pooling_2d(pool_size=c(2,2)) %>%  
+  layer_conv_2d(filter=64 ,kernel_size=c(4,4))  %>%  layer_activation("relu") %>%
+  layer_activation("relu") %>%
   layer_max_pooling_2d(pool_size=c(2,2)) %>%  
   layer_dropout(0.25) %>%
-  layer_conv_2d(filter=32 , kernel_size=c(4,4),padding="same") %>% layer_activation("relu") %>%  layer_conv_2d(filter=32,kernel_size=c(3,3) ) %>%
+  layer_conv_2d(filter=64 , kernel_size=c(4,4),padding="same") %>%
   layer_activation("relu") %>%  
-  layer_max_pooling_2d(pool_size=c(2,2)) %>%  
+  layer_max_pooling_2d(pool_size=c(2,2)) %>%
+  layer_conv_2d(filter=128,kernel_size=c(3,3) ) %>%
+  layer_activation("relu") %>%    
   layer_dropout(0.25) %>%
   layer_flatten() %>%  
-  layer_dense(1024) %>%  
-  layer_activation("relu") %>%
   layer_dense(1024) %>%  
   layer_activation("relu") %>%
   layer_dropout(0.5) %>%  
@@ -48,7 +50,7 @@ opt<-optimizer_adam( lr= 0.0001 , decay = 1e-6 )
 model %>%
   compile(loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
 
-#model = load_model_hdf5(file.path(path,'models/model1'))
+#model = load_model_hdf5(file.path(path,'models/model_all2'))
 
 
 
@@ -65,7 +67,7 @@ for (i in 1:2000000000) {
 
   
   if(i %% 100 == 0){
-    data_class = select_files(data = test, num = 80)
+    data_class = select_files(data = test, num = 50)
     batch_labels = onehot(data_class[[2]], clas = clas)
     batch_files= data_class[[1]]
     
@@ -74,7 +76,7 @@ for (i in 1:2000000000) {
   
   if(pred[[2]]> max_pred){
   #save model
-  model$save( file.path(path,'models/model_all' ))
+  model$save( file.path(path,'models/model_all2' ))
     saveRDS(max_pred,file.path(path, 'models/max_pred.rds'))
   max_pred = pred[[2]]
     }
