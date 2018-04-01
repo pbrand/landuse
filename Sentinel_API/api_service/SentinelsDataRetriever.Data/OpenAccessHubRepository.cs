@@ -16,10 +16,20 @@ namespace SentinelsDataRetriever.Data
 	public class OpenAccessHubRepository
 	{
 		private const string _baseUrl = "https://scihub.copernicus.eu/dhus/odata/v1/Products/";
+		private const string _downloadUrlFormat = "https://scihub.copernicus.eu/dhus/odata/v1/Products('@0')/$value";
+
+		private const string _beginTag = "<gml:coordinates>";
+		private const string _endTag = "</gml:coordinates>";
+		private int _beginTagLength;
+		private int _endTagLength;
+
+		private NetworkCredential _credentials;
 
 		public OpenAccessHubRepository()
 		{
-			
+			_beginTagLength = _beginTag.Length;
+			_endTagLength = _endTag.Length;
+			_credentials = new NetworkCredential ("mjiang", "xe7s%r&Riq");
 		}
 
 //		public void GetData()
@@ -50,35 +60,38 @@ namespace SentinelsDataRetriever.Data
 //			}
 //		}	
 
-		public void SelectSentinel3Data()
-		{
-			
-			string baseUrl = "https://scihub.copernicus.eu/dhus/odata/v1/Products/";
-			string requestUrl = baseUrl + "?$filter=startswith(Name,'S3')";
+		public List<Product> SelectSentinel2Data()
+		{			
+			string requestUrl = _baseUrl + "?$filter=startswith(Name,'S2')";
 
+			return getProducts (requestUrl);
+		}
+
+		public List<Product> SelectSentinel3Data()
+		{			
+			string requestUrl = _baseUrl + "?$filter=startswith(Name,'S3')";
+
+			return getProducts (requestUrl);
+		}
+
+		private List<Product> getProducts(string requestUrl)
+		{
 			WebResponse response = makeRequest (requestUrl);
 			IList<XElement> entries = getEntries (response);
 
-
 			List<Product> products = new List<Product> ();
 
-			foreach (XElement xEle in entries) {
-			
-				products.Add(this.convertToProduct(xEle));
-			
+			foreach (XElement xEle in entries) {			
+				products.Add(this.convertToProduct(xEle));			
 			}
 
-			foreach (Product p in products) {
-				Console.WriteLine (p.Name);	
-				Console.WriteLine (p.Id);
-			}
+			return products;
 		}
 
 		private WebResponse makeRequest(string url)
-		{			
-
+		{
 			WebRequest webRequest = WebRequest.Create (url);
-			webRequest.Credentials = new NetworkCredential ("mjiang", "xe7s%r&Riq");
+			webRequest.Credentials = _credentials;
 
 			WebResponse response = webRequest.GetResponse ();
 
@@ -114,7 +127,7 @@ namespace SentinelsDataRetriever.Data
 				.Select(x => x.Value)
 				.FirstOrDefault();
 
-			ulong contentLength = Convert.ToUInt64 (propertiesElement.Elements ()
+			long contentLength = Convert.ToInt64 (propertiesElement.Elements ()
 				.Where (x => x.Name.LocalName == "ContentLength")
 				.Select (x => x.Value)
 				.FirstOrDefault ());
@@ -141,6 +154,19 @@ namespace SentinelsDataRetriever.Data
 			string contentGeometry = propertiesElement.Elements()
 				.Where(x => x.Name.LocalName == "ContentGeometry")
 				.Select(x => x.Value)
+				.FirstOrDefault();			
+
+			int beginTagIndex = contentGeometry.IndexOf (_beginTag);
+			int endTagIndex = contentGeometry.IndexOf (_endTag);
+			string coordsString = contentGeometry.Substring (beginTagIndex + _beginTagLength, endTagIndex - beginTagIndex - _beginTagLength );
+
+			XElement checkSumElement = propertiesElement.Elements()
+				.Where(x => x.Name.LocalName == "Checksum")
+				.FirstOrDefault();
+
+			string checksum = checkSumElement.Elements()
+				.Where(x => x.Name.LocalName == "Value")
+				.Select(x => x.Value)
 				.FirstOrDefault();
 
 			Product product = new Product () {
@@ -150,15 +176,12 @@ namespace SentinelsDataRetriever.Data
 				IngestionDate = ingestionDate,
 				ContentStartDate = contentStartDate,
 				ContentEndDate = contentEndDate,
-				ContentGeometry = contentGeometry
+				Checksum = checksum,
+				DownloadUrl = string.Format(_downloadUrlFormat, id),
+				ContentGeometry = coordsString
 			};
 
 			return product;						
 		}
-	}
-
-	public class Odata<T>
-	{
-		public List<T> Values { get; set; }
 	}
 }

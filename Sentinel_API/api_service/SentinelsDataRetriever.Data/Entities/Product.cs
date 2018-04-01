@@ -7,7 +7,10 @@ namespace SentinelsDataRetriever.Data
 		public string Id;
 		public string Name;
 
-		public ulong ContentLength;
+		public Satellites SatelliteName;
+
+		public long ContentLength;
+		public string Checksum;
 
 		public DateTime IngestionDate;
 
@@ -15,6 +18,8 @@ namespace SentinelsDataRetriever.Data
 		public DateTime ContentEndDate;
 
 		public string ContentGeometry;
+
+		public string DownloadUrl;
 
 		public Product ()
 		{
