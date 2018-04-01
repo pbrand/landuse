@@ -23,10 +23,11 @@ date = as.Date("2008-01-01")
 
 sun_info = getSunlightTimes(33.43, -84.22, date = date, tz="UTC") 	
 if(day == TRUE){
-  
+  #query all daytime overlays of last month
   
 }else{
   
+  #query all nighttime overlays of last month
 }
 
 
