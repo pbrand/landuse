@@ -1,5 +1,10 @@
 source('prepare_sentinel_data/source.r')
 
+
+
+
+
+
 name_in  = 'sentinel2_input/IMG_DATA'
 name_out  = 'sentinel2/IMG_DATA'
 max_dim = 10980
