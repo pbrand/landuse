@@ -16,19 +16,17 @@ namespace SentinelsDataRetriever.Data
 	public class OpenAccessHubRepository
 	{
 		private const string _baseUrl = "https://scihub.copernicus.eu/dhus/odata/v1/Products/";
-		private const string _downloadUrlFormat = "https://scihub.copernicus.eu/dhus/odata/v1/Products('@0')/$value";
+		private const string _downloadUrlFormat = "https://scihub.copernicus.eu/dhus/odata/v1/Products('{0}')/$value";
 
 		private const string _beginTag = "<gml:coordinates>";
 		private const string _endTag = "</gml:coordinates>";
 		private int _beginTagLength;
-		private int _endTagLength;
 
 		private NetworkCredential _credentials;
 
 		public OpenAccessHubRepository()
 		{
 			_beginTagLength = _beginTag.Length;
-			_endTagLength = _endTag.Length;
 			_credentials = new NetworkCredential ("mjiang", "xe7s%r&Riq");
 		}
 
