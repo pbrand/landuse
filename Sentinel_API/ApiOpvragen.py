@@ -1,10 +1,10 @@
-#om de directory in te stellen gebruik: cd ~/Documenten/Datalab
+#om de directory in te stellen gebruik: cd ~/Documenten/Datalab/landuse/Sentinel_API
 #om te runnen in het commad prompt:     python3 ApiOpvragen.py
 #runnen binnen python3:                 exec(open('ApiOpvragen.py').read())
 
 
 #############################################################
-
+#een paar voorbeelden
 
 #S1
 #https://scihub.copernicus.eu/dhus/odata/v1/Products('d1ea4951-2ba2-4d3b-ac15-6b4d8bfd60f2')/$value
@@ -27,6 +27,7 @@ import json
 import getpass
 import sys
 from pathlib import Path
+
 
 user = "kloetq"
 pswd = getpass.getpass("Password of "+user+": ") #Datalab1
@@ -107,8 +108,7 @@ while skip<Total:
         #    geojson2['features'].append(feature)
         geojson['features'].append(feature)
     skip=skip+100
-    
-del pswd
+
 
 print('Done!')
 
@@ -118,3 +118,9 @@ with open(Folder+'VieuwAllShapes_2018_01.geojson','w') as f:
       
 with open(Folder+'NoQuickvieuw_2018_01.geojson','w') as f:
     f.write(json.dumps(geojson2))
+
+ 
+
+####################################################
+#remove password
+rm(pswd)

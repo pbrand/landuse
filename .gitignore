@@ -9,12 +9,13 @@ plaatjes
 
 .ipynb_checkpoints/
 
-data_preparation/db
-data_preparation/output
-Sentinel_models/db
+#data_preparation_CBS_aerial_images/db
+data_preparation_CBS_aerial_images/output
+#Sentinel_models/db
 
 
 obj/
 bin/
 Sentinel_API/api_service/packages
 *.userprefs
+
