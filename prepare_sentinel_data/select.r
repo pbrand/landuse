@@ -25,7 +25,7 @@ select(x1 = x1, y1 = y1, x2 = x2, y2 = y2, date = date, month_from = month_from,
 
 ###########################################################################################################
 select = function(x1, y1, x2, y2, date, month_from, month_to, daylight, satellite){
-############prepare input date for query
+############prepare input data for query
 ##find daylight hours
 date = as.Date(date)
 sun_info = getSunlightTimes(x1, y1, date = date, tz="UTC") 	
@@ -50,12 +50,11 @@ if(hour_from > hour_to){
 }
 #### make datetime before which we are searching
 date = paste(date,  '00:00:00')
-q = paste("SELECT * FROM index")
 
 
 
-#################3#built kwerie
-q = paste0("SELECT * FROM index WHERE",
+##################built kwerie
+q = paste0("SELECT Id , geometry FROM index WHERE",
           "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
           ") AND (",
           "lat_max > ", x1, " AND long_max > ", y1 , " AND lat_min < ", x2 , " AND long_min < ", y2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
