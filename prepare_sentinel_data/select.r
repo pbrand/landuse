@@ -72,13 +72,17 @@ ts_df <- do.call(rbind, lapply(1:nrow(df), function(i) {
 
 #sent query
 
-library(RmySQL)
-drv <- dbDriver("RSQLServer")
-con = dbConnect(drv, dbname= 'company', host = 'courses.csrrinzqubik.us-east-1.rds.amazonaws.com',
+library(RMySQL)
+con = dbConnect( MySQL()  , dbname= 'company', host = 'courses.csrrinzqubik.us-east-1.rds.amazonaws.com',
                 port = 3306, user = 'student', password = 'datacamp')
 dbListTables(con)
-q = "select * from sales WHERE   date >= '2015-09-19' AND date <= '2017-09-19' " 
-q = 'SELECT * FROM sales'
+q = 'SELECT * FROM employees ORDER BY name'
+
+
+q = "select * FROM employees"
+
+q = "select * from employees WHERE   DATEPART(MONTH, started_at) BETWEEN 1 AND 9 " 
+
 result = dbSendQuery(con, q)
 data.frame = fetch(result, n = -1)
 data.frame
