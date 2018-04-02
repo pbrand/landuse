@@ -50,7 +50,7 @@ if(hour_from > hour_to){
   hour_to_1 = hour_to
   hour_to_2 = hour_to
 }
-#### make datetime before which we are searching
+#### make datetime of date
 date = paste(date,  '00:00:00')
 
 
