@@ -1,90 +1,64 @@
-#input
-#day TRUE/FALSE
-#date
-#x1,x2,y1,y2
-
-x1 = 33.43
-y1 = -84.22
-date = as.Date("2008-01-01")
-
-#strategie
-#doe kwerie die alle data tot 1 maand voor de datum ophaalt tijdens dag of nacht die een overlap heeft met de geselecteerde regio en sort ze op recentheid
-#ga in en forloop de index langs totdat de shapes het vierkant coveren
-
-
 library(DBI)
 library(datetime)
 library(RPostgreSQL)
 library(suncalc)
 
+#input
+#day TRUE/FALSE
+#date
+#x1,x2,y1,y2
 
 
-#get time boundary
+#######Input
+x1 = 33.43
+y1 = -84.22
+x2 = 34.43
+y2 = -83.22
+date = as.Date("2008-01-01")
+month_from = 1
+month_to = 12
+day = TRUE
+
+
+#######connect to database
+
+drv <- dbDriver("PostgreSQL")
+
+con = dbConnect( drv  , dbname= 'esa_index', host = 'localhost',
+                 port = 5432, user = 'maasd', password = 'Brooksrange24')
 
 
 
+##find daylight hours
 sun_info = getSunlightTimes(x1, y1, date = date, tz="UTC") 	
 
-format(sun_info$sunsetStart, '%H')
-
 if(day == TRUE){
-  #query all daytime overlays of last month
-  
-  SELECT * FROM MyTable
-  WHERE DATEPART(HOUR, SyncDate) BETWEEN as.numeric(format(sun_info$sunriseEnd, '%H')) AND as.numeric(format(sun_info$sunsetStart, '%H')) DATEPART(MINUTE, SyncDate) BETWEEN 0 AND 30
-  
-  
+ hour_from = format(sun_info$sunriseEnd, '%H')
+ hour_to =format( sun_info$sunsetStart, '%H')
 }else{
-  
-  #query all nighttime overlays of last month
+  hour_from = format( sun_info$sunset, '%H')
+  hour_to = format(sun_info$sunrise, '%H')
 }
 
 
-
-
-
-
-
-#Same As above but look at Time Zone Specification
-sunrise.set(33.43, -84.22, "2008/01/01", timezone="America/New_York")
-sunrise.set(lat, long, date, timezone = "UTC", num.days = 1)
-
-
-ts_df <- do.call(rbind, lapply(1:nrow(df), function(i) {
-  tz <- df$timezone[i]
-  raw <- as.POSIXct(strptime(
-    df$actualtime[i],
-    format = "%Y-%m-%d %H:%M:%S",
-    tz ="Australia/Sydney"),
-    tz = "Australia/Sydney")
-  ts <- format(raw, tz = tz, usetz = TRUE)
-  data.frame(raw=raw,tz=tz,converted = as.POSIXct(ts))
-}))
-
-
-
-# 
-# library('RSQLServer')
-# con = dbConnect(RMySQL::MySQL(), dbname= 'company', host = 'courses.csrrinzqubik.us-east-1.rds.amazonaws.com',
-#                 port = 3306, user = 'student', password = 'datacamp')
-
-
-
-#sent query
-
-library(RMySQL)
-con = dbConnect( MySQL()  , dbname= 'company', host = 'courses.csrrinzqubik.us-east-1.rds.amazonaws.com',
-                port = 3306, user = 'student', password = 'datacamp')
-dbListTables(con)
-q = 'SELECT * FROM employees ORDER BY name'
-
-
-
-q = "select * from employees WHERE   MONTH(started_at) BETWEEN 1 AND 9 " 
+#built kwerie
+q = paste("SELECT * FROM index WHERE  (extract(month from content_start_date) BETWEEN", month_from, "AND", month_to,     ###SELECT CORRECT DATES 
+          ") AND (((",
+         "lat_min BETWEEN", x1, "AND", x2   ,                                                                                                      #### MAKE SURE either x1,y1 or x2,y2 lay in the square
+          ") AND (",
+         "long_min BETWEEN", y1, "AND", y2   , 
+         ")) OR ((",
+         "lat_max BETWEEN", x1, "AND", x2   ,                                                                                                     
+         ") AND (",
+         "long_max BETWEEN", y1, "AND", y2   , 
+         "))) AND(",
+         "extract(hour from content_start_date) BETWEEN", hour_from, "AND", hour_to ,                                 ##############SELECT hours
+         ")",
+         "ORDER BY content_start_date DESC")                                                                            #########ORDER BY DATE
+          
+          
 
 result = dbSendQuery(con, q)
-data.frame = fetch(result, n = -1)
-data.frame
-
-
+result = fetch(result, n = -1)
+View(result)
 
