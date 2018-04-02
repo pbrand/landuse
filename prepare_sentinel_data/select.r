@@ -2,6 +2,8 @@ library(DBI)
 library(datetime)
 library(RPostgreSQL)
 library(suncalc)
+library(sp)
+library(rgdal)
 
 
 #######Input
@@ -14,14 +16,6 @@ month_from = 1
 month_to = 1
 day = TRUE
 satellite = 'Sentinel1'
-
-
-#######connect to database
-
-drv <- dbDriver("PostgreSQL")
-
-con = dbConnect( drv  , dbname= 'esa_index', host = 'birdsai.co',
-                 port = 5432, user = 'maasd', password = 'Brooksrange24')
 
 
 
@@ -76,10 +70,30 @@ q = paste0("SELECT * FROM index WHERE",
           
 
 
-
+#######connect to database
+drv <- dbDriver("PostgreSQL")
+con = dbConnect( drv  , dbname= 'esa_index', host = 'birdsai.co',
+                 port = 5432, user = 'maasd', password = 'Brooksrange24')
+#make query
 result = dbSendQuery(con, q)
 result = fetch(result, n = -1)
-View(result)
-
+#View(result)
 dbDisconnect(con)
+
+
+
+
+################extract polygons form result
+polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
+ polygon = as.numeric(unlist(strsplit( result$geometry[i],  '[ ,]')))
+ polygon = as.data.frame( matrix(polygon  ,  ncol = 2 , byrow = TRUE ))
+ colnames(polygon) = c('x', 'y')
+ polygon = Polygon(polygon)
+ polygon = Polygons(list(polygon), i)
+ return(polygon)
+}))
+
+#########continue till polygons cover area
+
+
 
