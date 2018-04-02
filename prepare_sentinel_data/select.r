@@ -8,16 +8,16 @@ library(rgeos)
 
 
 #######Test input
-x1 = -9.5
-y1 = 107.6
-x2 = -9.55
-y2 = 107.65
-date = "2016-02-15"
-month_from = 1
-month_to = 1
-daylight = TRUE
-satellite = 'Sentinel1'
-downsample_factor = 1     ############is not used in this function but is a required user input to determine output
+# x1 = -9.5
+# y1 = 107.6
+# x2 = -9.55
+# y2 = 107.65
+# date = "2016-02-15"
+# month_from = 1
+# month_to = 1
+# daylight = TRUE
+# satellite = 'Sentinel1'
+# downsample_factor = 1     ############is not used in this function but is a required user input to determine output
 
 
 
