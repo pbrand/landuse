@@ -79,9 +79,8 @@ dbListTables(con)
 q = 'SELECT * FROM employees ORDER BY name'
 
 
-q = "select * FROM employees"
 
-q = "select * from employees WHERE   DATEPART(MONTH, started_at) BETWEEN 1 AND 9 " 
+q = "select * from employees WHERE   MONTH(started_at) BETWEEN 1 AND 9 " 
 
 result = dbSendQuery(con, q)
 data.frame = fetch(result, n = -1)
