@@ -61,7 +61,7 @@ q = paste0("SELECT Id , geometry FROM index WHERE",
           ") AND (",
           "lat_max > ", y1, " AND long_max > ", x1 , " AND lat_min < ", y2 , " AND long_min < ", x2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
          ") AND (",
-         "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,                            #########SELECT hours
+         "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,  #########SELECT hours
          ") AND (",
          "content_start_date <= \'", date, "\'",                                                                     #Take only earlier dates
          ") AND (",
@@ -82,6 +82,15 @@ dbDisconnect(con)
 #eror handeling
 if(nrow(result) ==0){ print('error no products found in index')}else{
 
+  #construc eastern and wester hemishpere SpatialPolygons
+east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
+proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
+west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
+proj4string(west) =  CRS("+proj=longlat +datum=WGS84")
+
+
+
+
 ################Transform output to SpatialPolygonsDataFrame format
 polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
  polygon = as.numeric(unlist(strsplit( result$geometry[i],  '[ ,]')))
@@ -89,7 +98,21 @@ polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
  colnames(polygon) = c('y', 'x')
  polygon = polygon[,2:1]
  polygon = Polygon(polygon)
- polygon = Polygons(list(polygon), i)
+ 
+
+ #case handeling of dateline
+ polygons_temp = SpatialPolygons( list(    Polygons(list(polygon), 1) )  )
+ proj4string(polygons_temp) =  CRS("+proj=longlat +datum=WGS84")
+ if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
+   eastern = polygon
+   eastern@coords[ eastern@coords[,1] <0 , 1] = 180
+   western = polygon
+   western@coords[ western@coords[,1] >0 , 1] = -180
+   polygon = Polygons(list(eastern, western), i)
+ }else{
+   polygon = Polygons(list(polygon), i)
+ }
+ ####end case handeling
  return(polygon)
 }))
 polygons = SpatialPolygonsDataFrame(polygons, result)
@@ -104,7 +127,7 @@ proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 ids = list()
 for(i in 1:length(polygons)){
   print(i)
-  if(!is.null(gIntersection(area, polygons[i,])) ){ 
+  if( gIntersects(area, polygons[i,]) ){ 
     area = gDifference(area, polygons[i,])
     ids[[i]] =  polygons@data$id[i]
     }
