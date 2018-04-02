@@ -56,8 +56,8 @@ namespace SentinelsDataRetriever.Data
 					planeCoords.LongitudeMax, // {7}
 					product.ContentGeometry, //{8}
 					product.ContentLength, //{9}
-					product.ContentStartDate.ToUniversalTime().ToString(), // {10}
-					product.ContentEndDate.ToUniversalTime().ToString() // {11}
+					product.ContentStartDate.ToString(), // {10}
+					product.ContentEndDate.ToString() // {11}
 				);
 
 				using (var cmd = new NpgsqlCommand (sql, conn)) {				

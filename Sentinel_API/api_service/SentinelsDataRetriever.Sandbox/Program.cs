@@ -1,6 +1,7 @@
 ﻿using System;
 using SentinelsDataRetriever.Data;
 using System.Collections.Generic;
+using SentinelsDataRetriever.Logging;
 
 namespace SentinelsDataRetriever.Sandbox
 {
@@ -8,14 +9,27 @@ namespace SentinelsDataRetriever.Sandbox
 	{
 		public static void Main (string[] args)
 		{
-			OpenAccessHubRepository repos = new OpenAccessHubRepository ();
-			List<Product> products = repos.SelectSentinel3Data ();
+			Logger.Initialize ();
+			Logger.LogLevel = LogLevel.Verbose;
 
+			OpenAccessHubRepository repos = new OpenAccessHubRepository ();
 			IndexDatabaseRepository indexRepos = new IndexDatabaseRepository ();
-			foreach (Product p in products) {
-				if (!indexRepos.DoesProductExist (p)) {
-					indexRepos.AddProduct (p);				
-				}		
+
+			ulong numberOfProducts = repos.CountProducts ();
+
+//			Console.WriteLine (numberOfProducts);
+			Logger.Log ("Number of products: " + numberOfProducts, LogLevel.Info);
+
+			for (ulong i = 0; i < numberOfProducts; i += 100) {
+
+				Logger.Log ("At: " + i, LogLevel.Verbose);
+
+				List<Product> products = repos.SelectAllProducts (i);
+				foreach (Product p in products) {
+					if (!indexRepos.DoesProductExist (p)) {
+						indexRepos.AddProduct (p);				
+					}		
+				}
 			}
 		}
 	}

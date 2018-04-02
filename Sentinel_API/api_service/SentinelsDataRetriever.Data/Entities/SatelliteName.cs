@@ -2,8 +2,9 @@
 
 namespace SentinelsDataRetriever.Data
 {
-	public enum Satellites
+	public enum SatelliteName
 	{
+		Unknown,
 		Sentinel1,
 		Sentinel2,
 		Sentinel3

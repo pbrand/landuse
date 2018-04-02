@@ -42,5 +42,9 @@
       <Project>{1664EB86-2A87-4C28-88A3-3C37A5D2E4B3}</Project>
       <Name>SentinelsDataRetriever.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SentinelsDataRetriever.Logging\SentinelsDataRetriever.Logging.csproj">
+      <Project>{4FC5F562-AFC4-4F1E-857D-3DB70B7C5CD7}</Project>
+      <Name>SentinelsDataRetriever.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

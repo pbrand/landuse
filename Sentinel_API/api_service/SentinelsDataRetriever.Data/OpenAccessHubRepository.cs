@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Linq;
+using System.Text;
+using SentinelsDataRetriever.Logging;
 
 namespace SentinelsDataRetriever.Data
 {
@@ -58,14 +60,37 @@ namespace SentinelsDataRetriever.Data
 //			}
 //		}	
 
-		public List<Product> SelectSentinel2Data()
+		public ulong CountProducts()
+		{
+			string requestUrl = _baseUrl + "$count";	
+
+			WebResponse response = makeRequest (requestUrl);
+
+			StreamReader sr = new StreamReader(response.GetResponseStream ());
+
+			string responseString = sr.ReadToEnd ();
+
+			return Convert.ToUInt64 (responseString);
+		}
+
+		public List<Product> SelectAllProducts(ulong skip)
+		{
+			string requestUrl = _baseUrl + "?$top=100&orderby=IngestionDate asc";
+			if (skip > 0) {
+				requestUrl += "&$skip=" + skip;
+			}
+
+			return getProducts (requestUrl);
+		}
+
+		public List<Product> SelectSentinel2Products()
 		{			
 			string requestUrl = _baseUrl + "?$filter=startswith(Name,'S2')";
 
 			return getProducts (requestUrl);
 		}
 
-		public List<Product> SelectSentinel3Data()
+		public List<Product> SelectSentinel3Products()
 		{			
 			string requestUrl = _baseUrl + "?$filter=startswith(Name,'S3')";
 
@@ -169,6 +194,7 @@ namespace SentinelsDataRetriever.Data
 
 			Product product = new Product () {
 				Name = title,
+				SatelliteName = getSatelliteName(title),
 				Id = id,
 				ContentLength = contentLength,
 				IngestionDate = ingestionDate,
@@ -180,6 +206,23 @@ namespace SentinelsDataRetriever.Data
 			};
 
 			return product;						
+		}
+
+		private SatelliteName getSatelliteName(string productName) 
+		{
+			if (productName.StartsWith ("S1")) {
+				return SatelliteName.Sentinel1;
+			} 
+			else if (productName.StartsWith ("S2")) {
+				return SatelliteName.Sentinel2;
+			} 
+			else if (productName.StartsWith ("S3")) {
+				return SatelliteName.Sentinel3;			
+			} 
+			else {
+				Logger.Log ("Unknown satellite name for product: " + productName, LogLevel.Warning);
+				return SatelliteName.Unknown;
+			}
 		}
 	}
 }

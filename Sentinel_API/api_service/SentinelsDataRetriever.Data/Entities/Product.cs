@@ -7,7 +7,7 @@ namespace SentinelsDataRetriever.Data
 		public string Id;
 		public string Name;
 
-		public Satellites SatelliteName;
+		public SatelliteName SatelliteName;
 
 		public long ContentLength;
 		public string Checksum;
