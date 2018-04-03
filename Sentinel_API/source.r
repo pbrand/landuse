@@ -6,6 +6,8 @@ library(sp)
 library(rgdal)
 library(rgeos)
 library(rPython)
+library(parallel)
+library(raster)
 
 path = '/home/daniel/R/landuse/Sentinel_API/db'
 

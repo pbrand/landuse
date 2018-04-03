@@ -4,9 +4,7 @@ import os
 from zipfile import ZipFile
     
 #################################################
-#Set username and password
-user = "kloetq"
-pswd = getpass.getpass("Password of "+user+": ") #Datalab1
+
 
 #################################################
 

@@ -1,5 +1,10 @@
 ###########################################################################################################
-select = function(x1, y1, x2, y2, date, month_from, month_to, daylight, satellite){
+select = function(area, date, month_from, month_to, daylight, satellite){
+  
+  x1 = extent(area)[1]
+  x2 = extent(area)[2]
+  y1 = extent(area)[3]
+  y2 =extent(area)[4]
   
   
 ############prepare input data for query
@@ -78,8 +83,6 @@ rm(result)
 
 #########Search most recent satellite images that cover the area
 #make polygon of area
-area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 #loop till the square is covered
 ids = c()
 for(i in 1:length(polygons)){
