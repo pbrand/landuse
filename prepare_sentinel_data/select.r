@@ -1,10 +1,4 @@
-library(DBI)
-library(RPostgreSQL)
-library(datetime)
-library(suncalc)
-library(sp)
-library(rgdal)
-library(rgeos)
+source('prepare_sentinel_data/source.r')
 
 
 #######Test input
@@ -108,7 +102,6 @@ proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 #loop till the square is covered
 ids = c()
 for(i in 1:length(polygons)){
-  print(i)
   if( gIntersects(area, polygons[i,]) ){ 
     area = gDifference(area, polygons[i,])
     ids = c(ids, i)
