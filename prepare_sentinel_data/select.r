@@ -56,7 +56,7 @@ date = paste(date,  '00:00:00')
 
 
 ##################built kwerie
-q = paste0("SELECT Id , geometry FROM index WHERE",
+q = paste0("SELECT *  FROM index WHERE",
           "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
           ") AND (",
           "lat_max > ", y1, " AND long_max > ", x1 , " AND lat_min < ", y2 , " AND long_min < ", x2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
@@ -82,12 +82,6 @@ dbDisconnect(con)
 #eror handeling
 if(nrow(result) ==0){ print('error no products found in index')}else{
 
-  #construc eastern and wester hemishpere SpatialPolygons
-east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
-proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
-west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
-proj4string(west) =  CRS("+proj=longlat +datum=WGS84")
-
 
 
 
@@ -99,20 +93,8 @@ polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
  polygon = polygon[,2:1]
  polygon = Polygon(polygon)
  
+ polygon = date_line_case(polygon, i)
 
- #case handeling of dateline
- polygons_temp = SpatialPolygons( list(    Polygons(list(polygon), 1) )  )
- proj4string(polygons_temp) =  CRS("+proj=longlat +datum=WGS84")
- if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
-   eastern = polygon
-   eastern@coords[ eastern@coords[,1] <0 , 1] = 180
-   western = polygon
-   western@coords[ western@coords[,1] >0 , 1] = -180
-   polygon = Polygons(list(eastern, western), i)
- }else{
-   polygon = Polygons(list(polygon), i)
- }
- ####end case handeling
  return(polygon)
 }))
 polygons = SpatialPolygonsDataFrame(polygons, result)
@@ -124,17 +106,17 @@ rm(result)
 area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
 proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 #loop till the square is covered
-ids = list()
+ids = c()
 for(i in 1:length(polygons)){
   print(i)
   if( gIntersects(area, polygons[i,]) ){ 
     area = gDifference(area, polygons[i,])
-    ids[[i]] =  polygons@data$id[i]
+    ids = c(ids, i)
     }
   if( is.null(area)){ break}
 }
 
-return(ids)
+return(polygons[ids,])
 }
 
 
