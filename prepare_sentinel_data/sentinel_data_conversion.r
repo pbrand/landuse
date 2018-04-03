@@ -5,22 +5,21 @@
 #give dimensions of the output rasters
 
 
-translate = function(max_dim, dir_in, dir_out){
-#translate all files
-dirs = list.files(dir_in, full.names = TRUE)
-
-for(n in 1:length(dirs)){
-  dir = dirs[n]
-  dir.create(file.path(dir_out, n))
-files = setdiff(list.files( dir, full.names = TRUE,  pattern = 'jp2') , list.files( dir, full.names = TRUE,  pattern = 'xml') )
-names =  unlist( lapply(strsplit(files, '[_.]'), function(x){ x[6]}))
+translate = function(max_dim, name){
+  dir_in = file.path(path, name_in)
+  dir_out =   file.path(path,  name_out)
+  dir.create(dir_out)
+  
+  
+files = setdiff(list.files( dir_in ,   pattern = 'jp2') ,  union(list.files( dir_in,  pattern = 'xml') ,list.files( dir_in,   pattern = 'TCI')  ) )
+names =  unlist( lapply(strsplit(files, '[_.]'), function(x){ x[3]}))
                         
 for(i in 1:length(files) ){
-  gdal_translate(files[i], file.path(dir_out, n, paste0( names[i], '.tif')), outsize = c(max_dim, max_dim) )   
+  gdal_translate( file.path(dir_in, files[i]) , file.path(dir_out , paste0( names[i], '.tif')), outsize = c(max_dim, max_dim) )   
     }
     
   
-}
+
 
 
 
