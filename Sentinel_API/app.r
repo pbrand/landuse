@@ -47,26 +47,16 @@ products_select = select(area = area, date = date, month_from = month_from, mont
 
 
 ###############################################################################
-#download files function
-#Make cluster
+####Under directory of ID I want all bans in jp2 or tif format. Can be found in GRANULE/IMG_DATA
 no_cores <- min(length(products_select), 3)
 cl <- makeCluster(no_cores)
 clusterExport(cl, "dir_out", "user", "pswd")
 
 #download files
 parLapply(cl, products_select$id, function(id){
-  
-  url = paste0("https://scihub.copernicus.eu/dhus/odata/v1/Products(\'", id, "\')/$value")
-  GET(url = url , authenticate(user, pswd) )
-  dir.create( file.path(dir_output, id))
-  download.file(url, method = 'wget', destfile =  file.path(dir_output, paste0(id, '.zip') ))
-    
-    
-    
-    
-#    library(rPython)
-#    python.load('Sentinel_API/DownloadFiles.py')
-#    python.call('download_file', id , dir_out, user, pswd)
+      library(rPython)
+    python.load('Sentinel_API/DownloadFiles.py')
+    python.call('download_file', id , dir_out, user, pswd)
 })
   
   #stop cluster
