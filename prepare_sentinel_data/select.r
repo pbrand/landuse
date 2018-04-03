@@ -8,24 +8,26 @@ library(rgeos)
 
 
 #######Test input
-# x1 = -9.5
-# y1 = 107.6
-# x2 = -9.55
-# y2 = 107.65
-# date = "2016-02-15"
-# month_from = 1
-# month_to = 1
-# daylight = TRUE
-# satellite = 'Sentinel1'
-# downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-#dir_output = 'test'        ##########is not used in this function but is required to assign output dir to downloads
+x1 = 111
+x2 = 112
+y1 = 28
+y2 = 28.5
+date = "2020-02-15"
+month_from = 1
+month_to = 12
+daylight = TRUE
+satellite = 'Sentinel1'
+downsample_factor = 1     ############is not used in this function but is a required user input to determine output
+dir_output = 'test'        ##########is not used in this function but is required to assign output dir to downloads
 
 
 select(x1 = x1, y1 = y1, x2 = x2, y2 = y2, date = date, month_from = month_from, month_to = month_to , daylight = daylight, satellite = satellite)
 
 ###########################################################################################################
 select = function(x1, y1, x2, y2, date, month_from, month_to, daylight, satellite){
-############prepare input date for query
+  
+  
+############prepare input data for query
 ##find daylight hours
 date = as.Date(date)
 sun_info = getSunlightTimes(x1, y1, date = date, tz="UTC") 	
@@ -48,19 +50,18 @@ if(hour_from > hour_to){
   hour_to_1 = hour_to
   hour_to_2 = hour_to
 }
-#### make datetime before which we are searching
+#### make datetime of date
 date = paste(date,  '00:00:00')
-q = paste("SELECT * FROM index")
 
 
 
-#################3#built kwerie
-q = paste0("SELECT * FROM index WHERE",
+##################built kwerie
+q = paste0("SELECT Id , geometry FROM index WHERE",
           "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
           ") AND (",
-          "lat_max > ", x1, " AND long_max > ", y1 , " AND lat_min < ", x2 , " AND long_min < ", y2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
+          "lat_max > ", y1, " AND long_max > ", x1 , " AND lat_min < ", y2 , " AND long_min < ", x2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
          ") AND (",
-         "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,                            #########SELECT hours
+         "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,  #########SELECT hours
          ") AND (",
          "content_start_date <= \'", date, "\'",                                                                     #Take only earlier dates
          ") AND (",
@@ -78,27 +79,55 @@ result = fetch(result, n = -1)
 #View(result)
 dbDisconnect(con)
 
+#eror handeling
+if(nrow(result) ==0){ print('error no products found in index')}else{
+
+  #construc eastern and wester hemishpere SpatialPolygons
+east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
+proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
+west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
+proj4string(west) =  CRS("+proj=longlat +datum=WGS84")
+
+
+
+
 ################Transform output to SpatialPolygonsDataFrame format
 polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
  polygon = as.numeric(unlist(strsplit( result$geometry[i],  '[ ,]')))
  polygon = as.data.frame( matrix(polygon  ,  ncol = 2 , byrow = TRUE ))
- colnames(polygon) = c('x', 'y')
+ colnames(polygon) = c('y', 'x')
+ polygon = polygon[,2:1]
  polygon = Polygon(polygon)
- polygon = Polygons(list(polygon), i)
+ 
+
+ #case handeling of dateline
+ polygons_temp = SpatialPolygons( list(    Polygons(list(polygon), 1) )  )
+ proj4string(polygons_temp) =  CRS("+proj=longlat +datum=WGS84")
+ if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
+   eastern = polygon
+   eastern@coords[ eastern@coords[,1] <0 , 1] = 180
+   western = polygon
+   western@coords[ western@coords[,1] >0 , 1] = -180
+   polygon = Polygons(list(eastern, western), i)
+ }else{
+   polygon = Polygons(list(polygon), i)
+ }
+ ####end case handeling
  return(polygon)
 }))
 polygons = SpatialPolygonsDataFrame(polygons, result)
+proj4string(polygons) =  CRS("+proj=longlat +datum=WGS84")
 rm(result)
 
 #########Search most recent satellite images that cover the area
 #make polygon of area
 area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-
+proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 #loop till the square is covered
 ids = list()
 for(i in 1:length(polygons)){
   print(i)
-  if(!is.null(gIntersection(area, polygons[i,])) ){ 
+  if( gIntersects(area, polygons[i,]) ){ 
     area = gDifference(area, polygons[i,])
     ids[[i]] =  polygons@data$id[i]
     }
@@ -106,4 +135,7 @@ for(i in 1:length(polygons)){
 }
 
 return(ids)
+}
+
+
 }
