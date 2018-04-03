@@ -1,5 +1,5 @@
 #################################################
-with open("Output.txt","a") as f:
+with open("db/Output.txt","a") as f:
     f.write("Starting IndexOfYeasterday at: "+str(datetime.datetime.now())+'\n')
 #################################################
 #This code cannot be run without first importing the packages and functions needed (is done in InfiniteWhileLoop)
@@ -53,5 +53,5 @@ with open("db/Index.csv","a") as f:
             f.write(','+str(el[t]))
         f.write('\n')
 
-with open("Output.txt","a") as f:
+with open("db/Output.txt","a") as f:
     f.write("Finished running at: "+str(datetime.datetime.now())+"\n\n")

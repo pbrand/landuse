@@ -32,13 +32,13 @@ def CalculateCoordinates(x):
 ##################################################
 
 
-OldDate = datetime.date.today() - datetime.timedelta(days=2)
-with open("db/Index.csv","w") as f:
-    f.write("SentinalType")
-    for t in ['ID','DatumTijd','Xmin','Xmax','Ymin','Ymax']:
-        f.write(','+t)
-    f.write('\n')
-with open("Output.txt","w") as f:
+OldDate = datetime.date.today() #- datetime.timedelta(days=2)
+#with open("db/Index.csv","w") as f:
+#    f.write("SentinalType")
+#    for t in ['ID','DatumTijd','Xmin','Xmax','Ymin','Ymax']:
+#        f.write(','+t)
+#    f.write('\n')
+with open("db/Output.txt","w") as f:
     f.write("Starting InifiniteWhileLoop at: "+str(datetime.datetime.now())+'\n\n')
 
 while 1>0:

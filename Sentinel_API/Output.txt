@@ -1,3 +1,0 @@
-Starting InifiniteWhileLoop at: 2018-03-30 15:18:00.745929
-
-Starting IndexOfYeasterday at: 2018-03-30 15:18:00.747851
