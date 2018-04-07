@@ -34,15 +34,12 @@ dir_output = path        ##########is not used in this function but is required 
 user = "kloetq"
 pswd = 'Datalab1'
 
-#make area
-area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 
 #leave index running
 ############Script Minghai
 
 #select required products
-products_select = select(area = area, date = date, month_from = month_from, month_to = month_to , daylight = daylight, satellite = satellite)
+products_select = select(x1 = x1, x2=x2,y1=y1,y2=y2, date = date, month_from = month_from, month_to = month_to , daylight = daylight, satellite = satellite)
 
 
 

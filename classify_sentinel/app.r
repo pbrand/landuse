@@ -3,12 +3,15 @@ source('classify_sentinel/source.r')
 name = 'IMG_DATA'
 name = 'test'
 window_dim = 64
-num_bands = 13
+num_bands = 3
 
-bands = readTIFF(file.path(path, 'test.tif'))
- model = load_model_hdf5(file.path(path,'model'))
+bands = readTIFF('test.tif')
+bands = bands[,,4:2]
+bands = bands /max(bands)
 
-
+model = load_model_hdf5(file.path(path,'model_rgb'))
+ ##################################
+ 
  N_x = floor(dim(bands)[2]/ window_dim) -1
  N_y = floor(dim(bands)[1]/ window_dim) -1
  
@@ -31,10 +34,10 @@ bands = readTIFF(file.path(path, 'test.tif'))
   }
   
   rm(bands)
-  saveRDS(prediction, file.path(path,'prediction.rds'))
+  saveRDS(prediction, file.path(path,'prediction_rgb.rds'))
   
   
-  prediction = readRDS(file.path(path,'prediction.rds'))
+  prediction = readRDS(file.path(path,'prediction_rgb.rds'))
   image(prediction)
 # 
 # bands = list.files( file.path(path, name) , pattern = 'tif', full.names = TRUE)
