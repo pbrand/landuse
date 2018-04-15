@@ -38,34 +38,16 @@ pswd = 'Datalab1'
 #leave index running
 ############Script Minghai
 
-#select required products
-products_select = select(x1 = x1, x2=x2,y1=y1,y2=y2, date = date, month_from = month_from, month_to = month_to , daylight = daylight, satellite = satellite)
-
-
-
-###############################################################################
-####Under directory of ID I want all bans in jp2 or tif format. Can be found in GRANULE/IMG_DATA
-no_cores <- min(length(products_select), 3)
-cl <- makeCluster(no_cores)
-clusterExport(cl, "dir_out", "user", "pswd")
-
-#download files
-parLapply(cl, products_select$id, function(id){
-      library(rPython)
-    python.load('Sentinel_API/DownloadFiles.py')
-    python.call('download_file', id , dir_out, user, pswd)
-})
-  
-  #stop cluster
-  stopCluster(cl)
-  ###################################################################################
-  
-  
-  #translate files funcion case sentinel1
-  
-  
-  #translate files funcion case sentinel2
-  
-  
-  
-  #merge files function
+#Invoke script Minghai
+system( paste('/home/common/download.sh', x1, x2,y1, y2, date, month_from, month_to, daylight, satellite, paste0('/home/common/', dir_output)) , wait = TRUE )
+###################################################################################
+    
+    
+    #translate files funcion case sentinel1
+    
+    
+    #translate files funcion case sentinel2
+    
+    
+    
+    #merge files function

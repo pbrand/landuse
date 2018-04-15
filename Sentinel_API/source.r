@@ -14,4 +14,3 @@ path = '/home/daniel/R/landuse/Sentinel_API/db'
 
 source('Sentinel_API/date_line_case.r')
 source('Sentinel_API/select.r')
-python.load('Sentinel_API/DownloadFiles.py')
