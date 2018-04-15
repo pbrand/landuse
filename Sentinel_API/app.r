@@ -12,9 +12,8 @@ month_to = 12
 daylight = TRUE
 satellite = 'Sentinel1'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-dir_output = path       ##########is not used in this function but is required to assign output dir to downloads
-user = "kloetq"
-pswd = 'Datalab1'
+dir_output = 'test2'       ##########is not used in this function but is required to assign output dir to downloads
+
 
 
 
@@ -30,40 +29,27 @@ month_to = 12
 daylight = TRUE
 satellite = 'Sentinel2'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
+<<<<<<< HEAD
 dir_output = path        ##########is not used in this function but is required to assign output dir to downloads
+=======
+dir_output = 'test2'        ##########is not used in this function but is required to assign output dir to downloads
+
+>>>>>>> 09b8867733880df4f524ece3b65617571beaaf55
 
 
 #leave index running
 ############Script Minghai
 
-#select required products
-products_select = select(x1 = x1, x2=x2,y1=y1,y2=y2, date = date, month_from = month_from, month_to = month_to , daylight = daylight, satellite = satellite)
-
-
-
-###############################################################################
-####Under directory of ID I want all bans in jp2 or tif format. Can be found in GRANULE/IMG_DATA
-no_cores <- min(length(products_select), 3)
-cl <- makeCluster(no_cores)
-clusterExport(cl, "dir_out", "user", "pswd")
-
-#download files
-parLapply(cl, products_select$id, function(id){
-      library(rPython)
-    python.load('Sentinel_API/DownloadFiles.py')
-    python.call('download_file', id , dir_out, user, pswd)
-})
-  
-  #stop cluster
-  stopCluster(cl)
-  ###################################################################################
-  
-  
-  #translate files funcion case sentinel1
-  
-  
-  #translate files funcion case sentinel2
-  
-  
-  
-  #merge files function
+#Invoke script Minghai
+system( paste('/home/common/download.sh', x1, x2,y1, y2, date, month_from, month_to, daylight, satellite, paste0('/home/common/', dir_output)) , wait = TRUE )
+###################################################################################
+    
+    
+    #translate files funcion case sentinel1
+    
+    
+    #translate files funcion case sentinel2
+    
+    
+    
+    #merge files function
