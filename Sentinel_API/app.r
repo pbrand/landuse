@@ -12,9 +12,8 @@ month_to = 12
 daylight = TRUE
 satellite = 'Sentinel1'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-dir_output = path       ##########is not used in this function but is required to assign output dir to downloads
-user = "kloetq"
-pswd = 'Datalab1'
+dir_output = 'test2'       ##########is not used in this function but is required to assign output dir to downloads
+
 
 
 
@@ -30,9 +29,8 @@ month_to = 12
 daylight = TRUE
 satellite = 'Sentinel2'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-dir_output = path        ##########is not used in this function but is required to assign output dir to downloads
-user = "kloetq"
-pswd = 'Datalab1'
+dir_output = 'test2'        ##########is not used in this function but is required to assign output dir to downloads
+
 
 
 #leave index running
