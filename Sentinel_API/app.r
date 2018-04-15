@@ -29,13 +29,10 @@ month_to = 12
 daylight = TRUE
 satellite = 'Sentinel2'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-<<<<<<< HEAD
-dir_output = path        ##########is not used in this function but is required to assign output dir to downloads
-=======
+
 dir_output = 'test2'        ##########is not used in this function but is required to assign output dir to downloads
 
->>>>>>> 09b8867733880df4f524ece3b65617571beaaf55
-
+shape = select(x1 = x1, x2 = x2, y1= y1, y2 = y2, date = date, daylight = daylight, month_from = month_from, month_to = month_to, satellite = satellite)
 
 #leave index running
 ############Script Minghai

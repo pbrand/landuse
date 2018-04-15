@@ -49,7 +49,7 @@ q = paste0("SELECT *  FROM index WHERE",
          ") AND (",
          "satellite = \'", satellite , "\'" ,
          ") ",
-         "ORDER BY content_start_date DESC")                                                                            #####ORDER BY DATE
+         "ORDER BY content_start_date DESC LIMIT 200")                                                                            #####ORDER BY DATE
           
 #######connect to database and sent query
 drv <- dbDriver("PostgreSQL")
