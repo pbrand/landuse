@@ -38,7 +38,7 @@ shape = select(x1 = x1, x2 = x2, y1= y1, y2 = y2, date = date, daylight = daylig
 ############Script Minghai
 
 #Invoke script Minghai
-system( paste('/home/common/download.sh', x1, x2,y1, y2, date, month_from, month_to, daylight, satellite, paste0('/home/common/', dir_output)) , wait = TRUE )
+system( paste('/home/common/download.sh', x1, x2,y1, y2, date, month_from, month_to, daylight, satellite, paste0('/home/common/DownloadService/', dir_output)) , wait = TRUE )
 ###################################################################################
     
     
