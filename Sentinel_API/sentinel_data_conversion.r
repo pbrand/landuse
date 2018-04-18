@@ -1,20 +1,4 @@
-#################SENTINEL 2################
-library(gdalUtils)
-library(rgdal)
-library(McSpatial)
-library(raster)
-#######Test input
-
-y1 = 60.1
-x1 = 148
-y2 = 60.2
-x2 = 148.1
-satellite = 'Sentinel2'
-dir_output = 'Sentinel_API/db/test3'        ##########is not used in this function but is required to assign output dir to downloads
-
-prepare_rasters(x1 = x1,x2 = x2,y1 = y1,y2 = y2, satellite = satellite, dir_output = dir_output)
-
-prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output){
+prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output, dir_input){
   library(gdalUtils)
   library(rgdal)
   library(McSpatial)
@@ -28,6 +12,8 @@ zone =  (floor((x1 + 180)/6) %% 60) + 1
  
   
   if(satellite == 'Sentinel2'){
+    
+    ##transleren, uitsnijden en resampelen met gdal_translate
     w = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /10)
     h = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /10 )
     
@@ -38,8 +24,10 @@ zone =  (floor((x1 + 180)/6) %% 60) + 1
     
     
     files = unlist(lapply(bands, function(band){
-      setdiff( list.files(dir_output, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_output, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
+      setdiff( list.files(dir_input, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_input, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
     }))
+    
+    dir.create(file.path( dir_input, dir_output))
     
     out_names = unlist(lapply(files, function(x){
       x = strsplit(x, '[/]')[[1]][5]
@@ -47,43 +35,34 @@ zone =  (floor((x1 + 180)/6) %% 60) + 1
     }))
     
     for( i in 1:length(files)){
-      gdal_translate( file.path( dir_output, files[i]), file.path(dir_output, paste0(out_names[i], '.tif')) , projwin = c( area@coords[1,1], area@coords[2,2], area@coords[2,1] , area@coords[1,2] ), outsize = c(w,h))
+      gdal_translate( file.path( dir_input, files[i]), file.path(dir_input, dir_output, paste0(out_names[i], '.tif')) , projwin = c( area@coords[1,1], area@coords[2,2], area@coords[2,1] , area@coords[1,2] ), outsize = c(w,h))
       
     }
     
     
     
-    #cfind the filename of the band in the directory
+    #mosaic the raster per band
     for(band in bands){
-      files = list.files(dir_output, pattern = band)
+      print(band)
+      files = list.files(file.path(dir_input, dir_output), pattern = band)
       #read and crop the raster
-      band_total = stack(file.path(dir_output, files))
       
       
       
       band_total =  lapply(files, function(file){
-        raster(file.path(dir_output,file) )
+        raster(file.path(dir_input, dir_output, file) )
       })
       
       band_total =  do.call('mosaic', c(band_total, list(fun = max), list(tolerance = 0.1)) )
-      writeRaster(band_total, file.path(dir_output, paste0(band, '.tif')))
-      
+      writeRaster(band_total, file.path( dir_input, dir_output, paste0(band, '.tif')))
       
     }
     
-    
-    #remove all leftover junk
-    files = setdiff( file.path(dir_output, list.files(dir_output)), file.path(dir_output, paste0(bands,'.tif')) ) 
-    file.remove(files)
-    
-    dirs = setdiff( list.dirs(dir_output) ,dir_output)
-    unlink(dirs, recursive = TRUE)
-  }else(
-    print('I only do sentinel2 for now')
-  )
-  
-  ###########################
-}
+    #remove junk files
+  files=  setdiff( list.files(file.path(dir_input, dir_output)),  paste0(bands, '.tif') )
+    file.remove( file.path(dir_input, dir_output, files))
+    }
+    }
 
 
 
