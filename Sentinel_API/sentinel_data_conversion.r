@@ -1,4 +1,4 @@
-prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output, dir_input){
+prepare_rasters = function(x1,x2,y1,y2, satellite, dir_input){
   library(gdalUtils)
   library(rgdal)
   library(McSpatial)
