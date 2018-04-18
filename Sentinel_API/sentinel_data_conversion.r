@@ -2,8 +2,6 @@
 library(gdalUtils)
 library(rgdal)
 library(McSpatial)
-library(DBI)
-library(RPostgreSQL)
 library(raster)
 #######Test input
 
@@ -17,6 +15,10 @@ dir_output = 'Sentinel_API/db/test3'        ##########is not used in this functi
 prepare_rasters(x1 = x1,x2 = x2,y1 = y1,y2 = y2, satellite = satellite, dir_output = dir_output)
 
 prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output){
+  library(gdalUtils)
+  library(rgdal)
+  library(McSpatial)
+  library(raster)
   
   area = SpatialPoints(cbind(c(x1,x2), c(y1, y2 ) ),  proj4string=CRS("+proj=longlat"))
   area = spTransform(area, CRS("+proj=utm +zone=55")) 
