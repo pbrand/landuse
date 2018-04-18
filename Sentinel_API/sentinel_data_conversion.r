@@ -4,8 +4,8 @@ prepare_rasters = function(x1,x2,y1,y2, satellite, dir_input){
   library(McSpatial)
   library(raster)
  
-   source('devide_in_smaller.r')
-  source('transleer.r')
+  #  source('devide_in_smaller.r')
+  # source('transleer.r')
   
   coords = devide_in_smaller(x1 =x1,x2= x2,y1= y1,y2= y2)
   
