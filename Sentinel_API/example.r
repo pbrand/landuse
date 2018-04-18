@@ -3,8 +3,8 @@ source('Sentinel_API/devide_in_smaller.r')
 
 y1 = 60
 x1 = 148
-y2 = 61
-x2 = 149
+y2 = 60.1
+x2 = 148.1
 satellite = 'Sentinel2'
 dir_output
 
