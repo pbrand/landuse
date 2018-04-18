@@ -3,7 +3,7 @@ prepare_rasters = function(x1,x2,y1,y2, satellite, dir_input){
   library(rgdal)
   library(McSpatial)
   library(raster)
- 
+  library(data.table)
   #  source('devide_in_smaller.r')
   # source('transleer.r')
   
