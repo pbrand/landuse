@@ -1,8 +1,8 @@
 
-
   source('Sentinel_API/sentinel_data_conversion.r')
   source('Sentinel_API/devide_in_smaller.r')
   source('Sentinel_API/transleer.r')
+
   
   library(gdalUtils)
   library(rgdal)
@@ -10,9 +10,7 @@
   library(raster)
   library(data.table)
   
-  #  source('devide_in_smaller.r')
-  # source('transleer.r')
-  
+
   coord = devide_in_smaller(x1 =x1,x2= x2,y1= y1,y2= y2)
 
 zone =  (floor((x1 + 180)/6) %% 60) + 1
