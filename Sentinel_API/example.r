@@ -13,7 +13,7 @@ x1 = 148
 y2 = 60.1
 x2 = 148.1
 satellite = 'Sentinel2'
-dir_input = 'test3'
+dir_input = 'db/test3'
 
 prepare_rasters(x1 = x1,x2 = x2,y1 = y1,y2 = y2, satellite = satellite,  dir_input = dir_input)
  

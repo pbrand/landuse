@@ -1,7 +1,14 @@
 
-prepare_rasters = function(x1,x2,y1,y2, satellite, dir_input){
 
+  source('Sentinel_API/sentinel_data_conversion.r')
+  source('Sentinel_API/devide_in_smaller.r')
+  source('Sentinel_API/transleer.r')
   
+  library(gdalUtils)
+  library(rgdal)
+  library(McSpatial)
+  library(raster)
+  library(data.table)
   
   #  source('devide_in_smaller.r')
   # source('transleer.r')
@@ -25,4 +32,3 @@ zone =  (floor((x1 + 180)/6) %% 60) + 1
      }
 
 
-}
