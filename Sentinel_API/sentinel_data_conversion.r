@@ -20,11 +20,12 @@ prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output){
   library(McSpatial)
   library(raster)
   
+zone =  (floor((x1 + 180)/6) %% 60) + 1
+  
   area = SpatialPoints(cbind(c(x1,x2), c(y1, y2 ) ),  proj4string=CRS("+proj=longlat"))
-  area = spTransform(area, CRS("+proj=utm +zone=55")) 
+  area = spTransform(area, CRS(paste0("+proj=utm +zone=", zone))) 
   
-  
-  
+ 
   
   if(satellite == 'Sentinel2'){
     w = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /10)
