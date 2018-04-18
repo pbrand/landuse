@@ -5,10 +5,10 @@ library(McSpatial)
 library(raster)
 #######Test input
 
-y1 = 60
-x1 = 148.8
-y2 = 61
-x2 = 149.8
+y1 = 60.1
+x1 = 148
+y2 = 60.2
+x2 = 148.1
 satellite = 'Sentinel2'
 dir_output = 'Sentinel_API/db/test3'        ##########is not used in this function but is required to assign output dir to downloads
 
