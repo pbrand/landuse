@@ -14,145 +14,73 @@ x2 = 149.8
 satellite = 'Sentinel2'
 dir_output = 'Sentinel_API/db/test3'        ##########is not used in this function but is required to assign output dir to downloads
 
+prepare_rasters(x1 = x1,x2 = x2,y1 = y1,y2 = y2, satellite = satellite, dir_output = dir_output)
 
-
-
-
-
-
-
-drv <- dbDriver("PostgreSQL")
-con = dbConnect( drv  , dbname= 'esa_index', host = 'birdsai.co',port = 5432, user = 'maasd', password = 'Brooksrange24')
-
-
-
-
-
-bands = c("B01", "B02","B03","B04", "B05", "B06", "B07","B08", "B09", "B10", "B11", "B12",  "B8A")
-
-for(band in bands){
-   #list all directories
-  ids =   list.dirs(dir_output,  full.names = FALSE, recursive = FALSE)
-  dirs = file.path(dir_output, ids)
+prepare_rasters = function(x1,x2,y1,y2, satellite, dir_output){
+  
+  area = SpatialPoints(cbind(c(x1,x2), c(y1, y2 ) ),  proj4string=CRS("+proj=longlat"))
+  area = spTransform(area, CRS("+proj=utm +zone=55")) 
   
   
-  for(i in 1:length(dirs)){
-    dir = dirs[i]
-    ####Retrieve coordinates
-    id = ids[i]
-    q = paste0('SELECT * FROM index WHERE id = \'', id, '\'' )
-    result = dbSendQuery(con, q)
-    result = fetch(result, n = -1)
-    file = setdiff( list.files(dir, recursive = TRUE, pattern = paste0(band,'.jp2'), full.names = TRUE) ,  list.files(dir, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
-    r = raster(file)
-    extent(r) = c(result$long_min, result$long_max, result$lat_min,  result$lat_max )
-    writeRaster(r, file.path(dir_output, paste0(band , '_', id, '.tif')))
-  }
-  
-}
-
-
-#gdal_translate
-w = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /10)
-h = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /10 )
-
-files = list.files(dir_output, full.name = FALSE, pattern = 'tif')
-
-for(file in files){
-  gdal_translate( file.path( dir_output, file), file.path(dir_output, paste0('new_',file)) , projwin = c(x1,y2,x2, y1 ), outsize = c(w,h))
-}
-
-#merge
-for(band in bands){
-files = intersect( list.files(dir_output, pattern = 'new', full.names = TRUE ) , list.files(dir_output, pattern = band, full.names = TRUE )  )
-
-r = lapply(files, function(x){
-  r = stack(x)
-  
-})
-
-r = do.call(mosaic, c(r, list(fun = max), list(tolerance = 0.2)))
-writeRaster(r, file.path(dir_output, paste0(band, '.tif')))
-}
-
-
-
-
-#remove all leftover junk
-files = setdiff(list.files(dir_output, recursive = TRUE, full.names = TRUE), file.path(dir_output, paste0(bands,'.tif')) )
-file.remove(files)
-
-dirs = setdiff(list.files(dir_output, recursive = TRUE, full.names = TRUE), file.path(dir_output, paste0(bands,'.tif')) )
-unlink(dirs, recursive = TRUE)
-
-
-
-
-
-
-
-
-
-
-
-
-if(satellite == 'Sentinel2'){
   
   
-  bands = c("B01", "B02","B03","B04", "B05", "B06", "B07","B08", "B09", "B10", "B11", "B12", "B13", "B8A")
-  
-  for(band in bands){
-    band_list = list()
-
-    #list all directories
-  ids =   list.files(dir_output, include.dirs = TRUE, full.names = FALSE)
-  dirs = file.path(dir_output, ids)
+  if(satellite == 'Sentinel2'){
+    w = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /10)
+    h = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /10 )
     
-  
-  for(i in 1:length(dirs)){
-    dir = dirs[i]
-    ####Retrieve coordinates
-    id = ids[i]
-    q = paste0('SELECT * FROM index WHERE id = \'', id, '\'' )
-    result = dbSendQuery(con, q)
-    result = fetch(result, n = -1)
-    
-    #source('Sentinel_API/to_polygon.r')
+    bands = c("B01", "B02","B03","B04", "B05", "B06", "B07","B08", "B09", "B10", "B11", "B12",  "B8A")
     
     
     
     
     
+    files = unlist(lapply(bands, function(band){
+      setdiff( list.files(dir_output, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_output, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
+    }))
+    
+    out_names = unlist(lapply(files, function(x){
+      x = strsplit(x, '[/]')[[1]][5]
+      x= strsplit(x, '[.]')[[1]][1]
+    }))
+    
+    for( i in 1:length(files)){
+      gdal_translate( file.path( dir_output, files[i]), file.path(dir_output, paste0(out_names[i], '.tif')) , projwin = c( area@coords[1,1], area@coords[2,2], area@coords[2,1] , area@coords[1,2] ), outsize = c(w,h))
+      
+    }
     
     
-     #cfind the filename of the band in the directory
-     file = setdiff( list.files(dir, recursive = TRUE, pattern = paste0(band,'.jp2'), full.names = TRUE) ,  list.files(dir, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
+    
+    #cfind the filename of the band in the directory
+    for(band in bands){
+      files = list.files(dir_output, pattern = band)
       #read and crop the raster
-     r = raster(file)
-     
-     extent(r) = c(result$long_min, result$long_max, result$lat_min,  result$lat_max )
-     
-
-       band_list[[i]] = r
+      band_total = stack(file.path(dir_output, files))
+      
+      
+      
+      band_total =  lapply(files, function(file){
+        raster(file.path(dir_output,file) )
+      })
+      
+      band_total =  do.call('mosaic', c(band_total, list(fun = max), list(tolerance = 0.1)) )
+      writeRaster(band_total, file.path(dir_output, paste0(band, '.tif')))
+      
+      
+    }
+    
+    
+    #remove all leftover junk
+    files = setdiff( file.path(dir_output, list.files(dir_output)), file.path(dir_output, paste0(bands,'.tif')) ) 
+    file.remove(files)
+    
+    dirs = setdiff( list.dirs(dir_output) ,dir_output)
+    unlink(dirs, recursive = TRUE)
+  }else(
+    print('I only do sentinel2 for now')
+  )
   
-       
-
-  }
-  #merge the rasters
-  band_total =  do.call('mosaic', c(band_list, list(fun = max), list(tolerance = 0.1)) )
-  band_total = crop(band_total, extent(im))
-  
-  writeRaster(file.path(dir_output, paste0(band, '.tif')))
-  
-  }
-  
-  
+  ###########################
 }
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
