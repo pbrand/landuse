@@ -1,8 +1,25 @@
+####TEST INPUT
+# y1 = 60
+# x1 = 148
+# y2 = 60.1
+# x2 = 148.5
+# dir_input = 'db/test3'
+# satellite = 'Sentinel2'
 
-prepare_rasters = function(x1,x2,y1,y2, satellite, dir_input){
 
 
-  
+# source('Sentinel_API/devide_in_smaller.r')
+# source('Sentinel_API/transleer.r')
+
+source('devide_in_smaller.r')
+source('transleer.r')
+
+library(gdalUtils)
+library(rgdal)
+library(McSpatial)
+library(raster)
+library(data.table)
+
   
 
   coord = devide_in_smaller(x1 =x1,x2= x2,y1= y1,y2= y2)
@@ -22,6 +39,5 @@ zone =  (floor((x1 + 180)/6) %% 60) + 1
     }
 
      }
-
 
 }
