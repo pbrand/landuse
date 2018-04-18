@@ -1,5 +1,6 @@
-transleer =  function(x1,x2,y1,y2, satellite, dir_output, dir_input){
+transleer =  function(x1,x2,y1,y2,dir_output, dir_input){
 
+  
 ##transleren, uitsnijden en resampelen met gdal_translate
 w = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /10)
 h = round(   geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /10 )

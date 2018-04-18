@@ -1,8 +1,7 @@
 
 
 devide_in_smaller = function(x1,x2,y1,y2){
-library(McSpatial)
-library(data.table)
+
 
 step_x = (x2-x1) /  ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /20000)   
 step_y = (y2- y1) / (  geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /20000 )  
