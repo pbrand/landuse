@@ -92,7 +92,7 @@ if(satellite == 'Sentinel2'){
     #########################mosaic the raster per band
     for(band in bands){
       print(band)
-      files = list.files(file.path(dir_input, dir_output), pattern = band)
+      files = setdiff( list.files(file.path(dir_input, dir_output), pattern = band),  list.files(file.path(dir_input, dir_output), pattern = 'aux')   )
       #read and crop the raster
       
    r = raster(file.path(dir_input, dir_output, files[1]) )
