@@ -84,7 +84,7 @@ if(satellite == 'Sentinel2'){
     }))
     
     for( j in 1:length(files)){
-      gdal_translate( file.path( dir_input, files[j]), file.path(dir_input, dir_output, paste0(out_names[j], '.tif')) , projwin = c( coord_utm$x1[j], coord_utm$y2[j], coord_utm$x2[j] , coord_utm$y1[j] ), outsize = c(w,h))
+      gdal_translate( file.path( dir_input, files[j]), file.path(dir_input, dir_output, paste0(out_names[j], '.tif')) , projwin = c( coord_utm$x1[i], coord_utm$y2[i], coord_utm$x2[i] , coord_utm$y1[i] ), outsize = c(w,h))
     }
     
   
@@ -103,7 +103,7 @@ if(satellite == 'Sentinel2'){
         r[r[,,]==0 ] = r_new[r[,,]==0 ]
       }
       }
-      writeRaster(r, file.path( dir_input, dir_output, paste0(band, '.tif')))
+      writeRaster(r, file.path( dir_input, dir_output, paste0(band, '.tif')), overwrite = TRUE)
       
     }
     
