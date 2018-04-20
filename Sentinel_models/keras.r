@@ -50,7 +50,7 @@ opt<-optimizer_adam( lr= 0.0001 , decay = 1e-6 )
 model %>%
   compile(loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
 
-#model = load_model_hdf5(file.path(path,'models/model_all2'))
+#model = load_model_hdf5(file.path(path,'models/model_rgb'))
 
 
 

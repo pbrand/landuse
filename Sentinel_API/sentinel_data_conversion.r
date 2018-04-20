@@ -1,12 +1,12 @@
 ####TEST INPUT
-# y1 = 60
-# x1 = 148
-# y2 = 61
-# x2 = 149
-# dir_input = 'Sentinel_API/db/test3'
-# satellite = 'Sentinel2'
+ y1 = 51.5
+ x1 = 4.5
+ y2 = 52.5
+ x2 = 5.5
+ dir_input = 'Sentinel_API/db/test'
+ satellite = 'Sentinel2'
 # 
-# prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
+prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
 
 prepare_images = function(x1,x2,y1,y2,satellite, dir_input){
 
@@ -73,8 +73,9 @@ if(satellite == 'Sentinel2'){
     
   
     files = unlist(lapply(bands, function(band){
-      setdiff( list.files(dir_input, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_input, recursive = TRUE, pattern = 'xml', full.names = TRUE) )
-    }))
+       setdiff( list.files(dir_input, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_input, recursive = TRUE, pattern = '.xml', full.names = FALSE) )
+
+      }))
     
     dir.create(file.path( dir_input, dir_output))
     
