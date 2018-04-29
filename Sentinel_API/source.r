@@ -9,6 +9,7 @@ library(rPython)
 library(parallel)
 library(raster)
 library(gdalUtils)
+library(EBImage)
 
 path = '/home/daniel/R/landuse/Sentinel_API/db'
 

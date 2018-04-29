@@ -1,5 +1,5 @@
 ###########################################################################################################
-select = function(x1,x2,y1,y2, date, month_from, month_to, daylight, satellite){
+select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite){
   
   #make area
   area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
@@ -31,10 +31,11 @@ if(hour_from > hour_to){
   hour_to_2 = hour_to
 }
 #### make datetime of date
-date = paste(date,  '00:00:00')
+date_from = paste( as.Date(date) - 100,  '00:00:00')
+date_to = paste(date,  '00:00:00')
 
 
-
+if(satellite == 'Sentinel2'){
 ##################built kwerie
 q = paste0("SELECT *  FROM index WHERE",
           "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
@@ -43,14 +44,31 @@ q = paste0("SELECT *  FROM index WHERE",
          ") AND (",
          "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,  #########SELECT hours
          ") AND (",
-         "content_start_date <= \'", date, "\'",                                                                     #Take only earlier dates
+         "content_start_date <= \'", date_to, "\'", " AND content_start_date >= \'", date_from, "\'" ,                                                                     #Take only earlier dates
+         ") AND (",
+            "cloud_cover < ", cloud_cover,                                                                                  ##########max cloudcover
          ") AND (",
          "download_size< 3500000000",                                                  ##############bestand groote
          ") AND (",
          "satellite = \'", satellite , "\'" ,
          ") ",
          "ORDER BY content_start_date DESC LIMIT 200")                                                                            #####ORDER BY DATE
-          
+}else{
+  q = paste0("SELECT *  FROM index WHERE",
+             "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
+             ") AND (",
+             "lat_max > ", y1, " AND long_max > ", x1 , " AND lat_min < ", y2 , " AND long_min < ", x2,                                #### MAKE SURE either x1,y1 or x2,y2 lay in the square
+             ") AND (",
+             "(extract(hour from content_start_date) BETWEEN ", hour_from_1, " AND ", hour_to_1 ,  ") OR (extract(hour from content_start_date) BETWEEN ",    hour_from_2, " AND ", hour_to_2, ")" ,  #########SELECT hours
+             ") AND (",
+             "content_start_date <= \'", date_to, "\'", " AND content_start_date >= \'", date_from, "\'" ,                                                                     #Take only earlier dates
+             ") AND (",
+             "download_size< 3500000000",                                                  ##############bestand groote
+             ") AND (",
+             "satellite = \'", satellite , "\'" ,
+             ") ",
+             "ORDER BY content_start_date DESC")                                                                            #####ORDER BY DATE
+}
 #######connect to database and sent query
 drv <- dbDriver("PostgreSQL")
 con = dbConnect( drv  , dbname= 'esa_index', host = 'birdsai.co',port = 5432, user = 'maasd', password = 'Brooksrange24')
@@ -85,15 +103,40 @@ rm(result)
 #make polygon of area
 #loop till the square is covered
 ids = c()
+area_temp = area
 for(i in 1:length(polygons)){
-  if( gIntersects(area, polygons[i,]) ){ 
-    area = gDifference(area, polygons[i,])
+  if( gIntersects(area_temp, polygons[i,]) ){ 
+    area_temp = gDifference(area_temp, polygons[i,])
     ids = c(ids, i)
     }
-  if( is.null(area)){ break}
+  if( is.null(area_temp)){ break}
+}
+polygons = polygons[ids,]
+
+#####Throw away redundant polygons
+
+#order polygons by surface in common with the area to be covered
+intersections = c()
+for( z in 1:nrow(polygons)){
+  area_temp = gIntersection(area, polygons[z,])
+intersections = c(intersections, gArea(area_temp) )
+  }
+polygons = polygons[order(intersections),]
+
+#remove polygons if one can do without
+z=1
+while(z <= nrow(polygons)){
+  if(is.null(gDifference(area, polygons[-z,]))){
+    polygons = polygons[-z,]
+  }else{
+    z = z+1
+  }
 }
 
-return(polygons[ids,])
+###############3
+
+
+return(polygons)
 }
 
 
