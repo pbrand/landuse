@@ -12,10 +12,10 @@ library(gdalUtils)
 library(EBImage)
 
 #######Test input
-x1 = 111
-x2 = 130
-y1 = 28
-y2 = 35
+x1 = 148
+x2 = 148.5
+y1 = 60
+y2 = 60.5
 date = "2017-02-15"
 month_from = 1
 month_to = 12

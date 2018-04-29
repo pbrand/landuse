@@ -125,7 +125,7 @@ polygons = polygons[order(intersections),]
 
 #remove polygons if one can do without
 z=1
-while(z <= nrow(polygons)){
+while(z <= nrow(polygons) & nrow(polygons) >1 ){
   if(is.null(gDifference(area, polygons[-z,]))){
     polygons = polygons[-z,]
   }else{
