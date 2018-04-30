@@ -1,5 +1,10 @@
+#niet suported
+#vierkant dat snijd met de band voor de dateline en de band na de dateline
+
 ###########################################################################################################
-select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite){
+select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
+  
+  
   
   #make area
   area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
@@ -31,7 +36,7 @@ if(hour_from > hour_to){
   hour_to_2 = hour_to
 }
 #### make datetime of date
-date_from = paste( as.Date(date) - 100,  '00:00:00')
+date_from = paste( as.Date(date) - days,  '00:00:00')
 date_to = paste(date,  '00:00:00')
 
 
@@ -52,7 +57,7 @@ q = paste0("SELECT *  FROM index WHERE",
          ") AND (",
          "satellite = \'", satellite , "\'" ,
          ") ",
-         "ORDER BY content_start_date DESC LIMIT 200")                                                                            #####ORDER BY DATE
+         "ORDER BY content_start_date DESC")                                                                            #####ORDER BY DATE
 }else{
   q = paste0("SELECT *  FROM index WHERE",
              "(extract(month from content_start_date) BETWEEN ", month_from, " AND ", month_to,                              ###SELECT CORRECT DATES 
@@ -91,13 +96,13 @@ polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
  polygon = polygon[,2:1]
  polygon = Polygon(polygon)
  
- polygon = date_line_case(polygon, i)
+ polygon = date_line_case(polygon =polygon, i=i, is_west = x1 > 0)
 
  return(polygon)
 }))
 polygons = SpatialPolygonsDataFrame(polygons, result)
 proj4string(polygons) =  CRS("+proj=longlat +datum=WGS84")
-rm(result)
+#rm(result)
 
 #########Search most recent satellite images that cover the area
 #make polygon of area
@@ -112,6 +117,7 @@ for(i in 1:length(polygons)){
   if( is.null(area_temp)){ break}
 }
 polygons = polygons[ids,]
+
 
 #####Throw away redundant polygons
 

@@ -1,7 +1,7 @@
 #construc eastern and wester hemishpere SpatialPolygons
 
 
-date_line_case = function(polygon, i){
+date_line_case = function(polygon, i, is_west){
 east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
 proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
 west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
@@ -17,7 +17,11 @@ if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
   eastern@coords[ eastern@coords[,1] <0 , 1] = 180
   western = polygon
   western@coords[ western@coords[,1] >0 , 1] = -180
-  polygon = Polygons(list(eastern, western), i)
+  if(is_west){
+  polygon = Polygons(list( western), i)
+  }else{
+    polygon = Polygons(list( eastern), i)
+  }
 }else{
   polygon = Polygons(list(polygon), i)
 }

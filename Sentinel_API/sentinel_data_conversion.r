@@ -3,9 +3,20 @@
  x1 = 4.5
  y2 = 52.5
  x2 = 5.5
- dir_input = 'Sentinel_API/db/test'
- satellite = 'Sentinel2'
-# 
+ dir_input = 'Sentinel_API/db/test222'
+ satellite = 'Sentinel1'
+ pix = 10
+#
+ 
+ 
+ 
+ 
+ library(gdalUtils)
+ library(rgdal)
+ library(McSpatial)
+ library(raster)
+ library(data.table)
+ 
 prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
 
 prepare_images = function(x1,x2,y1,y2,satellite, dir_input){
@@ -13,16 +24,9 @@ prepare_images = function(x1,x2,y1,y2,satellite, dir_input){
 
 
 
-
-library(gdalUtils)
-library(rgdal)
-library(McSpatial)
-library(raster)
-library(data.table)
-
 ############DEVIDE IN SMALLER 
-step_x = (x2-x1) /  ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 /20000)   
-step_y = (y2- y1) / (  geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 /20000 )  
+step_x = (x2-x1) /  ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 / (2000 * pix) )   
+step_y = (y2- y1) / (  geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 / (2000 * pix) )  
 
 len_x = floor((x2-x1)/ step_x) +1
 len_y = floor((y2-y1)/ step_y) +1
@@ -41,15 +45,6 @@ coord = lapply( c(1:length(y_mins)), function(i){
 
 coord = rbindlist(coord)
 
-
-zone =  (floor((x1 + 180)/6) %% 60) + 1
-temp_min = SpatialPoints(cbind( coord$x1, coord$y1 ),  proj4string=CRS("+proj=longlat"))
-temp_min = spTransform(temp_min, CRS(paste0("+proj=utm +zone=", zone)))
-temp_max = SpatialPoints(cbind( coord$x2, coord$y2 ),  proj4string=CRS("+proj=longlat"))
-temp_max = spTransform(temp_max, CRS(paste0("+proj=utm +zone=", zone)))
-
-
-coord_utm = data.frame('x1' =  temp_min@coords[,1], 'y1' = temp_min@coords[,2], 'x2' = temp_max@coords[,1], 'y2' =  temp_max@coords[,2] )
 #################
 
 
@@ -59,14 +54,25 @@ coord_utm = data.frame('x1' =  temp_min@coords[,1], 'y1' = temp_min@coords[,2], 
 
 #####If sentinel2
 if(satellite == 'Sentinel2'){
+
   
+  
+  zone =  (floor((x1 + 180)/6) %% 60) + 1
+  temp_min = SpatialPoints(cbind( coord$x1, coord$y1 ),  proj4string=CRS("+proj=longlat"))
+  temp_min = spTransform(temp_min, CRS(paste0("+proj=utm +zone=", zone)))
+  temp_max = SpatialPoints(cbind( coord$x2, coord$y2 ),  proj4string=CRS("+proj=longlat"))
+  temp_max = spTransform(temp_max, CRS(paste0("+proj=utm +zone=", zone)))
+  
+  
+  coord_utm = data.frame('x1' =  temp_min@coords[,1], 'y1' = temp_min@coords[,2], 'x2' = temp_max@coords[,1], 'y2' =  temp_max@coords[,2] )
+    
   ########################################gdal translate for each subwindow and band
   for(i in 1:nrow(coord)){
     dir_output = i
     
     ##transleren, uitsnijden en resampelen met gdal_translate
-    w = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x2[i] , latarget = coord$y1[i]  )$dist *1.609344*1000 /10)
-    h = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x1[i] , latarget = coord$y2[i]  )$dist *1.609344*1000 /10 )
+    w = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x2[i] , latarget = coord$y1[i]  )$dist *1.609344*1000 /pix)
+    h = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x1[i] , latarget = coord$y2[i]  )$dist *1.609344*1000 /pix )
     
     bands = c("B01", "B02","B03","B04", "B05", "B06", "B07","B08", "B09", "B10", "B11", "B12",  "B8A")
     
@@ -136,24 +142,23 @@ if(satellite == 'Sentinel1'){
     w = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x2[i] , latarget = coord$y1[i]  )$dist *1.609344*1000 /10)
     h = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x1[i] , latarget = coord$y2[i]  )$dist *1.609344*1000 /10 )
     
-    bands = c("B01", "B02","B03","B04", "B05", "B06", "B07","B08", "B09", "B10", "B11", "B12",  "B8A")
+    bands = c("-vv-", "-vh-")
     
     
     
-    files = unlist(lapply(bands, function(band){
-      setdiff( list.files(dir_input, pattern = paste0(band,'.jp2'), full.names = FALSE , recursive = TRUE) ,  list.files(dir_input, recursive = TRUE, pattern = '.xml', full.names = FALSE) )
-      
-    }))
+    files  = list.files(dir_input, pattern = 'tiff', recursive = TRUE) 
     
     dir.create(file.path( dir_input, dir_output))
     
     out_names = unlist(lapply(files, function(x){
-      x = strsplit(x, '[/]')[[1]][5]
+      x = strsplit(x, '[/]')[[1]][3]
       x= strsplit(x, '[.]')[[1]][1]
     }))
     
     for( j in 1:length(files)){
-      gdal_translate( file.path( dir_input, files[j]), file.path(dir_input, dir_output, paste0(out_names[j], '.tif')) , projwin = c( coord_utm$x1[i], coord_utm$y2[i], coord_utm$x2[i] , coord_utm$y1[i] ), outsize = c(w,h))
+      
+      
+      gdal_translate( file.path( dir_input, files[j]), file.path(dir_input, dir_output, paste0(out_names[j], '.tif')) , projwin = c( coord$x1[i], coord$y2[i], coord$x2[i] , coord$y1[i] ), outsize = c(w,h))
     }
     
     
