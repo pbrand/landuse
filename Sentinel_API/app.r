@@ -31,11 +31,26 @@ polygons = select(x1,x2,y1,y2, date, month_from, cloud_cover = cloud_cover , mon
   
 
 
-area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 
+library(leaflet)
+
+area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('lng' = c(x1 , x2 , x2, x1, x1), 'lat' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+area@proj4string <-CRS("+init=epsg:3857")
+
+m = leaflet()
+m = addProviderTiles(m, providers$OpenStreetMap)
+m = addPolygons(m, data = area, color = 'red')
+m = addPolygons(m, data = polygons, color = 'blue')
+m = addTiles(m)
+saveWidget(m, "temp.html")
+
+
+string = 'random'
+polygons = polygons
+
+plot_grid(string, polygons){
+png(paste(string, '.png'))
+par(bg=NA)
 plot(polygons)
-plot(area, add = TRUE)
-
-
-
+dev.off()
+}

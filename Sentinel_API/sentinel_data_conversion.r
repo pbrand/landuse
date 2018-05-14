@@ -127,71 +127,12 @@ if(satellite == 'Sentinel2'){
 }
 
 
+files = list.files(dir_input)
+files = setdiff( files, c(1:nrow(coord)) )
 
-
-########################################################
-#######################################################
-#########################################################
-if(satellite == 'Sentinel1'){
   
-  ########################################gdal translate for each subwindow and band
-  for(i in 1:nrow(coord)){
-    dir_output = i
-    
-    ##transleren, uitsnijden en resampelen met gdal_translate
-    w = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x2[i] , latarget = coord$y1[i]  )$dist *1.609344*1000 /10)
-    h = round(   geodistance(longvar = coord$x1[i], latvar = coord$y1[i] , lotarget = coord$x1[i] , latarget = coord$y2[i]  )$dist *1.609344*1000 /10 )
-    
-    bands = c("-vv-", "-vh-")
-    
-    
-    
-    files  = list.files(dir_input, pattern = 'tiff', recursive = TRUE) 
-    
-    dir.create(file.path( dir_input, dir_output))
-    
-    out_names = unlist(lapply(files, function(x){
-      x = strsplit(x, '[/]')[[1]][3]
-      x= strsplit(x, '[.]')[[1]][1]
-    }))
-    
-    for( j in 1:length(files)){
-      
-      
-      gdal_translate( file.path( dir_input, files[j]), file.path(dir_input, dir_output, paste0(out_names[j], '.tif')) , projwin = c( coord$x1[i], coord$y2[i], coord$x2[i] , coord$y1[i] ), outsize = c(w,h))
-    }
-    
-    
-    
-    #########################mosaic the raster per band
-    for(band in bands){
-      print(band)
-      files = setdiff( list.files(file.path(dir_input, dir_output), pattern = band),  list.files(file.path(dir_input, dir_output), pattern = 'aux')   )
-      #read and crop the raster
-      
-      r = raster(file.path(dir_input, dir_output, files[1]) )
-      
-      if(length(files)>1){
-        for(n in 2:length(files)){
-          r_new = raster( file.path(dir_input, dir_output, files[n]))
-          r[r[,,]==0 ] = r_new[r[,,]==0 ]
-        }
-      }
-      writeRaster(r, file.path( dir_input, dir_output, paste0(band, '.tif')), overwrite = TRUE)
-      
-    }
-    
-    #remove junk files
-    files=  setdiff( list.files(file.path(dir_input, dir_output)),  paste0(bands, '.tif') )
-    file.remove( file.path(dir_input, dir_output, files))
-    
-  }
-  
-  
-  
-  
-  
-}
+unlink(files, recursive = TRUE)
+ 
 
 
 
