@@ -12,12 +12,12 @@ library(gdalUtils)
 library(EBImage)
 
 #######Test input
-x1 = 0
+x1 = 17
 x2 = 18
-y1 = 43
+y1 = 49
 y2 = 50
 date = "2017-02-15"
-days = 100
+days = 300
 month_from = 1
 month_to = 12
 daylight = TRUE
