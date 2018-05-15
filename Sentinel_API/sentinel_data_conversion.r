@@ -1,23 +1,9 @@
-####TEST INPUT
- y1 = 51.5
- x1 = 4.5
- y2 = 52.5
- x2 = 5.5
- dir_input = 'Sentinel_API/db/test222'
- satellite = 'Sentinel1'
- pix = 10
-#
- 
- 
- 
- 
  library(gdalUtils)
  library(rgdal)
  library(McSpatial)
  library(raster)
  library(data.table)
  
-prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
 
 prepare_images = function(x1,x2,y1,y2,satellite, dir_input){
 
@@ -25,6 +11,7 @@ prepare_images = function(x1,x2,y1,y2,satellite, dir_input){
 
 
 ############DEVIDE IN SMALLER 
+  pix = 10
 step_x = (x2-x1) /  ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.609344*1000 / (2000 * pix) )   
 step_y = (y2- y1) / (  geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.609344*1000 / (2000 * pix) )  
 
@@ -129,7 +116,7 @@ if(satellite == 'Sentinel2'){
 
 files = list.files(dir_input)
 files = setdiff( files, c(1:nrow(coord)) )
-
+files = file.path(dir_input, files)
   
 unlink(files, recursive = TRUE)
  

@@ -17,19 +17,20 @@ x2 = 18
 y1 = 49
 y2 = 50
 date = "2017-02-15"
-days = 300
+days = 100
 month_from = 1
 month_to = 12
 daylight = TRUE
 satellite = 'Sentinel2'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
-dir_output = 'test2'       ##########is not used in this function but is required to assign output dir to downloads
+dir_output = 'test1'       ##########is not used in this function but is required to assign output dir to downloads
 cloud_cover = 25
 
 
 polygons = select(x1,x2,y1,y2, date, month_from, cloud_cover = cloud_cover , month_to, daylight, satellite,  days)
   
 
+prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
 
 
 library(leaflet)
