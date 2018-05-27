@@ -54,9 +54,7 @@ print("Check 1...")
         
         suppressWarnings( gdal_translate(ecws$ecw_files[j] , outsize =  dim(r)[2:1], file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff') ), projwin = v ) )
         
-        #r = raster(file.path(path_harddrive, 'output', dir ,paste0('arial_image_', j, '.tiff')) )
-        #r = crop(r, c(ecws$lower_left_x[j], ecws$upper_right_x[j], ecws$lower_left_y[j], ecws$upper_right_y[j] )  )
-        
+         
         }
       
       }
@@ -67,15 +65,5 @@ print("Check 1...")
   
   
  
- #merge the remaining rasters
- 
- #dirs =  list.files(tif_path)
- 
- #for( dir in dirs){
-  # print(dir)
-   
-  # fotos = list.files(paste0(subdir, '/', dir), pattern = 'luchtfoto', full.names = TRUE)
-   
- #}
  
 }

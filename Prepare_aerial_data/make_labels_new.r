@@ -16,7 +16,7 @@ make_labels = function(path_harddrive, kind){
         label = raster::rasterize( shape , r, field =  as.numeric( shape$wordt2012 ) )
       }else{
         shape = shape[shape$number != 3,]
-        label = raster::rasterize( shape , r, field =   as.numeric( shape$number))  
+        label = raster::rasterize( shape , r, field =   as.numeric( shape$number), fun = max) ###adde fun = max  
       }
       writeRaster(label, file.path(path_harddrive, 'output', dir, paste0(kind, '_labels.tif')) , overwrite= TRUE)
       

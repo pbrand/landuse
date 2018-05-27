@@ -1,70 +1,8 @@
-library(DBI)
-library(RPostgreSQL)
-library(datetime)
-library(suncalc)
-library(sp)
-library(rgdal)
-library(rgeos)
-library(rPython)
-library(parallel)
-library(raster)
-library(gdalUtils)
-library(EBImage)
-
+#niet suported
+#vierkant dat snijd met de band voor de dateline en de band na de dateline
 
 ###########################################################################################################
 select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
-  
-  if(x2<x1){
-    polygons_1 = find_polygons(x1,180,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
-    polygons_2 = find_polygons(-180,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
-  polygons = rbind(polygons)
-    }else{
-    polygons = find_polygons(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
-  }
-  
-  return(polygons)
-  
-
-
-}
-
-
-
-#construc eastern and wester hemishpere SpatialPolygons
-
-
-date_line_case = function(polygon, i, is_west){
-  east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
-  proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
-  west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
-  proj4string(west) =  CRS("+proj=longlat +datum=WGS84")
-  
-  
-  
-  #case handeling of dateline
-  polygons_temp = SpatialPolygons( list(    Polygons(list(polygon), 1) )  )
-  proj4string(polygons_temp) =  CRS("+proj=longlat +datum=WGS84")
-  
-  if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
-    eastern = polygon
-    eastern@coords[ eastern@coords[,1] <0 , 1] = 180
-    western = polygon
-    western@coords[ western@coords[,1] >0 , 1] = -180
-    if(is_west){
-      polygon = Polygons(list( western), i)
-    }else{
-      polygon = Polygons(list( eastern), i)
-    }
-  }else{
-    polygon = Polygons(list(polygon), i)
-  }
-  
-  return(polygon)
-}
-####end case handeling
-
-find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
   
   
   
@@ -147,10 +85,48 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   #eror handeling
   if(nrow(result) ==0){ print('error no products found in index')}else{
     
-    
+    east =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(90, 180, 180, 90), 'y' = c(-90, -90, 90, 90) )) )),1)))
+    proj4string(east) =  CRS("+proj=longlat +datum=WGS84")
+    west =   SpatialPolygons( list(Polygons( list(Polygon(  Polygon( data.frame('x' = c(-180, -90, -90, -180), 'y' = c(-90, -90, 90, 90) )) )),1)))
+    proj4string(west) =  CRS("+proj=longlat +datum=WGS84")
     
     
     ################Transform output to SpatialPolygonsDataFrame format
+    
+    l = 1
+    polygon_list = list()
+    
+    for(i in 1:nrow(result)){
+
+      polygon = as.numeric(unlist(strsplit( result$geometry[i],  '[ ,]')))
+      polygon = as.data.frame( matrix(polygon  ,  ncol = 2 , byrow = TRUE ))
+      colnames(polygon) = c('y', 'x')
+      polygon = polygon[,2:1]
+      polygon = Polygon(polygon)
+      
+      
+      
+      #case handeling of dateline
+      polygons_temp = SpatialPolygons( list(    Polygons(list(polygon), 1) )  )
+      proj4string(polygons_temp) =  CRS("+proj=longlat +datum=WGS84")
+      
+      if( gIntersects( polygons_temp, east) & gIntersects(polygons_temp, west) ){
+        eastern = polygon
+        eastern@coords[ eastern@coords[,1] <0 , 1] = 180
+        western = polygon
+        western@coords[ western@coords[,1] >0 , 1] = -180
+
+          polygon = Polygons(list( western, eastern), c(l,l+1))
+          polygon = Polygons(list( eastern), i)
+        
+      }else{
+        polygon = Polygons(list(polygon), i)
+      }
+      
+      
+      
+    }
+    
     polygons = SpatialPolygons( lapply(  c(1:nrow(result))  , function(i){
       polygon = as.numeric(unlist(strsplit( result$geometry[i],  '[ ,]')))
       polygon = as.data.frame( matrix(polygon  ,  ncol = 2 , byrow = TRUE ))
