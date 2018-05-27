@@ -1,21 +1,11 @@
-library(DBI)
-library(RPostgreSQL)
-library(datetime)
-library(suncalc)
-library(sp)
-library(rgdal)
-library(rgeos)
-library(rPython)
-library(parallel)
-library(raster)
-library(gdalUtils)
-library(EBImage)
+source('Sentinel_API/select.r')
+
 
 #######Test input
 x1 = 179
 x2 = -179
-y1 = 49
-y2 = 50
+y1 = 52
+y2 = 53
 date = "2017-02-15"
 days = 100
 month_from = 1
@@ -25,7 +15,6 @@ satellite = 'Sentinel2'
 downsample_factor = 1     ############is not used in this function but is a required user input to determine output
 dir_output = 'test1'       ##########is not used in this function but is required to assign output dir to downloads
 cloud_cover = 25
-source('Sentinel_API/select.r')
 
 
 polygons = select(x1,x2,y1,y2, date, month_from, cloud_cover = cloud_cover , month_to, daylight, satellite,  days)
@@ -34,30 +23,17 @@ polygons = select(x1,x2,y1,y2, date, month_from, cloud_cover = cloud_cover , mon
 
 
 
+#draw area
+area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+
+#get map
+location = extent(polygons)
+sq_map <-  get_map(location = c(location[1] - 0.5, location[3] -0.5, location[2] +0.5, location[4]+0.5), maptype = "satellite", source = "google")
 
 
-prepare_images(x1= x1, x2 = x2, y1 = y1, y2= y2, dir_input = dir_input, satellite = satellite)
+  ggmap(sq_map) + geom_polygon( data = polygons, aes(long,lat), fill = 'red', alpha = 0.2)+ geom_polygon( data = area, aes(long,lat), fill = 'yellow', alpha = 0.2)
 
-
-library(leaflet)
-
-area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('lng' = c(x1 , x2 , x2, x1, x1), 'lat' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-area@proj4string <-CRS("+init=epsg:3857")
-
-m = leaflet()
-m = addProviderTiles(m, providers$OpenStreetMap)
-m = addPolygons(m, data = area, color = 'red')
-m = addPolygons(m, data = polygons, color = 'blue')
-m = addTiles(m)
-saveWidget(m, "temp.html")
-
-
-string = 'random'
-polygons = polygons
-
-plot_grid(string, polygons){
-png(paste(string, '.png'))
-par(bg=NA)
-plot(polygons)
-dev.off()
-}
+  
+  
+  ggplot() + geom_polygon( data = area, aes(long,lat), fill = 'yellow', alpha = 0.2)

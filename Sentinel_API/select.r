@@ -10,7 +10,7 @@ library(parallel)
 library(raster)
 library(gdalUtils)
 library(EBImage)
-
+library(ggplot2)
 
 ###########################################################################################################
 select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
@@ -22,6 +22,8 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
     }else{
     polygons = find_polygons(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
   }
+  
+  draw(x1,x2,y1,y2, polygons)
   
   return(polygons)
   
@@ -207,5 +209,25 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
     return(polygons)
   }
   
+  
+}
+
+
+draw = function(x1,x2,y1,y2, polygons){
+  
+  #draw area
+  area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+  proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+  
+  #get map
+  location = extent(polygons)
+  sq_map <-  get_map(location = c(location[1] - 0.5, location[3] -0.5, location[2] +0.5, location[4]+0.5), maptype = "satellite", source = "google")
+  
+  
+  png('image.png')
+  print({
+  ggmap(sq_map) + geom_polygon( data = polygons, aes(long,lat), fill = 'red', alpha = 0.2)+ geom_polygon( data = area, aes(long,lat), fill = 'yellow', alpha = 0.2)
+  })
+    dev.off()
   
 }
