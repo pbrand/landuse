@@ -191,24 +191,37 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
 
 highest_intersection = function(area, polygons){
   
-  for(l in 1:length(polygons)  ){
+
   
     #order polygons by surface in common with the area to be covered
     intersections = c()
     for( z in 1:length(polygons)){
-      pol_temp =  gBuffer(polygons[z,], width = 0) 
-      area_temp = gIntersection(area, pol_temp)
+      print(z)
+      pol_temp = polygons[z,]
       
-      if(is.null(area_temp)){
-        intersections = c(intersections, 0)
+      if( is.null(pol_temp)){
+        intersections = c(intersections, 0) 
       }else{
-        intersections = c(intersections, gArea(area_temp) )
+         pol_temp =  gBuffer(polygons[z,], width = 0) 
+     
+          if( is.null(pol_temp)){
+          intersections = c(intersections, 0) 
         
+          }else{
+          area_temp = gIntersection(area, pol_temp)
+      
+          if(is.null(area_temp)){
+          intersections = c(intersections, 0)
+          }else{
+          intersections = c(intersections, gArea(area_temp) )
+        
+      }
+      }
       }
     }
     highest = which( intersections == max(intersections) )[1]
     return(highest)
-}
+
 }
 
 draw = function(x1,x2,y1,y2, polygons){
