@@ -200,7 +200,6 @@ highest_intersection = function(area, polygons){
     #order polygons by surface in common with the area to be covered
     intersections = c()
     for( z in 1:length(polygons)){
-      print(z)
       pol_temp = polygons[z,]
       
       if( is.null(pol_temp)){
