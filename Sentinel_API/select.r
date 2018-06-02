@@ -45,14 +45,17 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   date = as.Date(date)
   sun_info = getSunlightTimes( lon =  x1, lat =  y1, date = date, tz="UTC") 	
   
-  
-  
+  if(is.na(sun_info$sunrise)| is.na(sun_info$sunsetStart)|is.na(sun_info$sunset)|is.na(sun_info$sunriseEnd) ){
+    hour_from = '00'
+    hour_to = '24'
+  }else{
   if(daylight == TRUE){
     hour_from = format(sun_info$sunriseEnd, '%H')
     hour_to =format( sun_info$sunsetStart, '%H')
   }else{
     hour_from = format( sun_info$sunset, '%H')
     hour_to = format(sun_info$sunrise, '%H')
+  }
   }
   #in case midnight lies within the time stamp, fix it
   if(hour_from > hour_to){
