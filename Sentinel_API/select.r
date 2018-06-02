@@ -18,8 +18,9 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
     polygons = find_polygons(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
   }
   
+  if(!is.null(polygons)){
   draw(x1,x2,y1,y2, polygons)
-  
+  }
   return(polygons)
   
   
@@ -110,7 +111,10 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   dbDisconnect(con)
   
   #eror handeling
-  if(nrow(result) ==0){ print('error no products found in index')}else{
+  if(nrow(result) ==0){ 
+    print('error no products found in index')
+    return(NULL)
+    }else{
     
     
     
