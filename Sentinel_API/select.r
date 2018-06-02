@@ -177,7 +177,7 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
     cover = c()
    polygons_temp = polygons
      for(l in 1:length(polygons_temp)){
-       print(l)
+       print( paste('found', l , 'polygons'))
        #calculate all intersections with the area
        intersections = find_intersection(area, polygons = polygons_temp)
     #find highest intersection
