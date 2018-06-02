@@ -43,7 +43,10 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   ############prepare input data for query
   ##find daylight hours
   date = as.Date(date)
-  sun_info = getSunlightTimes(x1, y1, date = date, tz="UTC") 	
+  sun_info = getSunlightTimes( lon =  x1, lat =  y1, date = date, tz="UTC") 	
+  
+  
+  
   if(daylight == TRUE){
     hour_from = format(sun_info$sunriseEnd, '%H')
     hour_to =format( sun_info$sunsetStart, '%H')
