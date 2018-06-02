@@ -33,7 +33,7 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
 
 find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
   
-  
+  break_per = 0.05
   
   #make area
   area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
@@ -175,19 +175,39 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
     
     #####Throw away redundant polygons
     cover = c()
-   
-     for(l in 1:length(polygons)){
-       highest = highest_intersection(area, polygons = polygons)
-      pol_temp = gBuffer(polygons[highest,], width = 0) 
-      
-        cover = c(cover , highest)
-        area = gDifference(area, pol_temp)
+   polygons_temp = polygons
+     for(l in 1:length(polygons_temp)){
+       print(l)
+       #calculate all intersections with the area
+       intersections = find_intersection(area, polygons = polygons_temp)
+    #find highest intersection
+         highest = max(intersections)
+         #if this is the first time save the highest intersection
+         if(l == 1){ start_value = highest} 
+         #break forloop if highest intersection is less then 5 percent of the initial highest intersection
+         if(highest < 0.05* start_value){ break()}
+         
+         
         
-      
-      if(is.null(area)){ break()}
+      #find index of maximal intersection and save it's ID
+      index = which(intersections == highest)[1] 
+      cover = c(cover , polygons_temp$id[index] )
+       
+       
+       #subtract the highest intersecting polygon from the original area
+       pol_temp = gBuffer(polygons_temp[index,], width = 0) 
+        area = gDifference(area, pol_temp)
+        #break if the area is null in order to prevent error in the next iteration
+        if( is.null(area)){ break()}
+        
+        #remove all polygons that intersect less than the breaking percentage in order to save time in the next iteration
+        polygons_temp = polygons_temp[ intersections > break_per* start_value,]
+        #if the new polygon is null break the forloop to prevent an error in the next iteration
+        if( is.null(polygons_temp)){ break()}  
+
       }
     
-    polygons = polygons[cover,]
+    polygons = polygons[ polygons$id %in% cover,]
    
     
     return(polygons)
@@ -196,7 +216,7 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   
 
 
-highest_intersection = function(area, polygons){
+find_intersection = function(area, polygons){
   
 
   
@@ -225,8 +245,8 @@ highest_intersection = function(area, polygons){
       }
       }
     }
-    highest = which( intersections == max(intersections) )[1]
-    return(highest)
+   
+    return(intersections)
 
 }
 
