@@ -13,7 +13,17 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
   if(x2<x1){
     polygons_1 = find_polygons(x1,180,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
     polygons_2 = find_polygons(-180,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
-    polygons = rbind(polygons_1, polygons_2, makeUniqueIDs = TRUE)
+    
+    if( is.null(polygons_1) & is.null(polygons_2) ){ 
+      return(NULL)}else if(is.null(polygons_1)){
+        polygons= polygons_2
+      }else if(is.null(polygons_2)){
+      polygons = polygons_1
+      }else{
+        polygons = rbind(polygons_1, polygons_2, makeUniqueIDs = TRUE)
+    }
+    
+    
   }else{
     polygons = find_polygons(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
   }

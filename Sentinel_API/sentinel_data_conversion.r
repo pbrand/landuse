@@ -113,12 +113,12 @@ if(satellite == 'Sentinel2'){
   
 }
 
-
-files = list.files(dir_input)
-files = setdiff( files, c(1:nrow(coord)) )
-files = file.path(dir_input, files)
-  
-unlink(files, recursive = TRUE)
+#throw away old files
+# files = list.files(dir_input)
+# files = setdiff( files, c(1:nrow(coord)) )
+# files = file.path(dir_input, files)
+#   
+# unlink(files, recursive = TRUE)
  
 
 

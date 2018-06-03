@@ -2,12 +2,12 @@ source('Sentinel_API/select.r')
 
 
 #######Test input
-x1 = -180
-x2 = 180
-y1 = -90
-y2 = 90
+x1 = 11
+x2 = 13
+y1 = 41
+y2 = 42
 date = "2018-05-15"
-days = 10
+days = 15
 month_from = 1
 month_to = 12
 daylight = TRUE
