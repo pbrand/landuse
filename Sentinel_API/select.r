@@ -15,7 +15,8 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
     polygons_2 = find_polygons(-180,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
     
     if( is.null(polygons_1) & is.null(polygons_2) ){ 
-      return(NULL)}else if(is.null(polygons_1)){
+      polygons = NULL
+      }else if(is.null(polygons_1)){
         polygons= polygons_2
       }else if(is.null(polygons_2)){
       polygons = polygons_1

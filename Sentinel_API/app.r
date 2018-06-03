@@ -2,10 +2,10 @@ source('Sentinel_API/select.r')
 
 
 #######Test input
-x1 = 11
-x2 = 13
-y1 = 41
-y2 = 42
+x1 = 179
+x2 = -179
+y1 = 29
+y2 = 30
 date = "2018-05-15"
 days = 15
 month_from = 1
