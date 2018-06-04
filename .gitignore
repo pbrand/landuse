@@ -10,7 +10,7 @@ requests
 
 .ipynb_checkpoints/
 
-/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub/world
+#/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub/world
 
 #data_preparation_CBS_aerial_images/db
 data_preparation_CBS_aerial_images/output

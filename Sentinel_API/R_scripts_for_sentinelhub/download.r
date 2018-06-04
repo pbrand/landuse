@@ -3,52 +3,82 @@ x1 =  2
 x2 = 6
 y1 = 50
 y2 = 52
-date_to = '2016-05-24'
-satellite = 'L1C' #other possibilities L2A and SENTINEL1
-days = 100
-#needed for download
+date_to = '2018-02-24'
+satellite = 'L2A' #other possibilities L1C L2A and SENTINEL1
+days = 40
 dir_out = '/home/daniel/R/landuse/requests'
-
+#needed in case you want to use pre-defined shape
+shape_name = 'Netherlands'
 
 
 ###Required libraries
+setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
 library(datetime)
 library(rgdal)
 library(rgeos)
 library(McSpatial)
+#sentinelhub package of python. python 3 or higher required
+
+####download function for user given bounding box
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, days){
+  
+  #make polygon out of input
+  
+  #in case x2<x1 split the polygon on the date line x = 180
+  if(x2<x1){
+    area =  SpatialPolygons( list( Polygons( list(Polygon( data.frame('x' = c(x1, 180, 180, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ,   Polygons( list(Polygon( data.frame('x' = c(-180, x2, x2, -180, -180), 'y' = c(y1, y1, y2, y2, y1) ))) ,2) ))
+    proj4string(area) =  CRS("+proj=longlat +datum=WGS84")    
+  }else{
+    area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+    proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+    
+  }
+  
+  #download the area
+  for(i in 1:length(area)){
+    download(area[i,],satellite, dir_output, date_to, days )
+  }
+  
+  
+}
+
+
+#############download function for a predefined shape
+main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, shape_name){
+  world = readOGR('world')
+  area = world[world$NAME == shape_name,]
+  
+  download( area ,satellite, dir_output, date_to, days )
+  
+}
+
 
 ##############dowload function, dependend on the cover function
-download = function(x1,x2,y1,y2,satellite, dir_output, date_to, days){
- 
-  #make polygon from border coordinates. In future version input should be a polygon to begin with
-  area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-  proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
-   
+download = function(area,satellite, dir_output, date_to, days){
+  
+  
+  
   #compute date_from based on date_to and days
   date_from =  as.character(as.Date(date_to) - days)
- 
+  
   
   #find covering of the area. The covering object is a polygons of squares covering the polygon area
   #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
-  max_w= 50000 #meter
-  max_h = 50000 #meter
+  w= 50000 #meter
+  h = 50000 #meter
   covering = cover(area, w, h)
- 
+  
   #now download for each square in the covering polygon a tile from sentinelhub
   for(i in 1:length(covering)){
+    
+    dir.create(file.path(dir_out, i))
+    
     #run hte download in the comandline
     #You ned to fill in the path to the python script Sentinel_Hub.py here!!!!!!!!!!!!!!!!!!
-    comand = paste('python3 Sentinel_API/R_scripts_for_sentinelhub/Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_from,  date_to,  round(covering$w[i]/10) , round(covering$h[i]),  dir_out,  satellite)
+    comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_from,  date_to,  round(covering$w[i]/10) , round(covering$h[i]/10 ),  file.path(dir_out, i),  satellite)
+    #comand = paste('python3 Sentinel_Hub_new.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/10) , round(covering$h[i] / 10),  file.path(dir_out, i),  satellite)
+    
     try(system(comand))
-   #remove anoying xml files
-    useless_files = list.files(dir_out, pattern = 'xml')
-    file.remove(useless_files)
-    
-    #rename the file to something something more christian
-    file = setdiff( list.files(dir_out), paste0(c(1:length(covering)), '.tiff') )[1]
-   
-    file.rename( file.path( dir_out, file), paste0(dir_out, '/', i, '.tif'))
-    
   }
   
   
@@ -73,8 +103,8 @@ cover = function(area, w, h){
   
   
   #calculate in how many parst we should devide the heigth and width of the bounding box
-  parts_x = floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.6*1000 ) / max_w +1)
-  parts_y =  floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.6*1000 ) / max_h +1 )
+  parts_x = floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.6*1000 ) / w +1)
+  parts_y =  floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.6*1000 ) / h +1 )
   
   #calculate all bounding box coordinates of the covering squares
   x2_vec = x1 + (x2 - x1)/parts_x * rep(c(1:parts_x), each  = parts_y)
@@ -111,19 +141,8 @@ cover = function(area, w, h){
   return(covering)
 }
 
-
-###########This function returns the overview image that a user requested
-
-feedback_image = function(x1,x2,y1,y2,satellite, dir_out, dir_out, date_to, days){
-  w = 2000
-  h = 2000
-  #compute date_from to
-  date_from =  as.character(as.Date(date_to) - days)
-  #donwload the image
-  #You ned to fill in the path to the python script Sentinel_Hub.py here!!!!!!!!!!!!!!!!!!
-  comand = paste('python3 Sentinel_API/R_scripts_for_sentinelhub/Sentinel_Hub.py',  x1 , y1,  x2,  y2, date_from,  date_to,  w ,  h, dir_out,  satellite)
-  try(system(comand))
-  
-  
+what_are_the_shapes = function(){
+  world = readOGR('world')
+  return(world$NAME)
 }
 
