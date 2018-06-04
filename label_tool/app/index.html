@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	 <link href="css/all.css" rel="stylesheet">
+	 <link href="css/style.css" rel="stylesheet">
+	 <link href="css/reset.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container" id="select_file"></div>
+	<div class="container disable" id="container">
+		<nav class="main">
+			<ul>
+				<li>
+					<a href="#" class="draw" id="free_draw">
+						<i class="far fa-paint-brush"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#" class="draw" id="free_form">
+						<i class="far fa-star-half"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#" class="draw shape_draw" id="square">
+						<i class="far fa-square"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#" class="draw shape_draw" id="circle">
+						<i class="far fa-circle"></i>
+					</a>
+				</li>
+				<!-- <li>
+					<a href="#" id="pan">
+						<i class="far fa-hand-paper"></i>
+					</a>
+				</li> -->
+				<li>
+					<a href="#" id="zoom_in">
+						<i class="far fa-search-plus"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#" id="zoom_out">
+						<i class="far fa-search-minus"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#" id="save">
+						<i class="fas fa-save"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<nav class="main disable" id='pop_out'>
+			<ul></ul>
+		</nav>
+		<nav class="side">
+			<a id="close" href="#">
+				<i class="fas fa-times"></i>
+			</a>
+		</nav>
+		<nav class="delete"><a href="#"><i class="fas fa-trash"></i></a></nav>
+	</div>
+
+ 	<script src="js/fabric.min.js"></script>
+ 	<script src="js/rgbcolor.js"></script>
+ 	<script src="js/jquery-3.3.1.min.js"></script>
+ 	<script src="js/script.js"></script>
+</body>
+</html>

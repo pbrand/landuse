@@ -1,0 +1,684 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"sk",
+				"skills_2"
+			],
+			[
+				"onderz",
+				"onderzoekdocument"
+			],
+			[
+				"bl",
+				"_blanc"
+			],
+			[
+				"pad",
+				"padding"
+			],
+			[
+				"ch",
+				"chinook_1"
+			],
+			[
+				"c",
+				"chinook_4"
+			],
+			[
+				"chi",
+				"chinook_1"
+			],
+			[
+				"nav",
+				"navpos"
+			],
+			[
+				"inter",
+				"interpolate"
+			],
+			[
+				"padd",
+				"padding-right"
+			],
+			[
+				"ali",
+				"align-self"
+			],
+			[
+				"fle",
+				"flex-flow"
+			],
+			[
+				"back",
+				"background"
+			],
+			[
+				"inl",
+				"inline-flex"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"con",
+				"console"
+			],
+			[
+				"fl",
+				"flex"
+			],
+			[
+				"rg",
+				"rgba()"
+			],
+			[
+				"sc",
+				"score_deg"
+			],
+			[
+				"score",
+				"score_deg"
+			],
+			[
+				"v",
+				"vh"
+			],
+			[
+				"flex",
+				"flex-start"
+			],
+			[
+				"pr",
+				"preventDefault"
+			],
+			[
+				"text",
+				"text-align"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"tex",
+				"text-align"
+			],
+			[
+				"mar",
+				"margin-top"
+			],
+			[
+				"na",
+				"navpos"
+			],
+			[
+				"l",
+				"log"
+			],
+			[
+				"bac",
+				"background-size"
+			],
+			[
+				"paddi",
+				"padding-top"
+			],
+			[
+				"in",
+				"inline-block"
+			],
+			[
+				"al",
+				"alt\tAttr"
+			],
+			[
+				"ba",
+				"background-repeat"
+			],
+			[
+				"fonts",
+				"font-size"
+			],
+			[
+				"s",
+				"space-around"
+			],
+			[
+				"spa",
+				"space-between"
+			],
+			[
+				"fot",
+				"font-size"
+			],
+			[
+				"backg",
+				"background-color"
+			],
+			[
+				"box",
+				"box-shadow"
+			],
+			[
+				"u",
+				"ul\tTag"
+			],
+			[
+				"ps",
+				"position"
+			],
+			[
+				"he",
+				"header\tTag"
+			],
+			[
+				"sou",
+				"sound2"
+			],
+			[
+				"sound",
+				"sound1"
+			],
+			[
+				"chal",
+				"channel1"
+			],
+			[
+				"soun",
+				"sound1"
+			],
+			[
+				"cha",
+				"channel1"
+			],
+			[
+				"inc",
+				"include_once"
+			],
+			[
+				"els",
+				"else"
+			],
+			[
+				"gefe",
+				"Gefeliciteerd_ding"
+			],
+			[
+				"bacl",
+				"background-color"
+			],
+			[
+				"butt",
+				"button1"
+			],
+			[
+				"_",
+				"_POST"
+			],
+			[
+				"uns",
+				"unset"
+			],
+			[
+				"over",
+				"overlays"
+			],
+			[
+				"print",
+				"print_r"
+			],
+			[
+				"margin",
+				"margin-bottom"
+			],
+			[
+				"for",
+				"for\tfor …"
+			],
+			[
+				"axm",
+				"axmax"
+			],
+			[
+				"data",
+				"data2"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"marg",
+				"margin"
+			],
+			[
+				"backgoru",
+				"background-color"
+			],
+			[
+				"en",
+				"endTime"
+			],
+			[
+				"all",
+				"allStopWords"
+			],
+			[
+				"st",
+				"style\tTag"
+			],
+			[
+				"sel",
+				"selS1"
+			],
+			[
+				"butto",
+				"buttons"
+			],
+			[
+				"di",
+				"div\tTag"
+			],
+			[
+				"post",
+				"post"
+			],
+			[
+				"json",
+				"json_encode"
+			],
+			[
+				"tax",
+				"taxonomies"
+			],
+			[
+				"fo",
+				"font-size"
+			],
+			[
+				"d",
+				"display"
+			],
+			[
+				"co",
+				"color"
+			],
+			[
+				"inli",
+				"inline-block"
+			],
+			[
+				"t",
+				"th\tTag"
+			],
+			[
+				"max",
+				"max_items"
+			],
+			[
+				"if",
+				"if\tif …"
+			],
+			[
+				"el",
+				"else"
+			],
+			[
+				"fe",
+				"featured_item"
+			],
+			[
+				"it",
+				"items"
+			],
+			[
+				"uitgeli",
+				"uitgelichte"
+			],
+			[
+				"feat",
+				"featured_location"
+			],
+			[
+				"featu",
+				"featured_locations"
+			],
+			[
+				"fea",
+				"featured_locations"
+			],
+			[
+				"order",
+				"orderby"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"the",
+				"the_post"
+			],
+			[
+				"po",
+				"post"
+			],
+			[
+				"have",
+				"have_posts"
+			],
+			[
+				"jobs_",
+				"job_listing"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 173.0,
+		"last_filter": "Snippet: ",
+		"selected_items":
+		[
+			[
+				"Snippet: ",
+				"Snippet: html"
+			],
+			[
+				"Html",
+				"Set Syntax: HTML"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"ht",
+				"Set Syntax: HTML (Tcl)"
+			]
+		],
+		"width": 490.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/flori/Documents/xampp/htdocs/portfolio/js/items.json",
+		"/C/Users/flori/Desktop/index 2.html",
+		"/C/Users/flori/Documents/xampp/htdocs/3D Animation/index.html",
+		"/D/Google Drive/Fontys/M6/Concept/Prototype/3D Animation - example/index.html",
+		"/D/Google Drive/Fontys/M6/Concept/Prototype/3D Animation - example/app.js",
+		"/C/Users/flori/Desktop/d3js.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site testjes/Rest scripts.js",
+		"/C/Users/flori/Desktop/temp.js",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/fase_3.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/js/items.json",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/fase_2.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/fase_1.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/item.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/index.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/css/reset.css",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/css/style.css",
+		"/D/Google Drive/Fontys/M6/Portfolio/Site/js/custom.js",
+		"/D/Google Drive/Fontys/M6/Concept/Prototype/VR-test/index.html",
+		"/D/Google Drive/Fontys/M6/Portfolio/Portfolio tekst.htm",
+		"/D/Google Drive/Fontys/M6/Concept/Prototype/3D Animation/package.json",
+		"/C/Users/flori/Documents/xampp/htdocs/lingerwebsite/index.html",
+		"/C/Users/flori/Documents/xampp/htdocs/lingerwebsite/lib/font-awesome/css/font-awesome.css",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/index.php",
+		"/D/Huis/Twan/Site/index.html",
+		"/D/Huis/Twan/Site/problemen.html",
+		"/D/Huis/Twan/Site/ervaringen.html",
+		"/D/Huis/Twan/Site/ontwikkelingsproces.html",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/header.php",
+		"/C/Users/flori/Documents/xampp/htdocs/WP/wp-config.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/nav.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/scripts/custom.js",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/style.css",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/game.css",
+		"/D/Google Drive/Fontys/S6/Sprint 4/Vlog/Scripts/test.py",
+		"/D/Google Drive/Fontys/S6/Sprint 4/Vlog/Scripts/script.py",
+		"/C/Users/flori/Desktop/index.html",
+		"/D/Google Drive/Fontys/S6/Sprint 4/Vlog/script.py",
+		"/C/Users/flori/Desktop/linger_company.sql",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel3.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel2.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel5.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel4.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/kortingspel6.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/login.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/waardebonnen.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/welkom.html",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/win.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/waardebonUse.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/familie.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/destroy.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/barcode.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/catalog.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/admin/index.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/admin/edit.php",
+		"/C/Users/flori/Desktop/linger_company/waardebonnen.php",
+		"/C/Users/flori/Desktop/linger_company/waardebonUse.php",
+		"/C/Users/flori/Desktop/linger_company/scripts/custom.js",
+		"/C/Users/flori/Desktop/linger_company/barcode.php",
+		"/C/Users/flori/Desktop/linger_company/admin/index.php",
+		"/C/Users/flori/Desktop/edit.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/scripts/Score_system.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/admin/submit.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/scripts/score_output.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/waardebonUnlock.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/admin/db.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/win - Copy.php",
+		"/C/Users/flori/Desktop/db.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/error_reporting.php",
+		"/C/Users/flori/Documents/xampp/htdocs/linger_company/admin/submit_edit.php",
+		"/C/Users/flori/Desktop/install.sh",
+		"/C/Users/flori/Desktop/welkom_router.html",
+		"/D/Google Drive/Linger - Proftaak semester 6_/Sprint 3/Development/html/welkom_router.html",
+		"/D/Google Drive/Linger - Proftaak semester 6_/Sprint 3/Development/html/kortingspel3.html",
+		"/C/Users/flori/Desktop/Phaser Template 3/js/game.js",
+		"/D/Google Drive/Aspire - Proftaak semester 6_/Sprint 3/Proof of Concept/Key Press/index.html",
+		"/C/Users/flori/Desktop/Phaser Template 2/js/game.js",
+		"/D/Google Drive/Aspire - Proftaak semester 6_/Sprint 3/Proof of Concept/Key Press/guitar.html",
+		"/D/Google Drive/Aspire - Proftaak semester 6_/Sprint 3/Proof of Concept/Key Press/onkey2.html",
+		"/C/Users/flori/Desktop/Phaser Template 2/js/phaser.min.js",
+		"/C/Users/flori/Desktop/Phaser Template 2/index.html",
+		"/C/Users/flori/Desktop/Phaser Template/js/game.js",
+		"/C/Users/flori/Desktop/Phaser Template/index.html",
+		"/D/github/ADS71-C/Python Backend/Frontend/Views/index.html",
+		"/D/github/ADS_DV/visualisatie/index.html",
+		"/D/github/ADS_DV/visualisatie/css/style.css",
+		"/D/github/ADS_DV/visualisatie/js/script.js",
+		"/D/github/ADS71-C/Python Backend/Frontend/Resources/css/widgets.css",
+		"/D/github/ADS71-C/Python Backend/Frontend/Views/Home2.html",
+		"/C/Users/flori/GCD W5/example.py",
+		"/C/Users/flori/GCD W5/stopwords.py",
+		"/C/Users/flori/Desktop/www.fonts.com.har",
+		"/C/Users/flori/Desktop/Dart/script.js",
+		"/C/Users/flori/Desktop/Dart/index.html",
+		"/D/Dropbox/ADS-Data Insight/GatheredJsons/FunctieGebouw-Bouwjaar-TypeIncident.json",
+		"/C/Users/flori/Desktop/bever-bevatter/class-page-template-example.php",
+		"/C/Users/flori/AppData/Roaming/bizarre creations/blur/settings.xml",
+		"/C/Users/flori/AppData/Roaming/bizarre creations/blur/save/blursave",
+		"/C/Users/flori/Desktop/bever-bevatter/page-template-example.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/plugins/custom-featured-items/custom-featured-items.php",
+		"/C/Users/flori/Desktop/bever-bevatter/templates/beverbevatter.css",
+		"/C/Users/flori/Desktop/bever-bevatter/templates/beverbevatter.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/plugins/custom-featured-items/custom.js",
+		"/D/odrive/Google Drive/013 straatjes/Stage/Stage Florian/Plugin/v1.0/custom-featured-items/custom-featured-items.php",
+		"/C/Users/flori/Desktop/custom.js",
+		"/C/Users/flori/Desktop/menukaart-item-widget.php",
+		"/C/Users/flori/Desktop/menukaart.css",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/functions.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/inc/integrations/wp-job-manager/widgets/class-widget-home-taxonomy-image-grid.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/page.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/header.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/gebiedenText.js",
+		"/C/Users/flori/Desktop/Framing effects in mixed price bundling - Springer.html",
+		"/C/Users/flori/Desktop/email-test 2.html",
+		"/C/Users/flori/Desktop/email-test.html",
+		"/C/Users/flori/Desktop/Template 3 (copy 01).html",
+		"/C/Users/flori/Desktop/driehoek2.svg",
+		"/C/Users/flori/Desktop/driehoek.svg",
+		"/C/Users/flori/Desktop/arcive/onlinefontconverter.com/font.css",
+		"/C/Users/flori/Desktop/arcive/onlinefontconverter.com/converted-files/font.css",
+		"/C/Users/flori/Desktop/arcive/onlinefontconverter.com/README.txt",
+		"/C/Users/flori/Desktop/Error log - tg______.pfb.json",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/plugins/wp-job-manager/templates/content-widget-job_listing.php",
+		"/C/Users/flori/Documents/xampp/php/php.ini",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/wp-content/themes/listify-child/page-templates/template-home.php",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/.htaccess",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/.htaccessOld",
+		"/C/Users/flori/Documents/xampp/htdocs/devswp/013Straatjes/.htaccessDEFAULT"
+	],
+	"find":
+	{
+		"height": 30.0
+	},
+	"find_in_files":
+	{
+		"height": 117.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 30.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "index.sublime-project",
+	"replace":
+	{
+		"height": 55.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 284.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

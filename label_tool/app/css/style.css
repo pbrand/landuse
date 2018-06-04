@@ -1,0 +1,154 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../webfonts/Roboto-Medium.ttf');
+}
+
+*
+{
+	font-family: 'Roboto';
+}
+
+#container *
+{
+	color: white;
+}
+
+h1
+{
+	color: black;
+}
+
+nav
+{
+	top: 15vh;
+	position: fixed;
+	z-index: 900;
+}
+
+.container
+{
+	height: 100vh;
+	width: 100vw;
+}
+
+#container
+{
+	display: flex;
+}
+
+#select_file
+{
+	padding: 5vh;
+}
+
+nav.main ul
+{
+	width: 3vw;
+	background-color: #342f35;
+}
+
+nav.main ul li
+{
+	height: 10vh;
+	width: 100%;
+}
+
+nav.main ul li a
+{
+	display: flex;
+	height: 100%;
+	width: 100%;
+	text-decoration: none;
+}
+
+nav ul li a:hover
+{
+	background-color: #433c44;
+}
+
+nav.main ul li a.active
+{
+	background-color: #747887;
+}
+
+nav.main ul li a i
+{
+	align-self: center;
+	margin: auto;
+	font-size: 1.5vw;
+}
+
+nav#pop_out
+{
+	left: 3vw;
+}
+
+nav#pop_out ul
+{
+	width: auto;
+}
+
+nav#pop_out span
+{
+	margin: auto 1vw;
+}
+
+div.color_box
+{
+	border: 0.1vw solid white;
+	border-radius: 0.2vw;
+	margin: auto 0.5vw;
+	height: 1vw;
+	width: 1vw;
+}
+
+nav.side
+{
+	top: 10vh;
+	right: 5vw;
+}
+
+nav.side a
+{
+	background-color: #342f35;
+	display: block;
+	height: 100%;
+	width: 100%;
+	padding: 2vh;
+}
+
+nav.delete
+{
+	background-color: #342f35;
+	top: 20vh;
+	right: 5vw;
+}
+
+nav.delete a
+{
+	display: block;
+	padding: 1vw;
+	color: white;
+}
+
+canvas.lower-canvas
+{
+	z-index: 0;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+canvas.upper-canvas
+{
+	z-index: 2;
+}
+
+div.canvas-container
+{
+	margin: auto auto;
+}
+
+.disable
+{
+	display: none!important;
+}
