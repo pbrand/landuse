@@ -13,13 +13,25 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
   if(x2<x1){
     polygons_1 = find_polygons(x1,180,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
     polygons_2 = find_polygons(-180,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
-    polygons = rbind(polygons_1, polygons_2, makeUniqueIDs = TRUE)
+    
+    if( is.null(polygons_1) & is.null(polygons_2) ){ 
+      polygons = NULL
+      }else if(is.null(polygons_1)){
+        polygons= polygons_2
+      }else if(is.null(polygons_2)){
+      polygons = polygons_1
+      }else{
+        polygons = rbind(polygons_1, polygons_2, makeUniqueIDs = TRUE)
+    }
+    
+    
   }else{
     polygons = find_polygons(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days)
   }
   
+  if(!is.null(polygons)){
   draw(x1,x2,y1,y2, polygons)
-  
+  }
   return(polygons)
   
   
@@ -32,23 +44,29 @@ select = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight
 
 find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, daylight, satellite, days){
   
-  
+  break_per = 0.1
   
   #make area
   area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
   proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
-  area = gBuffer(area, width = 0) 
+
   
   ############prepare input data for query
   ##find daylight hours
   date = as.Date(date)
-  sun_info = getSunlightTimes(x1, y1, date = date, tz="UTC") 	
+  sun_info = getSunlightTimes( lon =  x1, lat =  y1, date = date, tz="UTC") 	
+  
+  if(is.na(sun_info$sunrise)| is.na(sun_info$sunsetStart)|is.na(sun_info$sunset)|is.na(sun_info$sunriseEnd) ){
+    hour_from = '00'
+    hour_to = '24'
+  }else{
   if(daylight == TRUE){
     hour_from = format(sun_info$sunriseEnd, '%H')
     hour_to =format( sun_info$sunsetStart, '%H')
   }else{
     hour_from = format( sun_info$sunset, '%H')
     hour_to = format(sun_info$sunrise, '%H')
+  }
   }
   #in case midnight lies within the time stamp, fix it
   if(hour_from > hour_to){
@@ -110,7 +128,10 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
   dbDisconnect(con)
   
   #eror handeling
-  if(nrow(result) ==0){ print('error no products found in index')}else{
+  if(nrow(result) ==0){ 
+    print('error no products found in index')
+    return(NULL)
+    }else{
     
     
     
@@ -162,54 +183,100 @@ find_polygons = function(x1,x2,y1,y2, date, month_from, cloud_cover ,month_to, d
     polygons = SpatialPolygons(polygons)
     polygons = SpatialPolygonsDataFrame(polygons, data = frame)
     proj4string(polygons) =  CRS("+proj=longlat +datum=WGS84")
-    polygons = gBuffer(polygons, width = 0) 
     #############################
     
     
     
     #####Throw away redundant polygons
-    
-    #order polygons by surface in common with the area to be covered
-    intersections = c()
-    for( z in 1:length(polygons)){
-      area_temp = gIntersection(area, polygons[z,])
-      intersections = c(intersections, gArea(area_temp) )
-    }
-    polygons = polygons[order(intersections),]
-    
-    #remove polygons if one can do without
-    z=1
-    while(z <= length(polygons) & length(polygons) >1 ){
-      if(is.null(gDifference(area, polygons[-z,]))){
-        polygons = polygons[-z,]
-      }else{
-        z = z+1
+    cover = c()
+   polygons_temp = polygons
+     for(l in 1:length(polygons_temp)){
+       print( paste('found', l , 'polygons'))
+       #calculate all intersections with the area
+       intersections = find_intersection(area, polygons = polygons_temp)
+    #find highest intersection
+         highest = max(intersections)
+         #if this is the first time save the highest intersection
+         if(l == 1){ start_value = highest} 
+         #break forloop if highest intersection is less then 5 percent of the initial highest intersection
+         if(highest < break_per* start_value){ break()}
+         
+         
+        
+      #find index of maximal intersection and save it's ID
+      index = which(intersections == highest)[1] 
+      cover = c(cover , polygons_temp$id[index] )
+       
+       
+       #subtract the highest intersecting polygon from the original area
+       pol_temp = gBuffer(polygons_temp[index,], width = 0) 
+        area = gDifference(area, pol_temp)
+        #break if the area is null in order to prevent error in the next iteration
+        if( is.null(area)){ break()}
+        
+        #remove all polygons that intersect less than the breaking percentage in order to save time in the next iteration
+        polygons_temp = polygons_temp[ intersections > break_per* start_value,]
+        #if the new polygon is null break the forloop to prevent an error in the next iteration
+        if( is.null(polygons_temp)){ break()}  
+
       }
-    }
     
-    ###############
-    
-    polygons = polygons[!duplicated(polygons$id),]
+    polygons = polygons[ polygons$id %in% cover,]
+   
     
     return(polygons)
   }
-  
-  
 }
+  
 
+
+find_intersection = function(area, polygons){
+  
+
+  
+    #order polygons by surface in common with the area to be covered
+    intersections = c()
+    for( z in 1:length(polygons)){
+      pol_temp = polygons[z,]
+      
+      if( is.null(pol_temp)){
+        intersections = c(intersections, 0) 
+      }else{
+         pol_temp =  gBuffer(polygons[z,], width = 0) 
+     
+          if( is.null(pol_temp)){
+          intersections = c(intersections, 0) 
+        
+          }else{
+          area_temp = gIntersection(area, pol_temp)
+      
+          if(is.null(area_temp)){
+          intersections = c(intersections, 0)
+          }else{
+          intersections = c(intersections, gArea(area_temp) )
+        
+      }
+      }
+      }
+    }
+   
+    return(intersections)
+
+}
 
 draw = function(x1,x2,y1,y2, polygons){
   
   if(x2<x1){
     #draw area
     area_1 =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, 180, 180, x1), 'y' = c(y1, y1, y2, y2) ))) ,1) ))
-      area_2 =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(-180, x2, x2, -180), 'y' = c(y1, y1, y2, y2) ))) ,1) ))
-      area = rbind(area_1, area_2 , makeUniqueIDs = TRUE)
-      
-      proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+    area_2 =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(-180, x2, x2, -180), 'y' = c(y1, y1, y2, y2) ))) ,1) ))
+    area = rbind(area_1, area_2 , makeUniqueIDs = TRUE)
+    
+    proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
     png('image.png')
     plot(polygons)
     plot(area, add = TRUE, col = 'red')
+    plot(polygons)
     dev.off()
     
     
@@ -217,14 +284,15 @@ draw = function(x1,x2,y1,y2, polygons){
     area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1), 'y' = c(y1, y1, y2, y2) ))) ,1) ))    
     png('image.png')
     plot(polygons)
-    plot(area, add = TRUE, col = 'red')
-    dev.off()
+    plot(area, add = TRUE, col = 'red' )
+    plot(polygons)
+        dev.off()
   }
-  
-  
-  
-  
-  
-  
-  
 }
+  
+  
+  
+  
+  
+  
+  

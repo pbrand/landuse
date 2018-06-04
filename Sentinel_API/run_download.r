@@ -1,1 +1,0 @@
-./download.sh 17 18 49 50 2017-02-15 1 12 true Sentinel2 25 300 ./floep
