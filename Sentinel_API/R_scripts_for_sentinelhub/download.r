@@ -1,11 +1,11 @@
 #testinput download
-x1 =  4.83122
-x2 = 4.8851
-y1 = 52.23802
-y2 = 52.2844
+x1 =  2
+x2 = 6
+y1 = 50
+y2 = 52
 date_to = '2016-05-24'
 satellite = 'L1C' #other possibilities L2A and SENTINEL1
-days = 15
+days = 100
 #needed for download
 dir_out = '/home/daniel/R/landuse/requests'
 
@@ -40,9 +40,13 @@ download = function(x1,x2,y1,y2,satellite, dir_output, date_to, days){
     #You ned to fill in the path to the python script Sentinel_Hub.py here!!!!!!!!!!!!!!!!!!
     comand = paste('python3 Sentinel_API/R_scripts_for_sentinelhub/Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_from,  date_to,  round(covering$w[i]/10) , round(covering$h[i]),  dir_out,  satellite)
     try(system(comand))
+   #remove anoying xml files
+    useless_files = list.files(dir_out, pattern = 'xml')
+    file.remove(useless_files)
     
     #rename the file to something something more christian
-    file = setdiff( list.files(dir_out), paste0(c(1:length(covering)), '.tiff') )
+    file = setdiff( list.files(dir_out), paste0(c(1:length(covering)), '.tiff') )[1]
+   
     file.rename( file.path( dir_out, file), paste0(dir_out, '/', i, '.tif'))
     
   }
