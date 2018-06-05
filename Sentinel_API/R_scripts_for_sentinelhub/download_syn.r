@@ -3,8 +3,8 @@
 
 #search input of user
 date_to = '2018-01-19'  #what date are we considering
-satellite = 'L1C' #What satellite system do we use  other possibilities L1C L2A and SENTINEL1
-days = 20 # How far are we looking back
+satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
+days = 10 # How far are we looking back
 
 
 #in case of box what are the bounding coordinates
@@ -14,26 +14,35 @@ y1 = 50
 y2 = 51
 
 #needed in case you want to use pre-defined shape
-shape_name = 'Netherlands' #  'Aruba' # 
+shape_name =  'Aruba' # 'Netherlands' #
 
 #where to write the downloads
-dir_out = '/home/daniel/R/landuse/requests'
+dir_out = '/home/daniel/R/landuse/request'
 
-
-##parameters to restrict requests in size, depend on the user account
+##Changing these pareams can cause errors
+##parameters to restrict requests in size, depend on the user account (filter)
 threshold_area = 5  #how large can the requested area be
-threshold_days = 31 #For how long a period can the user requst data
-wait = 60  #how many seconds does the server wait till making the wms request for the next tile
+threshold_days = 10 #For how long a period can the user requst data
+wait = 20  #how many seconds does the server wait till making the wms request for the next tile
+
+#####changing these params can cause errors
+#some configuration parameters, do not change unless you know what you are doing
+w= 10000 #meter
+h = 10000 #meter
+res = 10 #meter
+
 ################################################################################################
 
-###############################callable functions###############################
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days)
 
-#main_base_on_shape(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days)
+###############################callable functions###############################
+#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res)
+
+#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res)
 
 #make_preview(dir_out)
 
 #what_are_the_shapes()
+
 
 
 ################################Required libraries########################################
@@ -47,14 +56,16 @@ library(jpeg)
 library(raster)
 #sentinelhub package of python. python 3 or higher required
 
+
+
 ###################################donwload based on a bounding box#########################################
 #callable from C#
 
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res){
   
-  #in case search window in time is too large throw an error
-  if(days >31){ return('Time window is larger than your service plan allows.')}
   
+  
+
   #make polygon out of input
   #in case x2<x1 split the polygon on the date line x = 180
   if(x2<x1){
@@ -65,13 +76,13 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   }
   
-  #In case area is too large throw an error
-  if(gArea(area) > threshold_area){return('Area is larger than your service plan allowed')}
   
+continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res)
+  if(!continue){return('error')}
   
   #download the area
   for(i in 1:length(area)){
-    download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait)
+    download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait, w, h ,res)
   }
   
   return('Download ready')
@@ -82,20 +93,20 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
 ################################Donwload based on a predefined shape ###############################
 #Callable from C#
 
-main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days){
-  #check if time window is not too large
-  if(days >threshold_days){ return('Time window is larger than your service plan allows.')}
-  
+main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res){
+
+    
   #load n the requested shape
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
-  #Check if the area is not too large
-  if(gArea(area) > threshold_area){return('area was larger than your service plan allowed')}
+  
+  continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res)
+  if(!continue){return('error')}
   
   #download the images
   for(i in 1:length(area)){
-    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait )
+    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait, w, h, res )
   }
   return('Download ready')
 }
@@ -103,20 +114,19 @@ main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, sha
 
 #################dowload an area###################################
 #Not callable from C#
-download = function(area,satellite, dir_out, date_to, days, wait){
+download = function(area,satellite, dir_out, date_to, days, wait, w, h, res){
   #create the subdir in which you are going to write
   dir.create(dir_out)
   
   
-  #some configuration parameters
-  w= 50000 #meter
-  h = 50000 #meter
-  res = 10 #meter
-  
+
   
   #find covering of the area. The covering object is a polygons of squares covering the polygon area
   #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
   covering = cover(area, w, h)
+  
+  #compute date_from based on date_to and days
+  date_from = as.character(as.Date(date_to) - days)
   
   
   for(i in 1:length(covering)){
@@ -124,9 +134,7 @@ download = function(area,satellite, dir_out, date_to, days, wait){
     #create a directory in which you are going to place the images of this tile
     dir.create(file.path(dir_out, i))
     
-      #compute date_from based on date_to and days
-      date_from = as.character(as.Date(date_to) - days)
-      #built the wms request
+       #built the wms request
       comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
       #run the comand synchronosly in the comand line
       try(system(comand, intern = FALSE , wait = FALSE))
@@ -210,6 +218,34 @@ make_preview = function(dir_out){
     im = raster::as.array(im)
     writeJPEG(im, target_files[i])
  }
+  
+}
+
+
+##################################Estimate duration for predefined shape##################################################
+estimate = function(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res){
+  dir.create(dir_out)
+  
+  #check if time window is not too large
+  if(days >threshold_days){
+    write('Time window is larger than your service plan allows.', file.path(dir_out, 'message.txt'))
+    return(FALSE)
+    }
+  
+  #Check if the area is not too large
+  if(gArea(area) > threshold_area){
+    write('area was larger than your service plan allowed', file.path(dir_out, 'message.txt'))
+    return(FALSE)}
+  
+ 
+  covering = cover(area, w, h)
+  
+  #estimate sizes
+  duration = round(  (length(covering) * wait)/ (60*60) , digits = 1 )
+  mem = round(length(covering) * 0.05 , digits = 1 )
+  
+  write(paste('The expected processing time of your request is', duration, 'hours. The request is free of charge.', 'The total size of you request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
+  return(TRUE) 
   
 }
 
