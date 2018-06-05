@@ -1,14 +1,15 @@
 #testinput download
-x1 =  2
-x2 = 6
-y1 = 50
-y2 = 52
+x1 =  4.5
+x2 = 4.8
+y1 = 50.8
+y2 = 51
 date_to = '2018-01-19'
 satellite = 'L1C' #other possibilities L1C L2A and SENTINEL1
-days = 100
 dir_out = '/home/daniel/R/landuse/requests'
 #needed in case you want to use pre-defined shape
-shape_name = 'Netherlands'
+shape_name = 'Aruba' #'Netherlands'
+cores = 3
+days = 20
 
 
 ###Required libraries
@@ -17,10 +18,11 @@ library(datetime)
 library(rgdal)
 library(rgeos)
 library(McSpatial)
+library(parallel)
 #sentinelhub package of python. python 3 or higher required
 
 ####download function for user given bounding box
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, days){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, cores, threshold_area){
   
   #make polygon out of input
   
@@ -31,12 +33,11 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, 
   }else{
     area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
-    
   }
   
   #download the area
   for(i in 1:length(area)){
-    download(area[i,],satellite, dir_output, date_to, days )
+    download(area[i,],satellite, dir_output, date_to, days, cores )
   }
   
   
@@ -44,52 +45,47 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, 
 
 
 #############download function for a predefined shape
-main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, shape_name){
+main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, shape_name, cores, threshold_area){
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
-  download( area ,satellite, dir_output, date_to, days )
+  download( area ,satellite, dir_output, date_to, days , cores )
   
 }
 
 
 ##############dowload function, dependend on the cover function
-download = function(area,satellite, dir_output, date_to, days){
+download = function(area,satellite, dir_output, date_to, days, cores){
   
-  
-  
-
-  
-  #find covering of the area. The covering object is a polygons of squares covering the polygon area
-  #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
+  #some configuration parameters
   w= 10000 #meter
   h = 10000 #meter
   res = 10 #meter
   covering = cover(area, w, h)
   days_step = 1
-  
-  #now download for each square in the covering polygon a tile from sentinelhub
-  for(i in 1:length(covering)){
-    print(i)
-    dir.create(file.path(dir_out, i))
-    
-    #run hte download in the comandline
-    #You ned to fill in the path to the python script Sentinel_Hub.py here!!!!!!!!!!!!!!!!!!
-   
-   
-   # while(length(list.files(file.path(dir_out, i)))==0 ){
-  #    print('step')
-    #compute date_from based on date_to and days
-    date_from =  as.character(as.Date(date_to) - days_step)
-    comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
-   # comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite)
-    try(system(comand))
-  #  day  = days +days_step
-  #  }
-  }
-  
 
+  #find covering of the area. The covering object is a polygons of squares covering the polygon area
+  #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
+  covering = cover(area, w, h)
   
+  #make cluster
+  cl = makeCluster(cores)
+  clusterExport(cl, c('covering',  'days_step', 'res', 'date_to', 'satellite', 'dir_out', 'days'))
+  
+  parLapply(cl, c(1:length(covering)), function(i){
+    dir.create(file.path(dir_out, i))
+
+    for(n in 0:days ){
+      if(length(list.files(file.path(dir_out, i))) >0){break()}
+      #compute date_from based on date_to and days
+      date_from = as.character(as.Date(date_to) - n)
+      comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
+      try(system(comand))
+    }
+  })
+  
+  stopCluster(cl)
+
 }
 
 
