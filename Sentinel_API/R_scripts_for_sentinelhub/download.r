@@ -10,6 +10,7 @@ dir_out = '/home/daniel/R/landuse/requests'
 shape_name = 'Aruba' #'Netherlands'
 cores = 3
 days = 20
+threshold_area = 5
 
 
 ###Required libraries
@@ -21,8 +22,9 @@ library(McSpatial)
 library(parallel)
 #sentinelhub package of python. python 3 or higher required
 
+#Direct comunication with C#####
 ####download function for user given bounding box
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, cores, threshold_area){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area){
   
   #make polygon out of input
   
@@ -34,28 +36,35 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_output, date_to, 
     area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   }
+  if(gArea(area) > threshold_area){return('area was larger than your service plan allowed')}
   
   #download the area
   for(i in 1:length(area)){
-    download(area[i,],satellite, dir_output, date_to, days, cores )
+    download(area[i,],satellite, file.path(dir_out, i), date_to, days, cores )
   }
   
+  return('Download ready')
   
 }
 
-
+###Direct comunication with C#
 #############download function for a predefined shape
-main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_output, date_to, days, shape_name, cores, threshold_area){
+main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, cores, threshold_area){
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
-  download( area ,satellite, dir_output, date_to, days , cores )
+  if(gArea(area) > threshold_area){return('area was larger than your service plan allowed')}
   
+  for(i in 1:length(area)){
+  download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , cores )
+  }
+  return('Download ready')
 }
 
 
 ##############dowload function, dependend on the cover function
-download = function(area,satellite, dir_output, date_to, days, cores){
+download = function(area,satellite, dir_out, date_to, days, cores){
+  dir.create(dir_out)
   
   #some configuration parameters
   w= 10000 #meter
@@ -93,7 +102,7 @@ download = function(area,satellite, dir_output, date_to, days, cores){
 
 
 
-
+##Helper function no comunication with C#
 ######################################cover a shape with rectangles of equal width and heigth
 cover = function(area, w, h){
   
@@ -144,8 +153,11 @@ cover = function(area, w, h){
   return(covering)
 }
 
+#################################
+#Direct comunication with C#
+#searches shapes that now lay predefined in the backend
 what_are_the_shapes = function(){
   world = readOGR('world')
-  return(world$NAME)
+  return( unique(world$NAME))
 }
 
