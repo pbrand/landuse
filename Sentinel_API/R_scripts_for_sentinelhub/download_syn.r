@@ -1,25 +1,43 @@
-#testinput download
+#############################PARAMETERS####################################################
+
+
+#search input of user
+date_to = '2018-01-19'  #what date are we considering
+satellite = 'L1C' #What satellite system do we use  other possibilities L1C L2A and SENTINEL1
+days = 20 # How far are we looking back
+
+
+#in case of box what are the bounding coordinates
 x1 =  4.5
 x2 = 5
 y1 = 50
 y2 = 51
-date_to = '2018-01-19'
-satellite = 'L1C' #other possibilities L1C L2A and SENTINEL1
-dir_out = '/home/daniel/R/landuse/requests'
-#needed in case you want to use pre-defined shape
-shape_name = 'Aruba' # 'Netherlands' #
-cores = 3
-days = 20
-threshold_area = 5
 
-#callable functions
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area)
-#main_base_on_shape(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, cores, threshold_area)
-#make_preview(dir_out, cores)
+#needed in case you want to use pre-defined shape
+shape_name = 'Netherlands' #  'Aruba' # 
+
+#where to write the downloads
+dir_out = '/home/daniel/R/landuse/requests'
+
+
+##parameters to restrict requests in size, depend on the user account
+threshold_area = 5  #how large can the requested area be
+threshold_days = 31 #For how long a period can the user requst data
+wait = 60  #how many seconds does the server wait till making the wms request for the next tile
+################################################################################################
+
+###############################callable functions###############################
+#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days)
+
+#main_base_on_shape(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days)
+
+#make_preview(dir_out)
+
 #what_are_the_shapes()
 
-###Required libraries
-setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
+
+################################Required libraries########################################
+#setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
 library(datetime)
 library(rgdal)
 library(rgeos)
@@ -29,12 +47,15 @@ library(jpeg)
 library(raster)
 #sentinelhub package of python. python 3 or higher required
 
-#Direct comunication with C#####
-####download function for user given bounding box
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area){
- 
-  #make polygon out of input
+###################################donwload based on a bounding box#########################################
+#callable from C#
+
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days){
   
+  #in case search window in time is too large throw an error
+  if(days >31){ return('Time window is larger than your service plan allows.')}
+  
+  #make polygon out of input
   #in case x2<x1 split the polygon on the date line x = 180
   if(x2<x1){
     area =  SpatialPolygons( list( Polygons( list(Polygon( data.frame('x' = c(x1, 180, 180, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ,   Polygons( list(Polygon( data.frame('x' = c(-180, x2, x2, -180, -180), 'y' = c(y1, y1, y2, y2, y1) ))) ,2) ))
@@ -43,84 +64,82 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
     area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   }
-  if(gArea(area) > threshold_area){return('area was larger than your service plan allowed')}
+  
+  #In case area is too large throw an error
+  if(gArea(area) > threshold_area){return('Area is larger than your service plan allowed')}
   
   
   #download the area
   for(i in 1:length(area)){
-    download(area[i,],satellite, file.path(dir_out, i), date_to, days, cores)
+    download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait)
   }
   
   return('Download ready')
   
 }
 
-###Direct comunication with C#
-#############download function for a predefined shape
-main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, cores, threshold_area){
+
+################################Donwload based on a predefined shape ###############################
+#Callable from C#
+
+main_base_on_shape = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days){
+  #check if time window is not too large
+  if(days >threshold_days){ return('Time window is larger than your service plan allows.')}
+  
+  #load n the requested shape
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
+  #Check if the area is not too large
   if(gArea(area) > threshold_area){return('area was larger than your service plan allowed')}
   
+  #download the images
   for(i in 1:length(area)){
-  download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , cores )
+    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait )
   }
   return('Download ready')
 }
 
 
-##############dowload function, dependend on the cover function
-download = function(area,satellite, dir_out, date_to, days, cores){
+#################dowload an area###################################
+#Not callable from C#
+download = function(area,satellite, dir_out, date_to, days, wait){
+  #create the subdir in which you are going to write
   dir.create(dir_out)
-  
- 
   
   
   #some configuration parameters
-  w= 10000 #meter
-  h = 10000 #meter
+  w= 50000 #meter
+  h = 50000 #meter
   res = 10 #meter
-  days_step = 1
-
+  
+  
   #find covering of the area. The covering object is a polygons of squares covering the polygon area
   #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
-
   covering = cover(area, w, h)
-
   
-  #make cluster
-  cl = makeCluster(cores)
-  clusterCall(cl, function(){
-    library(rgdal)
-    library(rgeos)
-  })
-  clusterExport(cl, c('covering',  'days_step', 'res', 'date_to', 'satellite', 'dir_out', 'days', 'days_step'))
-
   
-  parLapply(cl, c(1:length(covering)), function(i){
+  for(i in 1:length(covering)){
+    print(i)
+    #create a directory in which you are going to place the images of this tile
     dir.create(file.path(dir_out, i))
-
-    for(n in 0:days ){
-      if(length(list.files(file.path(dir_out, i))) >0){break()}
+    
       #compute date_from based on date_to and days
-      date_from = as.character(as.Date(date_to) - n)
+      date_from = as.character(as.Date(date_to) - days)
+      #built the wms request
       comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
-      try(system(comand))
-    }
-  })
+      #run the comand synchronosly in the comand line
+      try(system(comand, intern = FALSE , wait = FALSE))
+      
+      #wait a moment before making another request
+      Sys.sleep(wait) 
+  }
+  
+  }
+  
 
-  stopCluster(cl)
-
-}
-
-
-#######################
-
-
-
-##Helper function no comunication with C#
-######################################cover a shape with rectangles of equal width and heigth
+#################FIND COVERING OF AN AREA######
+#Not callable from C#
 cover = function(area, w, h){
   
   
@@ -170,33 +189,27 @@ cover = function(area, w, h){
   return(covering)
 }
 
-#################################
-#Direct comunication with C#
-#searches shapes that now lay predefined in the backend
+
+###################FIND ALL PREDIFINED SHAPES##############
+#Callable from C#
 what_are_the_shapes = function(){
   world = readOGR('world')
   return( unique(world$NAME))
 }
 
-###places color jpegs in the dir_out directory based on the tiff files that are already there
-make_preview = function(dir_out, cores){
+##################################MAKE JPEG VIEW OF TIFF FILES##################################################
+#Callable from C#
+make_preview = function(dir_out){
   
   files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
   target_files = gsub(files, patter = 'tiff', replacement = '.jpg')
   
-   #make cluster
-   cl = makeCluster(cores)
-   clusterExport(cl, c('target_files', 'files'))
-   clusterCall(cl, function(){
-     library(jpeg)
-   })
-  
-   parLapply(cl,  c(1:length(files)), function(i){
+ 
+ for( i in 1:length(files)){
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
     writeJPEG(im, target_files[i])
-  })
-   stopCluster(cl)
-   
+ }
+  
 }
 
