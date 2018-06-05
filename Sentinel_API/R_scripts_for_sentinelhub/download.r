@@ -3,9 +3,9 @@ x1 =  2
 x2 = 6
 y1 = 50
 y2 = 52
-date_to = '2018-02-24'
-satellite = 'L2A' #other possibilities L1C L2A and SENTINEL1
-days = 40
+date_to = '2018-01-19'
+satellite = 'L1C' #other possibilities L1C L2A and SENTINEL1
+days = 100
 dir_out = '/home/daniel/R/landuse/requests'
 #needed in case you want to use pre-defined shape
 shape_name = 'Netherlands'
@@ -58,30 +58,37 @@ download = function(area,satellite, dir_output, date_to, days){
   
   
   
-  #compute date_from based on date_to and days
-  date_from =  as.character(as.Date(date_to) - days)
-  
+
   
   #find covering of the area. The covering object is a polygons of squares covering the polygon area
   #these values are chosen this way as our desired resolution is 10 meters and we can at maximum request and image of 5000 by 5000
-  w= 50000 #meter
-  h = 50000 #meter
+  w= 10000 #meter
+  h = 10000 #meter
+  res = 10 #meter
   covering = cover(area, w, h)
+  days_step = 1
   
   #now download for each square in the covering polygon a tile from sentinelhub
   for(i in 1:length(covering)){
-    
+    print(i)
     dir.create(file.path(dir_out, i))
     
     #run hte download in the comandline
     #You ned to fill in the path to the python script Sentinel_Hub.py here!!!!!!!!!!!!!!!!!!
-    comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_from,  date_to,  round(covering$w[i]/10) , round(covering$h[i]/10 ),  file.path(dir_out, i),  satellite)
-    #comand = paste('python3 Sentinel_Hub_new.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/10) , round(covering$h[i] / 10),  file.path(dir_out, i),  satellite)
-    
+   
+   
+   # while(length(list.files(file.path(dir_out, i)))==0 ){
+  #    print('step')
+    #compute date_from based on date_to and days
+    date_from =  as.character(as.Date(date_to) - days_step)
+    comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
+   # comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite)
     try(system(comand))
+  #  day  = days +days_step
+  #  }
   }
   
-  
+
   
 }
 
