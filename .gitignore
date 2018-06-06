@@ -22,3 +22,4 @@ bin/
 Sentinel_API/api_service/packages
 *.userprefs
 
+Sentinel_API/api_service/.vs/
