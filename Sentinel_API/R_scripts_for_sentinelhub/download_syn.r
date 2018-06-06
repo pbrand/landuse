@@ -31,7 +31,7 @@ res = 10 # resolution in meter
 ###############################callable functions###############################
 
 #estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res, preview)
+#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days,  threshold_area, wait, threshold_days, w, h, res, preview)
 
 #estimate_shape(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
 #main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview)
@@ -56,7 +56,7 @@ library(raster)
 ###################################donwload based on a bounding box#########################################
 #callable from C#
 
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res, preview){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days,  threshold_area, wait, threshold_days, w, h, res, preview){
   
   #make polygon out of input
   #in case x2<x1 split the polygon on the date line x = 180
