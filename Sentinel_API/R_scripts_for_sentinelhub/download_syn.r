@@ -131,7 +131,7 @@ download = function(area,satellite, dir_out, date_to, days, wait, w, h, res, pre
   #Wait one minute for the remaining downloads to finish
   Sys.sleep(60)
   #in case the user requested a preview translate all files to jpeg
-  if(preview){
+  if(preview==1){
   make_preview(file.path(dir_out))
   }
   }
