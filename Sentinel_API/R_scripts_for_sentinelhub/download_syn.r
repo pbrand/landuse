@@ -211,11 +211,10 @@ make_preview = function(dir_out){
   #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
  if(length(files)>0){
  for( i in 1:length(files)){
-   print(files[i])
+  
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
     im = im*4
-    im = max(im, 1)
     writeJPEG(im, target_files[i])
  }
  }
