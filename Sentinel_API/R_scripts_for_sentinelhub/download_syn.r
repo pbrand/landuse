@@ -5,12 +5,12 @@
 date_to = '2018-01-19'  #what date are we considering
 satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
 days = 10 # How far are we looking back
-preview = TRUE
+preview = 1
 #in case of box what are the bounding coordinates
-x1 =  4.8
-x2 = 5
-y1 = 50.7
-y2 = 51
+x1 =  37.3
+x2 = 37.8
+y1 = 0
+y2 = 0.5
 #needed in case you want to use pre-defined shape
 shape_name =  'Aruba' # 'Netherlands' #
 
@@ -211,8 +211,10 @@ make_preview = function(dir_out){
   #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
  if(length(files)>0){
  for( i in 1:length(files)){
+   print(files[i])
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
+    im = im*4
     writeJPEG(im, target_files[i])
  }
  }
@@ -221,7 +223,7 @@ make_preview = function(dir_out){
 
 ##################################Estimate duration for predefined shape##################################################
 estimate_bbox = function(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
-  
+  if(x2<x1){x2 = x2+180}
   area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
   proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   
