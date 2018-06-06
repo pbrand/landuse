@@ -1,45 +1,37 @@
 #############################PARAMETERS####################################################
 
 
-#search input of user
+############input of user via browser
 date_to = '2018-01-19'  #what date are we considering
 satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
 days = 10 # How far are we looking back
-
-
+preview = TRUE
 #in case of box what are the bounding coordinates
-x1 =  4.5
+x1 =  4.8
 x2 = 5
-y1 = 50
+y1 = 50.7
 y2 = 51
-
 #needed in case you want to use pre-defined shape
 shape_name =  'Aruba' # 'Netherlands' #
 
-#where to write the downloads
-dir_out = '/home/daniel/R/landuse/request'
-
-##Changing these pareams can cause errors
+##############input decided by backend
+dir_out = '/home/daniel/R/landuse/request' #where to write the downloads
+##Changing these pareams below can have serious consequences
 ##parameters to restrict requests in size, depend on the user account (filter)
 threshold_area = 5  #how large can the requested area be
 threshold_days = 10 #For how long a period can the user requst data
 wait = 20  #how many seconds does the server wait till making the wms request for the next tile
-
-#####changing these params can cause errors
-#some configuration parameters, do not change unless you know what you are doing
-w= 10000 #meter
-h = 10000 #meter
-res = 10 #meter
+w= 10000 # width of the tiles in meter
+h = 10000 #heigth of the tiles in meter
+res = 10 # resolution in meter
 
 ################################################################################################
 
 
 ###############################callable functions###############################
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res)
+#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res, preview)
 
-#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res)
-
-#make_preview(dir_out)
+#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview)
 
 #what_are_the_shapes()
 
@@ -61,11 +53,8 @@ library(raster)
 ###################################donwload based on a bounding box#########################################
 #callable from C#
 
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res, preview){
   
-  
-  
-
   #make polygon out of input
   #in case x2<x1 split the polygon on the date line x = 180
   if(x2<x1){
@@ -76,13 +65,13 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   }
   
-  
-continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res)
+  #check validity of input and write a preview and time estimate in dir_out
+continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
   if(!continue){return('error')}
   
   #download the area
   for(i in 1:length(area)){
-    download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait, w, h ,res)
+    download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait, w, h ,res, preview)
   }
   
   return('Download ready')
@@ -93,20 +82,20 @@ continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, thres
 ################################Donwload based on a predefined shape ###############################
 #Callable from C#
 
-main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res){
+main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview){
 
     
   #load n the requested shape
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
-  
-  continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res)
+  #check validity of input and write a preview and time estimate in dir_out
+  continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
   if(!continue){return('error')}
   
   #download the images
   for(i in 1:length(area)){
-    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait, w, h, res )
+    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait, w, h, res , preview)
   }
   return('Download ready')
 }
@@ -114,7 +103,7 @@ main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wai
 
 #################dowload an area###################################
 #Not callable from C#
-download = function(area,satellite, dir_out, date_to, days, wait, w, h, res){
+download = function(area,satellite, dir_out, date_to, days, wait, w, h, res, preview){
   #create the subdir in which you are going to write
   dir.create(dir_out)
   
@@ -138,11 +127,16 @@ download = function(area,satellite, dir_out, date_to, days, wait, w, h, res){
       comand = paste('python3 Sentinel_Hub.py',  covering$x1[i] , covering$y1[i],  covering$x2[i],  covering$y2[i], date_to,  round(covering$w[i]/res) , round(covering$h[i]/res ),  file.path(dir_out, i),  satellite, '--date_earliest', date_from)
       #run the comand synchronosly in the comand line
       try(system(comand, intern = FALSE , wait = FALSE))
-      
+    
       #wait a moment before making another request
-      Sys.sleep(wait) 
+      Sys.sleep( max(wait - time_dif, 0)) 
   }
-  
+  #Wait one minute for the remaining downloads to finish
+  Sys.sleep(60)
+  #in case the user requested a preview translate all files to jpeg
+  if(preview){
+  make_preview(file.path(dir_out))
+  }
   }
   
 
@@ -206,45 +200,60 @@ what_are_the_shapes = function(){
 }
 
 ##################################MAKE JPEG VIEW OF TIFF FILES##################################################
-#Callable from C#
+#Not callable from C#
 make_preview = function(dir_out){
   
-  files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
-  target_files = gsub(files, patter = 'tiff', replacement = '.jpg')
+  #find all tiff files that have not yet ben translated to jpeg
+  tiff_files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
+  jpg_files = list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.jpg')
+  jpg_files = gsub(jpg_files, pattern = 'jpg', replacement = 'tiff')
+  files = setdiff(tiff_files, jpg_files)
+  #compute names of the jpegs
+  target_files = gsub(files, patter = 'tiff', replacement = 'jpg')
   
- 
+  #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
+ if(length(files)>0){
  for( i in 1:length(files)){
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
     writeJPEG(im, target_files[i])
  }
-  
+ }
 }
 
 
 ##################################Estimate duration for predefined shape##################################################
-estimate = function(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res){
+estimate = function(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
+  #create output dir
   dir.create(dir_out)
   
-  #check if time window is not too large
+  #check if time window is not too large, if it is too large write error messge in txt file and quit process
   if(days >threshold_days){
     write('Time window is larger than your service plan allows.', file.path(dir_out, 'message.txt'))
     return(FALSE)
     }
   
-  #Check if the area is not too large
+  #Check if the area is not too large, if it is too large write error messge in txt file and quit process
   if(gArea(area) > threshold_area){
     write('area was larger than your service plan allowed', file.path(dir_out, 'message.txt'))
     return(FALSE)}
   
- 
+ #find covering of the area
   covering = cover(area, w, h)
   
-  #estimate sizes
-  duration = round(  (length(covering) * wait)/ (60*60) , digits = 1 )
-  mem = round(length(covering) * 0.05 , digits = 1 )
+  #save a preview of the area and it's covering
+  png(file.path(dir_out,'image.png' ) )
+  print({
+  plot(covering)
+  plot(area, add = TRUE, col = 'red')
+  plot(covering, add = TRUE)
+  })
+  dev.off()
   
-  write(paste('The expected processing time of your request is', duration, 'hours. The request is free of charge.', 'The total size of you request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
+  #estimate size and duration of the request and write a txt message in dir_out
+  duration = max( round(  (length(covering) * wait + preview*2.5*length(cover) + 60)/ (60*60)   , digits = 1 ) , 0.1)
+  mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
+  write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
   return(TRUE) 
   
 }
