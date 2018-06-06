@@ -29,8 +29,11 @@ res = 10 # resolution in meter
 
 
 ###############################callable functions###############################
+
+#estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
 #main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, cores, threshold_area, wait, threshold_days, w, h, res, preview)
 
+#estimate_shape(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
 #main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview)
 
 #what_are_the_shapes()
@@ -65,10 +68,7 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
     proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
   }
   
-  #check validity of input and write a preview and time estimate in dir_out
-continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-  if(!continue){return('error')}
-  
+
   #download the area
   for(i in 1:length(area)){
     download(area[i,],satellite, file.path(dir_out, i), date_to, days, wait, w, h ,res, preview)
@@ -89,9 +89,6 @@ main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wai
   world = readOGR('world')
   area = world[world$NAME == shape_name,]
   
-  #check validity of input and write a preview and time estimate in dir_out
-  continue =   estimate(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-  if(!continue){return('error')}
   
   #download the images
   for(i in 1:length(area)){
@@ -129,7 +126,7 @@ download = function(area,satellite, dir_out, date_to, days, wait, w, h, res, pre
       try(system(comand, intern = FALSE , wait = FALSE))
     
       #wait a moment before making another request
-      Sys.sleep( max(wait - time_dif, 0)) 
+      Sys.sleep(wait) 
   }
   #Wait one minute for the remaining downloads to finish
   Sys.sleep(60)
@@ -223,20 +220,24 @@ make_preview = function(dir_out){
 
 
 ##################################Estimate duration for predefined shape##################################################
-estimate = function(area,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
+estimate_bbox = function(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
+  
+  area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+  proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+  
   #create output dir
   dir.create(dir_out)
   
   #check if time window is not too large, if it is too large write error messge in txt file and quit process
   if(days >threshold_days){
     write('Time window is larger than your service plan allows.', file.path(dir_out, 'message.txt'))
-    return(FALSE)
+    return( list(FALSE, -1, -1) )
     }
   
   #Check if the area is not too large, if it is too large write error messge in txt file and quit process
   if(gArea(area) > threshold_area){
     write('area was larger than your service plan allowed', file.path(dir_out, 'message.txt'))
-    return(FALSE)}
+    return( list(FALSE, -1, -1) )}
   
  #find covering of the area
   covering = cover(area, w, h)
@@ -254,7 +255,51 @@ estimate = function(area,date_from, days, dir_out, wait, threshold_area, thresho
   duration = max( round(  (length(covering) * wait + preview*2.5*length(cover) + 60)/ (60*60)   , digits = 1 ) , 0.1)
   mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
   write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
-  return(TRUE) 
+  requests_per_minute = 60/wait
+  return( list(TRUE, duration, requests_per_minute) ) 
+  
+}
+
+
+
+estimate_shape = function(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
+  #create output dir
+  dir.create(dir_out)
+  
+  #load n the requested shape
+  world = readOGR('world')
+  area = world[world$NAME == shape_name,]
+  
+  
+  #check if time window is not too large, if it is too large write error messge in txt file and quit process
+  if(days >threshold_days){
+    write('Time window is larger than your service plan allows.', file.path(dir_out, 'message.txt'))
+    return( list(FALSE, -1, -1) )
+  }
+  
+  #Check if the area is not too large, if it is too large write error messge in txt file and quit process
+  if(gArea(area) > threshold_area){
+    write('area was larger than your service plan allowed', file.path(dir_out, 'message.txt'))
+    return( list(FALSE, -1, -1) )}
+  
+  #find covering of the area
+  covering = cover(area, w, h)
+  
+  #save a preview of the area and it's covering
+  png(file.path(dir_out,'image.png' ) )
+  print({
+    plot(covering)
+    plot(area, add = TRUE, col = 'red')
+    plot(covering, add = TRUE)
+  })
+  dev.off()
+  
+  #estimate size and duration of the request and write a txt message in dir_out
+  duration = max( round(  (length(covering) * wait + preview*2.5*length(cover) + 60)/ (60*60)   , digits = 1 ) , 0.1)
+  mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
+  write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
+  requests_per_minute = 60/wait
+  return( list(TRUE, duration, requests_per_minute) ) 
   
 }
 
