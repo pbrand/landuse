@@ -31,10 +31,10 @@ res = 10 # resolution in meter
 ###############################callable functions###############################
 
 #estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days,  threshold_area, wait, threshold_days, w, h, res, preview)
+#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, wait, w, h, res, preview)
 
 #estimate_shape(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview)
+#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview)
 
 #what_are_the_shapes()
 
@@ -56,7 +56,7 @@ library(raster)
 ###################################donwload based on a bounding box#########################################
 #callable from C#
 
-main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days,  threshold_area, wait, threshold_days, w, h, res, preview){
+main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, days, wait, w, h, res, preview){
   
   #make polygon out of input
   #in case x2<x1 split the polygon on the date line x = 180
@@ -82,7 +82,7 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
 ################################Donwload based on a predefined shape ###############################
 #Callable from C#
 
-main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, threshold_area, threshold_days, w, h, res, preview){
+main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview){
 
     
   #load n the requested shape
