@@ -4,7 +4,7 @@
 ############input of user via browser
 date_to = '2018-01-19'  #what date are we considering
 satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
-days = 10 # How far are we looking back
+days = 5 # How far are we looking back
 preview = 1
 #in case of box what are the bounding coordinates
 x1 =  37.3
@@ -12,7 +12,7 @@ x2 = 37.8
 y1 = 0
 y2 = 0.5
 #needed in case you want to use pre-defined shape
-shape_name =  'Aruba' # 'Netherlands' #
+shape_name =   'Netherlands' #   'Aruba' #
 shape_chapter = 'countries'
 
 ##############input decided by backend
@@ -21,9 +21,9 @@ dir_out = '/home/daniel/R/landuse/request' #where to write the downloads
 ##parameters to restrict requests in size, depend on the user account (filter)
 threshold_area = 5  #how large can the requested area be
 threshold_days = 10 #For how long a period can the user requst data
-wait = 20  #how many seconds does the server wait till making the wms request for the next tile
-w= 10000 # width of the tiles in meter
-h = 10000 #heigth of the tiles in meter
+wait = 80  #how many seconds does the server wait till making the wms request for the next tile
+w= 30000 # width of the tiles in meter
+h = 30000 #heigth of the tiles in meter
 res = 10 # resolution in meter
 
 ################################################################################################
@@ -35,9 +35,11 @@ res = 10 # resolution in meter
 
 
 #estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
+
 #main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, wait, w, h, res, preview)
 
 #estimate_shape(shape_chapter, shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
+
 #main_base_on_shape(shape_chapter, satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview)
 
 #what_are_the_shapes()
@@ -132,7 +134,7 @@ download = function(area,satellite, dir_out, date_to, days, wait, w, h, res, pre
       Sys.sleep(wait) 
   }
   #Wait one minute for the remaining downloads to finish
-  Sys.sleep(60)
+  Sys.sleep(3*wait)
   #in case the user requested a preview translate all files to jpeg
   if(preview==1){
   make_preview(file.path(dir_out))
@@ -224,7 +226,7 @@ make_preview = function(dir_out){
   
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
-    im = im*4
+    im = im
     writeJPEG(im, target_files[i])
  }
  }
@@ -265,7 +267,7 @@ estimate_bbox = function(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_a
   
   #estimate size and duration of the request and write a txt message in dir_out
   duration = max( round(  (length(covering) * wait + preview*2.5*length(cover) + 60)/ (60*60)   , digits = 1 ) , 0.1)
-  mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
+  mem =  max( round(length(covering) * 0.1 , digits = 1 ), 0.1)
   write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
   requests_per_minute = 60/wait
   return( list(TRUE, duration, requests_per_minute) ) 
@@ -311,8 +313,8 @@ estimate_shape = function(shape_chapter, shape_name,date_from, days, dir_out, wa
   dev.off()
   
   #estimate size and duration of the request and write a txt message in dir_out
-  duration = max( round(  (length(covering) * wait + preview*2.5*length(cover) + 60)/ (60*60)   , digits = 1 ) , 0.1)
-  mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
+  duration = max( round(  (length(covering) * wait + preview*4*length(cover) + 3*wait)/ (60*60)   , digits = 1 ) , 0.1)
+  mem =  max( round(length(covering) * 0.1 , digits = 1 ), 0.1)
   write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
   requests_per_minute = 60/wait
   
