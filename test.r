@@ -18,6 +18,7 @@ target_files = gsub(files, patter = 'tiff', replacement = 'jpg')
     
   # im =  sqrt(sqrt(im*0.4) )
    im = sqrt(im) 
+   im[,,3] = im[,,3] - 0.2
     writeJPEG(im, target_files[i])
   }
 

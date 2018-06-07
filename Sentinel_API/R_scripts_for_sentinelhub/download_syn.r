@@ -12,14 +12,14 @@ x2 = 37.8
 y1 = 0
 y2 = 0.5
 #needed in case you want to use pre-defined shape
-shape_name =   'Netherlands' #   'Aruba' #
+shape_name =   'Estonia' #'Netherlands' #   'Aruba' #
 shape_chapter = 'countries'
 
 ##############input decided by backend
 dir_out = '/home/daniel/R/landuse/request' #where to write the downloads
 ##Changing these pareams below can have serious consequences
 ##parameters to restrict requests in size, depend on the user account (filter)
-threshold_area = 5  #how large can the requested area be
+threshold_area = 10  #how large can the requested area be
 threshold_days = 10 #For how long a period can the user requst data
 wait = 80  #how many seconds does the server wait till making the wms request for the next tile
 w= 30000 # width of the tiles in meter
