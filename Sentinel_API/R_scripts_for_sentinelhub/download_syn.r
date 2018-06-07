@@ -226,7 +226,7 @@ make_preview = function(dir_out){
   
     im = raster::stack(files[i], bands = c(4:2) )
     im = raster::as.array(im)
-    im = im
+    im = im*4
     writeJPEG(im, target_files[i])
  }
  }
