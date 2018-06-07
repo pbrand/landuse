@@ -13,6 +13,7 @@ y1 = 0
 y2 = 0.5
 #needed in case you want to use pre-defined shape
 shape_name =  'Aruba' # 'Netherlands' #
+shape_chapter = 'countries'
 
 ##############input decided by backend
 dir_out = '/home/daniel/R/landuse/request' #where to write the downloads
@@ -30,18 +31,20 @@ res = 10 # resolution in meter
 
 ###############################callable functions###############################
 
+#setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
+
+
 #estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
 #main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, wait, w, h, res, preview)
 
-#estimate_shape(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-#main_base_on_shape(satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview)
+#estimate_shape(shape_chapter, shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
+#main_base_on_shape(shape_chapter, satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview)
 
 #what_are_the_shapes()
 
 
 
 ################################Required libraries########################################
-#setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
 library(datetime)
 library(rgdal)
 library(rgeos)
@@ -82,13 +85,13 @@ main_base_on_boundingbox = function(x1,x2,y1,y2,satellite, dir_out, date_to, day
 ################################Donwload based on a predefined shape ###############################
 #Callable from C#
 
-main_base_on_shape = function(satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview){
+main_base_on_shape = function(shape_chapter, satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview){
 
     
   #load n the requested shape
-  world = readOGR('world')
-  area = world[world$NAME == shape_name,]
-  
+  area = readOGR(file.path('shapes', shape_chapter, shape_name))
+
+    
   
   #download the images
   for(i in 1:length(area)){
@@ -192,8 +195,15 @@ cover = function(area, w, h){
 ###################FIND ALL PREDIFINED SHAPES##############
 #Callable from C#
 what_are_the_shapes = function(){
-  world = readOGR('world')
-  return( unique(world$NAME))
+ names =  list.files('shapes')
+ 
+ shapes = list()
+ for(name in names){
+  shapes = append(shapes, list( list.files(file.path('shapes', name)) ) )
+ }
+ names(shapes) = names
+ 
+  return( shapes)
 }
 
 ##################################MAKE JPEG VIEW OF TIFF FILES##################################################
@@ -264,25 +274,29 @@ estimate_bbox = function(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_a
 
 
 
-estimate_shape = function(shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
+estimate_shape = function(shape_chapter, shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview){
   #create output dir
   dir.create(dir_out)
   
   #load n the requested shape
-  world = readOGR('world')
-  area = world[world$NAME == shape_name,]
+  area = readOGR(file.path('shapes', shape_chapter, shape_name))
+  
   
   
   #check if time window is not too large, if it is too large write error messge in txt file and quit process
   if(days >threshold_days){
     write('Time window is larger than your service plan allows.', file.path(dir_out, 'message.txt'))
-    return( list(FALSE, -1, -1) )
+    ret = list(FALSE, -1, -1, -1) 
+    names(ret) = c('continue', 'duration', 'requests per minute', 'size')
+    return( ret)
   }
   
   #Check if the area is not too large, if it is too large write error messge in txt file and quit process
   if(gArea(area) > threshold_area){
     write('area was larger than your service plan allowed', file.path(dir_out, 'message.txt'))
-    return( list(FALSE, -1, -1) )}
+    ret = list(FALSE, -1, -1, -1) 
+    names(ret) = c('continue', 'duration', 'requests per minute', 'size')
+    return(ret )}
   
   #find covering of the area
   covering = cover(area, w, h)
@@ -301,7 +315,10 @@ estimate_shape = function(shape_name,date_from, days, dir_out, wait, threshold_a
   mem =  max( round(length(covering) * 0.05 , digits = 1 ), 0.1)
   write(paste('The expected processing time of your request is around', duration, 'hours. The request is free of charge.', 'The total size of your request is approximatly', mem, 'Gb.'),  file.path(dir_out, 'message.txt'))
   requests_per_minute = 60/wait
-  return( list(TRUE, duration, requests_per_minute) ) 
+  
+  ret = list(TRUE, duration, requests_per_minute, mem)
+  names(ret) = c('continue', 'duration', 'requests per minute', 'size')
+  return( ret ) 
   
 }
 
