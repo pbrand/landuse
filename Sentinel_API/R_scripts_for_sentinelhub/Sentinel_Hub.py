@@ -40,8 +40,8 @@ def save_sentinel_patch(x1, x2, y1, y2,
                                    image_format=MimeType.TIFF_d32f,
                                    instance_id=INSTANCE_ID,
                                    custom_url_params={CustomUrlParam.ATMFILTER: 'ATMCOR',
-                                                       CustomUrlParam.TRANSPARENT: True,
-                                                       CustomUrlParam.SHOWLOGO: False})
+                                                      CustomUrlParam.TRANSPARENT: True,
+                                                      CustomUrlParam.SHOWLOGO: False})
     
     wms_img = wms_bands_request.get_data(save_data=True)
     

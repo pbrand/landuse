@@ -4,7 +4,7 @@
 ############input of user via browser
 date_to = '2018-01-19'  #what date are we considering
 satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
-days = 5 # How far are we looking back
+days = 10 # How far are we looking back
 preview = 1
 #in case of box what are the bounding coordinates
 x1 =  37.3
@@ -213,20 +213,16 @@ what_are_the_shapes = function(){
 make_preview = function(dir_out){
   
   #find all tiff files that have not yet ben translated to jpeg
-  tiff_files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
-  jpg_files = list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.jpg')
-  jpg_files = gsub(jpg_files, pattern = 'jpg', replacement = 'tiff')
-  files = setdiff(tiff_files, jpg_files)
-  #compute names of the jpegs
+  files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
   target_files = gsub(files, patter = 'tiff', replacement = 'jpg')
   
   #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
  if(length(files)>0){
  for( i in 1:length(files)){
-  
-    im = raster::stack(files[i], bands = c(4:2) )
+  print(files[i])
+    im = raster::stack(files[i], bands = c(4,3,2) )
     im = raster::as.array(im)
-    im = im*4
+    im = sqrt(im) 
     writeJPEG(im, target_files[i])
  }
  }
