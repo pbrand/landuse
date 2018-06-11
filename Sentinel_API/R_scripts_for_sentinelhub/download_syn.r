@@ -1,51 +1,3 @@
-#############################PARAMETERS####################################################
-
-
-############input of user via browser
-date_to = '2018-01-19'  #what date are we considering
-satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
-days = 10 # How far are we looking back
-preview = 1
-#in case of box what are the bounding coordinates
-x1 =  37.3
-x2 = 37.8
-y1 = 0
-y2 = 0.5
-#needed in case you want to use pre-defined shape
-shape_name =   'Estonia' #'Netherlands' #   'Aruba' #
-shape_chapter = 'countries'
-
-##############input decided by backend
-dir_out = '/home/daniel/R/landuse/request' #where to write the downloads
-##Changing these pareams below can have serious consequences
-##parameters to restrict requests in size, depend on the user account (filter)
-threshold_area = 10  #how large can the requested area be
-threshold_days = 10 #For how long a period can the user requst data
-wait = 80  #how many seconds does the server wait till making the wms request for the next tile
-w= 30000 # width of the tiles in meter
-h = 30000 #heigth of the tiles in meter
-res = 10 # resolution in meter
-
-################################################################################################
-
-
-###############################callable functions###############################
-
-#setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
-
-
-#estimate_bbox(x1,x2,y1,y2,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-
-#main_base_on_boundingbox(x1,x2,y1,y2,satellite, dir_out, date_to, days, wait, w, h, res, preview)
-
-#estimate_shape(shape_chapter, shape_name,date_from, days, dir_out, wait, threshold_area, threshold_days, w, h, res, preview)
-
-#main_base_on_shape(shape_chapter, satellite, dir_out, date_to, days, shape_name, wait, w, h, res, preview)
-
-#what_are_the_shapes()
-
-
-
 ################################Required libraries########################################
 library(datetime)
 library(rgdal)
@@ -134,9 +86,9 @@ download = function(area,satellite, dir_out, date_to, days, wait, w, h, res, pre
       Sys.sleep(wait) 
   }
   #Wait one minute for the remaining downloads to finish
-  Sys.sleep(3*wait)
   #in case the user requested a preview translate all files to jpeg
   if(preview==1){
+    Sys.sleep(3*wait)
   make_preview(file.path(dir_out))
   }
   }
@@ -154,9 +106,10 @@ cover = function(area, w, h){
   y2 =  area@bbox[2,2]
   
   
-  #calculate in how many parst we should devide the heigth and width of the bounding box
-  parts_x = floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.6*1000 ) / w +1)
-  parts_y =  floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.6*1000 ) / h +1 )
+  #calculate in how many parst we should devide the heigth and width of the bounding box in order to get the largest squeres under w and h
+  parts_x = max(floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x2 , latarget = y1  )$dist *1.6*1000 ) / w +1) ,  floor( ( geodistance(longvar = x1, latvar = y2 , lotarget = x2 , latarget = y2  )$dist *1.6*1000 ) / w +1)   )
+  
+  parts_y =  max ( floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.6*1000 ) / h +1 ), floor( ( geodistance(longvar = x1, latvar = y1 , lotarget = x1 , latarget = y2  )$dist *1.6*1000 ) / h +1 )  )
   
   #calculate all bounding box coordinates of the covering squares
   x2_vec = x1 + (x2 - x1)/parts_x * rep(c(1:parts_x), each  = parts_y)
@@ -213,8 +166,9 @@ what_are_the_shapes = function(){
 make_preview = function(dir_out){
   
   #find all tiff files that have not yet ben translated to jpeg
-  files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tiff'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
+  files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tif'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
   target_files = gsub(files, patter = 'tiff', replacement = 'jpg')
+  target_files = gsub(files, patter = 'tif', replacement = 'jpg')
   
   #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
  if(length(files)>0){
