@@ -1,11 +1,14 @@
 library(tiff)
 library(feather)
 
-dirs = list.files( file.path('db', 'raw'))
+dirs = list.files( file.path( 'output'))
 
-for(dir in dirs){
+
+
+for(i in 1:length(dirs)){
+  dir = dirs[i]
 print(dir)
- file =  list.files( file.path('db', 'raw', dir), full.names = TRUE, pattern = 'CBS_labels_new')
+ file =  union( list.files( file.path('output', dir), full.names = TRUE, pattern = 'CBS _labels') , list.files( file.path('output', dir), full.names = TRUE, pattern = 'CBS_labels')  )
 
  r = readTIFF(file)
  
@@ -13,26 +16,26 @@ r[r==10] = 1 #rail
 r[r==11] = 2 #road
 r[r==12] = 4 #airport
 r[r==20] = 5 #residential
-r[r==21] = 6 #comercial
-r[r==22] = 6 #comercial
-r[r==23] = 6 #comercial
-r[r==24] = 7 #industrial
-r[r==30] = 8 #dump
-r[r==31] = 9 #wreck
-r[r==32] = 10 #cementery
-r[r==33] = 11 #mining
-r[r==34] = 12 #construction site
-r[r==35] = 13 #semi sealed
-r[r==40] = 14 #park
-r[r==41] = 15 #rail terrain
-r[r==42] = 16 #vegtable garden
-r[r==43] = 17 #recreational
-r[r==44] = 18 #bungalow park
-r[r==50] = 19 #greenhouses
-r[r==51] = 20 #farming
-r[r==60] = 21 #forrest
-r[r==61] = 22 #dry natural
-r[r==62] = 23 #wet natural
+r[r==21] = 5 #residential
+r[r==22] = 5 #residential
+r[r==23] = 5 #residential
+r[r==24] = 6 #industrial
+r[r==30] = 7 #semi
+r[r==31] = 7 #semi
+r[r==32] = 7 #semi
+r[r==33] = 7 #semi
+r[r==34] = 7 #semi
+r[r==35] = 7 #semi
+r[r==40] = 8 #park
+r[r==41] = 8 #rail terrain
+r[r==42] = 8 #vegtable garden
+r[r==43] = 8 #recreational
+r[r==44] = 8 #bungalow park
+r[r==50] = 9 #greenhouses
+r[r==51] = 10 #farming
+r[r==60] = 11 #forrest
+r[r==61] = 12 #dry natural
+r[r==62] = 13 #wet natural
 r[r==70] = 3 #water
 r[r==71] = 3
 r[r==72] = 3
@@ -48,7 +51,7 @@ r[r==82] = 3
 r[r==83] = 3
 
 r = as.data.frame(r)
-write_feather(r, file.path('db', 'raw', dir, 'label.fe'))
+write_feather(r, file.path( 'output', dir, 'label.fe'))
 
 
 }

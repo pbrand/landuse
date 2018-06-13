@@ -26,7 +26,7 @@ covering =   cover(area, w_im  , h_im)
 size =  3000
 date_to = '2017-06-01'  #starting date
 time_window = 365 #timewindow
-dir_out = '/home/daniel/Projecten/clouds/beelden' #where to write the downloads
+dir_out = '/home/daniel/Projecten/clouds' #where to write the downloads
 satellite = 'L1C'
 w_im = 6000
 h_im = 6000
@@ -50,13 +50,13 @@ plot(sample_regions)
 print(paste('done in ', round((100*20)/(60*60),1), 'hours'))
 
 for( i in 1:size){
-  download( sample_regions[i,] ,satellite , file.path(dir_out,i ), sample_dates[i], days , wait, w, h, res , preview)
+  download( sample_regions[i,] ,satellite , file.path(dir_out, 'beelden',i ), sample_dates[i], days , wait, w, h, res , preview)
 }
 
 Sys.sleep(300)
 
 #get all images out of the subfolders
-files= list.files(dir_out, full.names =  TRUE, recursive = TRUE)
+files= list.files(file.path(dir_out, 'beelden'), full.names =  TRUE, recursive = TRUE)
 names = strsplit(files, '[/]')
 names = unlist(lapply(names, function(x){
  x[length(x)] 
@@ -65,14 +65,22 @@ names = unlist(lapply(names, function(x){
 for(i in 1:length(files)){
   r = raster::stack(files[i])
   r= crop(r, extent(r, 1,512, 1, 512) )
-  writeRaster(r, filename = file.path(dir_out, names[i]), overwrite = TRUE)
+  writeRaster(r, filename = file.path(dir_out, 'beelden',  names[i]), overwrite = TRUE)
 }
 
 #remove all other files
 file.remove(files)
-dirs = list.dirs(dir_out)[-1]
+dirs = list.dirs(file.path(dir_out,'beelden'))[-1]
 unlink(dirs, recursive = TRUE)
 
 
 #make jpegs
-make_preview(dir_out)
+make_preview(file.path(dir_out, 'beelden'))
+
+#place all tiffs that have an image in raw, remove all other tiffs
+files = list.files( file.path(dir_out, 'beelden'), pattern = 'tif')
+file.rename(file.path(dir_out, 'beelden', files), file.path(dir_out, 'raw', files))
+ 
+ 
+ 
+ 

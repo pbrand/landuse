@@ -48,9 +48,8 @@ main_base_on_shape = function(shape_chapter, satellite, dir_out, date_to, days, 
     
   
   #download the images
-  for(i in 1:length(area)){
-    download( area[i,] ,satellite, file.path(dir_out,i), date_to, days , wait, w, h, res , preview)
-  }
+    download( area,satellite, file.path(dir_out), date_to, days , wait, w, h, res , preview)
+
   return('Download ready')
 }
 
@@ -147,19 +146,6 @@ cover = function(area, w, h){
 }
 
 
-###################FIND ALL PREDIFINED SHAPES##############
-#Callable from C#
-what_are_the_shapes = function(){
- names =  list.files('shapes')
- 
- shapes = list()
- for(name in names){
-  shapes = append(shapes, list( list.files(file.path('shapes', name)) ) )
- }
- names(shapes) = names
- 
-  return( shapes)
-}
 
 ##################################MAKE JPEG VIEW OF TIFF FILES##################################################
 #Not callable from C#
@@ -175,9 +161,11 @@ make_preview = function(dir_out){
  for( i in 1:length(files)){
   print(files[i])
     im = raster::stack(files[i], bands = c(4,3,2) )
-    im = raster::as.array(im)
+   im =  try( raster::as.array(im))
+   if(class(im) != 'try-error'){
     im = sqrt(im) 
     writeJPEG(im, target_files[i])
+   }
  }
  }
 }
