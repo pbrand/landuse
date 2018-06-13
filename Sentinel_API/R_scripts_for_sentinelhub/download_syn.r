@@ -8,6 +8,13 @@ library(jpeg)
 library(raster)
 #sentinelhub package of python. python 3 or higher required
 
+threshold_area = 10  #how large can the requested area be
+threshold_days = 20 #For how long a period can the user requst data
+wait = 0  #how many seconds does the server wait till making the wms request for the next tile
+w= 50000 # width of the tiles in meter
+h = 50000 #heigth of the tiles in meter
+res = 10 # resolution in meter
+
 
 
 ###################################donwload based on a bounding box#########################################
@@ -43,7 +50,7 @@ main_base_on_shape = function(shape_chapter, satellite, dir_out, date_to, days, 
 
     
   #load n the requested shape
-  area = readOGR(file.path('shapes', shape_chapter, shape_name))
+  area = readOGR(file.path( shape_chapter, shape_name))
 
     
   
@@ -219,7 +226,7 @@ estimate_shape = function(shape_chapter, shape_name,date_from, days, dir_out, wa
   dir.create(dir_out)
   
   #load n the requested shape
-  area = readOGR(file.path('shapes', shape_chapter, shape_name))
+  area = readOGR(file.path(shape_chapter, shape_name))
   
   
   
