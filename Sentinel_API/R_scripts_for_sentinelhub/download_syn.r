@@ -161,7 +161,7 @@ make_preview = function(dir_out){
   #find all tiff files that have not yet ben translated to jpeg
   files =  setdiff( list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = '.tif'), list.files(dir_out, recursive = TRUE, include.dirs = FALSE, full.names = TRUE, pattern = 'xml') )
   target_files = gsub(files, patter = 'tiff', replacement = 'jpg')
-  target_files = gsub(files, patter = 'tif', replacement = 'jpg')
+  target_files = gsub(target_files, patter = 'tif', replacement = 'jpg')
   
   #if there are tiff files found translate them into jpeg, save the jpegs in the same folder using the same name
  if(length(files)>0){
@@ -170,7 +170,9 @@ make_preview = function(dir_out){
     im = raster::stack(files[i], bands = c(4,3,2) )
    im =  try( raster::as.array(im))
    if(class(im) != 'try-error'){
-    im = sqrt(im) 
+     im = sqrt(im) 
+     im[im>1] = 1
+     im[im<0] = 0
     writeJPEG(im, target_files[i])
    }
  }

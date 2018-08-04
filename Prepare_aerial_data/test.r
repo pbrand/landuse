@@ -1,14 +1,16 @@
 library(tiff)
 library(feather)
 
-dirs = list.files( file.path( 'output'))
+output =  '/media/daniel/6DA3F120567E843D/Luchtfotos/output'
+
+dirs = list.files( output)
 
 
 
-for(i in 1:length(dirs)){
+for(i in 10:length(dirs)){
   dir = dirs[i]
 print(dir)
- file =  union( list.files( file.path('output', dir), full.names = TRUE, pattern = 'CBS _labels') , list.files( file.path('output', dir), full.names = TRUE, pattern = 'CBS_labels')  )
+ file =  union( list.files( file.path(output, dir), full.names = TRUE, pattern = 'CBS _labels') , list.files( file.path(output, dir), full.names = TRUE, pattern = 'CBS_labels')  )
 
  r = readTIFF(file)
  
@@ -51,7 +53,7 @@ r[r==82] = 3
 r[r==83] = 3
 
 r = as.data.frame(r)
-write_feather(r, file.path( 'output', dir, 'label.fe'))
+write_feather(r, file.path( output, dir, 'label.fe'))
 
 
 }

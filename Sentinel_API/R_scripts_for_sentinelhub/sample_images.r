@@ -5,25 +5,9 @@ setwd('/home/daniel/R/landuse/Sentinel_API/R_scripts_for_sentinelhub')
 source('download_syn.r')
 
 
-
-x1 = 6.01
-x2 = 6.06
-y1 = 52.32
-y2 = 52.37
-area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
-proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
-
-
-#Read in shape and cover it
-shape_name = 'Ethiopia' #  'Netherlands' #   'Aruba' #   'Estonia' 'Netherlands' #
-shape_chapter = 'countries'
-area = readOGR(file.path('shapes', shape_chapter, shape_name))
-covering =   cover(area, w_im  , h_im)
-
-
 #############################PARAMETERS####################################################
 #needed in case you want to use pre-defined shape
-size =  3000
+size =  1000
 date_to = '2017-06-01'  #starting date
 time_window = 365 #timewindow
 dir_out = '/home/daniel/Projecten/clouds' #where to write the downloads
@@ -37,6 +21,22 @@ preview = 0
 res = 10
 days = 15
 ################################################################################################
+
+
+x1 = 49.1
+x2 = 49.5
+y1 = -15.5
+y2 = -15
+area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2, x2, x1, x1), 'y' = c(y1, y1, y2, y2, y1) ))) ,1) ))
+proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
+covering =   cover(area, w_im  , h_im)
+
+#Read in shape and cover it
+shape_name = 'Ethiopia' #  'Netherlands' #   'Aruba' #   'Estonia' 'Netherlands' #
+shape_chapter = 'countries'
+area = readOGR(file.path('shapes', shape_chapter, shape_name))
+covering =   cover(area, w_im  , h_im)
+
 
 
 

@@ -3,22 +3,22 @@ source('download_syn.r')
 
 
 
-date_to = '2016-07-12'  #what date are we considering
-satellite = 'L1C' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
-days = 10 # How far are we looking back
+date_to = '2018-05-10'  #what date are we considering
+satellite = 'L2A' #What satellite system do we use possibilities: L1C , L2A and SENTINEL1
+days = 20 # How far are we looking back
 preview = 1
 x1 = 
 x2 = 
 y1 = 
 y2 = 
-shape_name = 'oost'  #'Pannama' #'Estonia' #'Netherlands' #   'Aruba' #
-shape_chapter = 'schelde' #'countries'
-dir_out = 'requestoost1' #where to write the downloads
+shape_name = 'Netherlands'  # 'Aruba' # 'Pannama' #'Estonia' #   
+shape_chapter = 'shapes/countries'
+dir_out = 'request' #where to write the downloads
 threshold_area = 10  #how large can the requested area be
 threshold_days = 20 #For how long a period can the user requst data
 wait = 0  #how many seconds does the server wait till making the wms request for the next tile
-w= 50000 # width of the tiles in meter
-h = 50000 #heigth of the tiles in meter
+w= 3000 # width of the tiles in meter
+h = 3000 #heigth of the tiles in meter
 res = 10 # resolution in meter
 
 
