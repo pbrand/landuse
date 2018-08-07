@@ -10,7 +10,7 @@ source('download_syn.r')
 size =  1000
 date_to = '2017-06-01'  #starting date
 time_window = 365 #timewindow
-dir_out = '/home/daniel/Projecten/clouds' #where to write the downloads
+dir_out = '/home/daniel/Projecten/clouds_new' #where to write the downloads
 satellite = 'L1C'
 w_im = 6000
 h_im = 6000
@@ -23,6 +23,7 @@ days = 15
 ################################################################################################
 
 
+#use bounding coordinates
 x1 = 49.1
 x2 = 49.5
 y1 = -15.5
@@ -31,7 +32,7 @@ area =  SpatialPolygons( list(Polygons( list(Polygon( data.frame('x' = c(x1, x2,
 proj4string(area) =  CRS("+proj=longlat +datum=WGS84")
 covering =   cover(area, w_im  , h_im)
 
-#Read in shape and cover it
+#Use predefined shape
 shape_name = 'Ethiopia' #  'Netherlands' #   'Aruba' #   'Estonia' 'Netherlands' #
 shape_chapter = 'countries'
 area = readOGR(file.path('shapes', shape_chapter, shape_name))
